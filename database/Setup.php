@@ -15,5 +15,17 @@ class Setup {
         //         $table->timestamps();
         //     }
         // );
+
+        Schema::create(
+            'directorist_gutenberg_ai_chat_messages', function( $table ) {
+                $table->big_increments( 'id' );
+                $table->unsigned_big_integer( 'template_id' );
+                $table->string( 'role' );
+                $table->text( 'message' );
+                $table->text( 'template' )->nullable();
+                $table->timestamps();
+                $table->index( 'template_id' );
+            }
+        );
     }
 }

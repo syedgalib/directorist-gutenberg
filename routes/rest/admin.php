@@ -3,6 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use DirectoristGutenberg\App\Http\Controllers\TemplateController;
+use DirectoristGutenberg\App\Http\Controllers\AIChatMessageController;
 use DirectoristGutenberg\WpMVC\Routing\Route;
 
 Route::group( 'admin', function() {
@@ -13,6 +14,13 @@ Route::group( 'admin', function() {
         Route::post( '/create-all', [ TemplateController::class, 'create_all_templates' ] );
         Route::delete( '/bulk-delete', [ TemplateController::class, 'bulk_delete' ] );
         Route::delete( '/delete-by', [ TemplateController::class, 'delete_by' ] );
+
+        Route::group( '/{template_id}/ai-chats', function() {
+            Route::get( '/', [ AIChatMessageController::class, 'index' ] );
+            Route::post( '/', [ AIChatMessageController::class, 'store' ] );
+            Route::delete( '/{chat_id}', [ AIChatMessageController::class, 'delete' ] );
+        } );
+
         Route::delete( '/{id}', [ TemplateController::class, 'delete' ] );
     } );
 }, [ 'admin' ] );
