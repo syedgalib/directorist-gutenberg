@@ -94,6 +94,9 @@ class BlockServiceProvider implements Provider {
         $localized_data = [
             'template_type'          => get_post_meta( get_post()->ID, "template_type", true ),
             'directory_type_id'      => get_post_meta( get_post()->ID, "directory_type_id", true ),
+            'wax_intelligent'        => [
+                'api_base_url' => directorist_gutenberg_config( 'wax-intelligent.api_base_url' ),
+            ],
             'submission_form_fields' => ! empty( $directory_type_id ) ? get_term_meta( $directory_type_id, "submission_form_fields", true ) : null,
             'template_links'         => $template_links,
         ];

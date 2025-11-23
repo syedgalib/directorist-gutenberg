@@ -26,6 +26,7 @@ import documentIcon from '@icon/document-text.svg';
 import star from '@icon/star.svg';
 import minusIcon from '@icon/minus.svg';
 import aiCreditIcon from '@icon/ai-credit.svg';
+import { getLocalizedBlockDataByKey } from '@directorist-gutenberg/gutenberg/localized-data';
 
 export default function AiAssistantChatPanel() {
 	const [ isOpen, setIsOpen ] = useState( false );
@@ -35,6 +36,9 @@ export default function AiAssistantChatPanel() {
     const [ isSending, setIsSending ] = useState( false );
     const [ isGenerating, setIsGenerating ] = useState( false );
     const [ retryAction, setRetryAction ] = useState( null );
+
+    const waxIntelligentConfig     = getLocalizedBlockDataByKey( 'wax_intelligent' );
+    const waxIntelligentApiBaseUrl = waxIntelligentConfig?.api_base_url ?? '';
     
     // Pagination state
     const [ page, setPage ] = useState( 1 );
@@ -197,6 +201,7 @@ export default function AiAssistantChatPanel() {
             // 2. Call Intelligent API
             await generateResponse( userMessage );
 
+            setRetryAction( null );
         } catch ( error ) {
             console.error( 'Error sending message:', error );
             setMessages( prev => prev.filter( m => m.id !== tempId ) ); // Remove optimistic message on failure
@@ -210,7 +215,7 @@ export default function AiAssistantChatPanel() {
     const generateResponse = async ( instruction ) => {
         setIsGenerating( true );
         try {
-            const apiURL = 'https://api.wax-intelligent.orb.local/directorist/template/gutenberg/generate';
+            const apiURL = `${waxIntelligentApiBaseUrl}/directorist/template/gutenberg/generate`;
 
             // Format history for API
             const history = messages.map( msg => ({
@@ -437,7 +442,7 @@ export default function AiAssistantChatPanel() {
                                         { retryAction && (
                                             <div className="directorist-gutenberg-ai-assistant-chat-retry">
                                                 <p>{ __( 'Something went wrong.', 'directorist-gutenberg' ) }</p>
-                                                <Button isSecondary onClick={ retryAction }>
+                                                <Button variant='secondary' onClick={ retryAction }>
                                                     { __( 'Retry', 'directorist-gutenberg' ) }
                                                 </Button>
                                             </div>
