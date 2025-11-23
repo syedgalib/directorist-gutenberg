@@ -297,9 +297,8 @@ export default function AiAssistantChatPanel() {
             }
 
             // 3. Store assistant response
-             await storeMessage( 'assistant', assistantMessage, templateContent );
-             setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage, template: templateContent } ] );
-
+            await storeMessage( 'assistant', assistantMessage, templateContent );
+            setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage, template: templateContent } ] );
 
             // 4. Apply template
             applyTemplate( templateContent );
