@@ -4396,6 +4396,85 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
             color: #757575;
         }
     }
+
+    .directorist-gutenberg-ai-assistant-chat-loader,
+    .directorist-gutenberg-ai-assistant-chat-loader-more {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        color: #3E62F5;
+    }
+
+    .directorist-gutenberg-ai-assistant-chat-loader-more {
+        padding: 20px 0;
+    }
+
+    .directorist-gutenberg-ai-assistant-user-avatar {
+        width: 24px;
+        height: 24px;
+        background: #3E62F5;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .directorist-gutenberg-ai-assistant-typing-indicator {
+        display: flex;
+        gap: 4px;
+        padding: 8px 0;
+        
+        span {
+            width: 6px;
+            height: 6px;
+            background: #3E62F5;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both;
+            opacity: 0.6;
+            
+            &:nth-child(1) {
+                animation-delay: -0.32s;
+            }
+            
+            &:nth-child(2) {
+                animation-delay: -0.16s;
+            }
+        }
+    }
+    
+    @keyframes typing {
+        0%, 80%, 100% { 
+            transform: scale(0);
+        }
+        40% { 
+            transform: scale(1);
+        }
+    }
+
+    .directorist-gutenberg-ai-assistant-chat-retry {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 0 0 0 44px;
+        
+        p {
+            margin: 0;
+            color: #D92D20;
+            font-size: 13px;
+        }
+
+        button {
+            font-size: 12px;
+            height: 28px;
+            line-height: 26px;
+            padding: 0 12px;
+        }
+    }
 `;
 
 

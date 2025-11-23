@@ -42,8 +42,8 @@ class AIChatMessageController extends Controller {
 
         $role = $request->get_param( 'role' );
         
-        if ( ! in_array( $role, [ 'agent', 'user' ] ) ) {
-            throw new Exception( esc_html__( 'Invalid role. Accepted values are: agent, user.', 'directorist-gutenberg' ), 400 );
+        if ( ! in_array( $role, [ 'assistant', 'user' ] ) ) {
+            throw new Exception( esc_html__( 'Invalid role. Accepted values are: assistant, user.', 'directorist-gutenberg' ), 400 );
         }
 
         $create_dto = ( new AIChatMessageCreateDTO() )
