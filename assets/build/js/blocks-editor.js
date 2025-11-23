@@ -3426,7 +3426,7 @@ function AiAssistantChatPanel() {
   const generateResponse = async instruction => {
     setIsGenerating(true);
     try {
-      const apiURL = 'https://api.wax-intelligent.orb.local/directorist/template/gutenberg/generate';
+      const apiURL = 'https://ongoing-draws-electronic-grades.trycloudflare.com/directorist/template/gutenberg/generate';
 
       // Format history for API
       const history = messages.map(msg => ({

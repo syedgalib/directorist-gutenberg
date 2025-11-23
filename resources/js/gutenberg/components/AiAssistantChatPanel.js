@@ -35,7 +35,7 @@ export default function AiAssistantChatPanel() {
     const [ isSending, setIsSending ] = useState( false );
     const [ isGenerating, setIsGenerating ] = useState( false );
     const [ retryAction, setRetryAction ] = useState( null );
-    
+
     // Pagination state
     const [ page, setPage ] = useState( 1 );
     const [ hasMore, setHasMore ] = useState( true );
@@ -85,10 +85,10 @@ export default function AiAssistantChatPanel() {
                 path: `/directorist-gutenberg/admin/templates/${ currentPostId }/ai-chats?page=${ pageNum }&per_page=10`,
                 method: 'GET',
             } );
-            
+
             if ( response && response.items ) {
                 const newMessages = response.items.reverse(); // Oldest first
-                
+
                 setMessages( prev => isFirstPage ? newMessages : [ ...newMessages, ...prev ] );
                 setHasMore( pageNum * 10 < response.total ); // Check if we have more pages
             }
@@ -193,7 +193,7 @@ export default function AiAssistantChatPanel() {
         try {
             // 1. Store user message
             await storeMessage( 'user', userMessage, currentContent );
-            
+
             // 2. Call Intelligent API
             await generateResponse( userMessage );
 
@@ -210,7 +210,7 @@ export default function AiAssistantChatPanel() {
     const generateResponse = async ( instruction ) => {
         setIsGenerating( true );
         try {
-            const apiURL = 'https://api.wax-intelligent.orb.local/directorist/template/gutenberg/generate';
+            const apiURL = 'https://ongoing-draws-electronic-grades.trycloudflare.com/directorist/template/gutenberg/generate';
 
             // Format history for API
             const history = messages.map( msg => ({
@@ -285,7 +285,7 @@ export default function AiAssistantChatPanel() {
                 editPost( {
                     content: cleanContent,
                 } );
-                
+
                 resetBlocks( parsedBlocks );
             }
         } catch ( parseError ) {
@@ -332,7 +332,7 @@ export default function AiAssistantChatPanel() {
                         </Button>
                     </div>
 					<div className="directorist-gutenberg-ai-assistant-chat-content">
-                        
+
                         { isLoading ? (
                             <div className="directorist-gutenberg-ai-assistant-chat-loader">
                                 <Spinner />
@@ -389,7 +389,7 @@ export default function AiAssistantChatPanel() {
                                     </>
                                 ) : (
                                     /* Conversation Area */
-                                    <div 
+                                    <div
                                         className="directorist-gutenberg-ai-assistant-chat-conversation-area"
                                         onScroll={ handleScroll }
                                         ref={ chatContentRef }
@@ -419,7 +419,7 @@ export default function AiAssistantChatPanel() {
                                                 </div>
                                             </div>
                                         ) ) }
-                                        
+
                                         { ( isSending || isGenerating ) && (
                                             <div className="directorist-gutenberg-ai-assistant-chat-conversation-area-item">
                                                  <div className="directorist-gutenberg-ai-assistant-chat-icon">
