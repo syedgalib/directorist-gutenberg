@@ -158,15 +158,15 @@ class TemplateController extends Controller {
         $demo_contents = [
             'listings-archive'           => [
                 'title'   => 'Listings Archive',
-                'content' => '',
+                'content' => directorist_gutenberg_get_view( 'demo-contents/listings-archive' ),
             ],
             'listings-archive-grid-view' => [
                 'title'   => 'Listings Archive Grid View',
-                'content' => '',
+                'content' => directorist_gutenberg_get_view( 'demo-contents/listings-archive-grid-view' ),
             ],
             'listings-archive-list-view' => [
                 'title'   => 'Listings Archive List View',
-                'content' => '',
+                'content' => directorist_gutenberg_get_view( 'demo-contents/listings-archive-list-view' ),
             ],
         ];
 
