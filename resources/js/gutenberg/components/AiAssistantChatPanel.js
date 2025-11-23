@@ -26,9 +26,23 @@ import documentIcon from '@icon/document-text.svg';
 import star from '@icon/star.svg';
 import minusIcon from '@icon/minus.svg';
 import aiCreditIcon from '@icon/ai-credit.svg';
-import { getLocalizedBlockDataByKey } from '@directorist-gutenberg/gutenberg/localized-data';
+import { getLocalizedBlockData, getLocalizedBlockDataByKey } from '@directorist-gutenberg/gutenberg/localized-data';
 
 export default function AiAssistantChatPanel() {
+    const localizedData            = getLocalizedBlockData();
+    const templateType             = localizedData?.template_type ?? '';
+    const waxIntelligentApiBaseUrl = localizedData?.wax_intelligent?.api_base_url ?? '';
+
+    const supportedTemplateTypes = [
+        'listings-archive',
+        'listings-archive-grid-view',
+        'listings-archive-list-view',
+    ];
+
+    if ( ! supportedTemplateTypes.includes( templateType ) ) {
+        return null;
+    }
+
 	const [ isOpen, setIsOpen ] = useState( false );
 	const [ inputValue, setInputValue ] = useState( '' );
     const [ messages, setMessages ] = useState( [] );
@@ -36,9 +50,6 @@ export default function AiAssistantChatPanel() {
     const [ isSending, setIsSending ] = useState( false );
     const [ isGenerating, setIsGenerating ] = useState( false );
     const [ retryAction, setRetryAction ] = useState( null );
-
-    const waxIntelligentConfig     = getLocalizedBlockDataByKey( 'wax_intelligent' );
-    const waxIntelligentApiBaseUrl = waxIntelligentConfig?.api_base_url ?? '';
     
     // Pagination state
     const [ page, setPage ] = useState( 1 );
@@ -141,8 +152,9 @@ export default function AiAssistantChatPanel() {
 		};
 	}, [] );
 
-	const suggestedActions = [
-		{
+
+    const suggestedActionsArchiveListItem = [
+        {
 			id: 'hover-shadow',
 			label: __( 'Add subtle hover shadow', 'directorist-gutenberg' ),
 			icon: 'cube',
@@ -162,7 +174,31 @@ export default function AiAssistantChatPanel() {
 			label: __( 'Move price above rating', 'directorist-gutenberg' ),
 			icon: 'star',
 		},
-	];
+    ];
+
+    const allSuggestedActions = {
+        'listings-archive': [
+            {
+                id: 'add-search-form',
+                label: __( 'Add search form', 'directorist-gutenberg' ),
+                icon: 'star',
+            },
+            {
+                id: 'add-listing-filters',
+                label: __( 'Add listing filters', 'directorist-gutenberg' ),
+                icon: 'star',
+            },
+            {
+                id: 'make-3-columns-per-row',
+                label: __( 'Make 3 columns per row', 'directorist-gutenberg' ),
+                icon: 'star',
+            },
+        ],
+        'listings-archive-grid-view': suggestedActionsArchiveListItem,
+        'listings-archive-list-view': suggestedActionsArchiveListItem,
+    };
+
+    const suggestedActions = allSuggestedActions[ templateType ];
 
     const storeMessage = async ( role, message, template = null ) => {
         const data = {
@@ -235,7 +271,7 @@ export default function AiAssistantChatPanel() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify( {
-                    template_type: "listings_archive", // TODO: Make this dynamic based on context
+                    template_type: templateType,
                     instruction: instruction,
                     current_template: currentContent,
                     history: history

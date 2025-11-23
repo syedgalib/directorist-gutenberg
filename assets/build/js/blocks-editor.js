@@ -3261,7 +3261,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function AiAssistantChatPanel() {
-  var _waxIntelligentConfig;
+  var _localizedData$templa, _localizedData$wax_in;
+  const localizedData = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_17__.getLocalizedBlockData)();
+  const templateType = (_localizedData$templa = localizedData?.template_type) !== null && _localizedData$templa !== void 0 ? _localizedData$templa : '';
+  const waxIntelligentApiBaseUrl = (_localizedData$wax_in = localizedData?.wax_intelligent?.api_base_url) !== null && _localizedData$wax_in !== void 0 ? _localizedData$wax_in : '';
+  const supportedTemplateTypes = ['listings-archive', 'listings-archive-grid-view', 'listings-archive-list-view'];
+  if (!supportedTemplateTypes.includes(templateType)) {
+    return null;
+  }
   const [isOpen, setIsOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [inputValue, setInputValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const [messages, setMessages] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
@@ -3269,8 +3276,6 @@ function AiAssistantChatPanel() {
   const [isSending, setIsSending] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [isGenerating, setIsGenerating] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [retryAction, setRetryAction] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
-  const waxIntelligentConfig = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_17__.getLocalizedBlockDataByKey)('wax_intelligent');
-  const waxIntelligentApiBaseUrl = (_waxIntelligentConfig = waxIntelligentConfig?.api_base_url) !== null && _waxIntelligentConfig !== void 0 ? _waxIntelligentConfig : '';
 
   // Pagination state
   const [page, setPage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(1);
@@ -3367,7 +3372,7 @@ function AiAssistantChatPanel() {
       window.removeEventListener('directorist-ai-assistant-toggle', handleToggleEvent);
     };
   }, []);
-  const suggestedActions = [{
+  const suggestedActionsArchiveListItem = [{
     id: 'hover-shadow',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add subtle hover shadow', 'directorist-gutenberg'),
     icon: 'cube'
@@ -3384,6 +3389,24 @@ function AiAssistantChatPanel() {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Move price above rating', 'directorist-gutenberg'),
     icon: 'star'
   }];
+  const allSuggestedActions = {
+    'listings-archive': [{
+      id: 'add-search-form',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add search form', 'directorist-gutenberg'),
+      icon: 'star'
+    }, {
+      id: 'add-listing-filters',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add listing filters', 'directorist-gutenberg'),
+      icon: 'star'
+    }, {
+      id: 'make-3-columns-per-row',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Make 3 columns per row', 'directorist-gutenberg'),
+      icon: 'star'
+    }],
+    'listings-archive-grid-view': suggestedActionsArchiveListItem,
+    'listings-archive-list-view': suggestedActionsArchiveListItem
+  };
+  const suggestedActions = allSuggestedActions[templateType];
   const storeMessage = async (role, message, template = null) => {
     const data = {
       role,
@@ -3455,8 +3478,7 @@ function AiAssistantChatPanel() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          template_type: "listings_archive",
-          // TODO: Make this dynamic based on context
+          template_type: templateType,
           instruction: instruction,
           current_template: currentContent,
           history: history
