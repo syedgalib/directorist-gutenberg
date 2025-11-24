@@ -15,11 +15,13 @@ import directoristLogo from '@block-icon/directorist-logo.svg';
 import Block from './block';
 import { getLocalizedBlockDataByKey } from './localized-data';
 import WidthControls from './width-control';
+import Controls from './components/controls';
 
 export default function registerBlock( {
 	metadata,
 	Edit,
-	Controls,
+	Controls: ControlsComponent, // Can be a component or fields definition
+	fields, // Fields definition object (alternative to Controls)
 	StylesControls,
 	icon = '',
 	exampleAttributes = {},
@@ -56,6 +58,10 @@ export default function registerBlock( {
 		}
 	}
 
+	// Determine which Controls to use: fields definition or Controls component
+	// Priority: fields > ControlsComponent
+	const controlsToUse = fields || ControlsComponent;
+
 	// Wrap Edit component with Block wrapper that handles useBlockProps
 	const WrappedEdit = ( editProps ) => (
 		<>
@@ -67,7 +73,8 @@ export default function registerBlock( {
 			) }
 			<Block
 				Edit={ Edit }
-				Controls={ Controls }
+				Controls={ controlsToUse }
+				fields={ fields }
 				StylesControls={ StylesControls }
 				classNames={ classNames }
 				{ ...editProps }

@@ -16,7 +16,6 @@ import Edit from './edit';
 import Save from './save';
 import metadata from './block.json';
 import thumbnailIcon from '@block-icon/thumbnail.svg';
-import Controls from './controls';
 /**
  * External dependencies
  */
@@ -25,10 +24,31 @@ import ReactSVG from 'react-inlinesvg';
 const exampleAttributes = {
 };
 
+// Define fields for this block
+const fields = {
+	thumbnailSettings: {
+		title: 'Listings Thumbnail Settings',
+		initialOpen: true,
+		fields: {
+			image_quality: {
+				type: 'select',
+				label: 'Image Quality',
+				attrKey: 'image_quality',
+				options: [
+					{ label: 'Default', value: 'default' },
+					{ label: 'Large', value: 'large' },
+					{ label: 'Medium', value: 'medium' },
+					{ label: 'Full', value: 'full' },
+				],
+			},
+		},
+	},
+};
+
 registerBlock( {
 	metadata,
 	Edit,
-	Controls,
+	fields,
 	props: {
 		save: Save,
 		transforms: {

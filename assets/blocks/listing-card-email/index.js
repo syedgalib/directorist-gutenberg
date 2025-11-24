@@ -2922,104 +2922,6 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 
 /***/ }),
 
-/***/ "./resources/blocks/listing-card-email/controls.js":
-/*!*********************************************************!*\
-  !*** ./resources/blocks/listing-card-email/controls.js ***!
-  \*********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Controls)
-/* harmony export */ });
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _directorist_gutenberg_gutenberg_components_controls_icon_picker__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/components/controls/icon-picker */ "./resources/js/gutenberg/components/controls/icon-picker.js");
-/* harmony import */ var _directorist_gutenberg_gutenberg_components_controls_color_picker_control__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/components/controls/color-picker-control */ "./resources/js/gutenberg/components/controls/color-picker-control.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
-/**
- * WordPress dependencies
- */
-
-
-
-
-
-/**
- * Internal dependencies
- */
-
-
-
-function Controls({
-  attributes,
-  setAttributes
-}) {
-  const [isIconColorPickerOpen, setIsIconColorPickerOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
-  const iconColor = attributes.icon_color || '';
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InspectorControls, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Listings Email Settings', 'directorist-gutenberg'),
-      initialOpen: true,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_directorist_gutenberg_gutenberg_components_controls_icon_picker__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        attr_key: "icon",
-        attributes: attributes,
-        setAttributes: setAttributes,
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Icon', 'directorist-gutenberg')
-      }), attributes?.icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_directorist_gutenberg_gutenberg_components_controls_color_picker_control__WEBPACK_IMPORTED_MODULE_5__["default"], {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Icon Color', 'directorist-gutenberg'),
-          color: attributes.icon_color,
-          defaultColor: attributes.icon_color || '#808080',
-          onChange: color => setAttributes({
-            icon_color: color
-          }),
-          isOpen: isIconColorPickerOpen,
-          onToggle: () => setIsIconColorPickerOpen(!isIconColorPickerOpen)
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalUnitControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Icon Size', 'directorist-gutenberg'),
-          value: attributes.icon_size || '16px',
-          onChange: value => setAttributes({
-            icon_size: value || '16px'
-          }),
-          units: [{
-            value: 'px',
-            label: 'px'
-          }, {
-            value: 'em',
-            label: 'em'
-          }, {
-            value: 'rem',
-            label: 'rem'
-          }, {
-            value: 'vh',
-            label: 'vh'
-          }, {
-            value: 'vw',
-            label: 'vw'
-          }]
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Label', 'directorist-gutenberg'),
-        checked: attributes.show_label,
-        onChange: value => setAttributes({
-          show_label: value
-        })
-      })]
-    })
-  });
-}
-
-/***/ }),
-
 /***/ "./resources/blocks/listing-card-email/edit.js":
 /*!*****************************************************!*\
   !*** ./resources/blocks/listing-card-email/edit.js ***!
@@ -3134,15 +3036,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./resources/blocks/listing-card-email/style.scss");
 /* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./resources/blocks/listing-card-email/edit.js");
 /* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./resources/blocks/listing-card-email/block.json");
-/* harmony import */ var _controls__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./controls */ "./resources/blocks/listing-card-email/controls.js");
-/* harmony import */ var _block_icon_email_svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @block-icon/email.svg */ "./resources/blocks-icon/email.svg");
-/* harmony import */ var react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-inlinesvg */ "./node_modules/.pnpm/react-inlinesvg@4.2.0_react@18.3.1/node_modules/react-inlinesvg/dist/index.mjs");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _block_icon_email_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @block-icon/email.svg */ "./resources/blocks-icon/email.svg");
+/* harmony import */ var react_inlinesvg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-inlinesvg */ "./node_modules/.pnpm/react-inlinesvg@4.2.0_react@18.3.1/node_modules/react-inlinesvg/dist/index.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 /**
  * Internal dependencies
  */
-
 
 
 
@@ -3155,13 +3055,47 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const exampleAttributes = {};
+
+// Define fields for this block
+const fields = {
+  emailSettings: {
+    title: 'Listings Email Settings',
+    initialOpen: true,
+    fields: {
+      show_label: {
+        type: 'toggle',
+        label: 'Show Label',
+        attrKey: 'show_label'
+      },
+      icon: {
+        type: 'iconPicker',
+        label: 'Icon',
+        attrKey: 'icon'
+      },
+      icon_color: {
+        type: 'colorPicker',
+        label: 'Icon Color',
+        attrKey: 'icon_color',
+        defaultColor: '#808080',
+        condition: attributes => !!attributes.icon
+      },
+      icon_size: {
+        type: 'unitControl',
+        label: 'Icon Size',
+        attrKey: 'icon_size',
+        defaultValue: '16px',
+        condition: attributes => !!attributes.icon
+      }
+    }
+  }
+};
 (0,_directorist_gutenberg_gutenberg_register_block__WEBPACK_IMPORTED_MODULE_0__["default"])({
   metadata: _block_json__WEBPACK_IMPORTED_MODULE_3__,
   Edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],
-  Controls: _controls__WEBPACK_IMPORTED_MODULE_4__["default"],
+  fields,
   exampleAttributes,
-  icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
-    src: _block_icon_email_svg__WEBPACK_IMPORTED_MODULE_5__
+  icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    src: _block_icon_email_svg__WEBPACK_IMPORTED_MODULE_4__
   }),
   templateTypes: ['listings-archive-grid-view', 'listings-archive-list-view']
 });
@@ -3242,12 +3176,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! clsx */ "./node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_controls__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/controls */ "./resources/js/gutenberg/components/controls/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
 /**
  * WordPress dependencies
  */
 
+
+
+/**
+ * Internal dependencies
+ */
 
 
 /**
@@ -3279,26 +3219,33 @@ function Block({
   Edit,
   attributes,
   setAttributes,
-  Controls,
+  Controls: ControlsComponent,
+  // Can be a component or fields definition
+  fields,
+  // Fields definition object (alternative to Controls)
   StylesControls,
   classNames = '',
   name,
   ...rest
 }) {
+  // Determine which Controls to use: fields definition or Controls component
+  // Priority: fields > ControlsComponent
+  const controlsToUse = fields || ControlsComponent;
   const customClasses = setCustomClassNames(classNames);
 
   // For thumbnail block, don't use useBlockProps on outer wrapper (Edit component handles it)
   const isThumbnailBlock = name === 'directorist-gutenberg/listing-card-thumbnail';
   if (isThumbnailBlock) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: `directorist-gutenberg-listing-card-block ${customClasses} directorist-gutenberg-block-width-${Math.trunc(attributes.block_width)}`,
-      children: [Controls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Controls, {
+      children: [controlsToUse && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_controls__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        fields: controlsToUse,
         attributes: attributes,
         setAttributes: setAttributes
-      }), StylesControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(StylesControls, {
+      }), StylesControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(StylesControls, {
         attributes: attributes,
         setAttributes: setAttributes
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Edit, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Edit, {
         attributes: attributes,
         setAttributes: setAttributes,
         name: name,
@@ -3323,15 +3270,16 @@ function Block({
     }),
     style: shadowStyle
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     ...blockProps,
-    children: [Controls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Controls, {
+    children: [controlsToUse && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_controls__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      fields: controlsToUse,
       attributes: attributes,
       setAttributes: setAttributes
-    }), StylesControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(StylesControls, {
+    }), StylesControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(StylesControls, {
       attributes: attributes,
       setAttributes: setAttributes
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Edit, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Edit, {
       attributes: attributes,
       setAttributes: setAttributes,
       name: name,
@@ -3449,6 +3397,100 @@ function ColorPickerControl({
           enableAlpha: true
         })
       })]
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/gutenberg/components/controls/custom-field-select.js":
+/*!***************************************************************************!*\
+  !*** ./resources/js/gutenberg/components/controls/custom-field-select.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ CustomFieldSelect)
+/* harmony export */ });
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _directorist_gutenberg_gutenberg_hooks_useSubmissionFields__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/hooks/useSubmissionFields */ "./resources/js/gutenberg/hooks/useSubmissionFields.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+/**
+ * Custom Field Select Component
+ * Handles SelectControl for custom fields that require hooks
+ *
+ * @param {Object} props - Component props
+ * @param {string} props.fieldKey - Field key
+ * @param {Object} props.field - Field configuration
+ * @param {Object} props.attributes - Block attributes
+ * @param {Function} props.setAttributes - Function to set block attributes
+ */
+
+function CustomFieldSelect({
+  fieldKey,
+  field,
+  attributes,
+  setAttributes
+}) {
+  const {
+    getFieldsOptions,
+    directoryTypeId
+  } = (0,_directorist_gutenberg_gutenberg_hooks_useSubmissionFields__WEBPACK_IMPORTED_MODULE_3__.useSubmissionFields)();
+  const {
+    label,
+    attrKey,
+    fieldType,
+    useDirectoryType
+  } = field;
+  const attributeKey = attrKey || fieldKey;
+  const value = attributes[attributeKey] || '';
+
+  // Get options based on field type
+  const options = getFieldsOptions('custom', fieldType);
+
+  // Handle directory_type_id update if needed
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    if (useDirectoryType && directoryTypeId) {
+      setAttributes({
+        directory_type_id: directoryTypeId
+      });
+    }
+  }, [directoryTypeId, useDirectoryType, setAttributes]);
+  const onChange = newValue => {
+    setAttributes({
+      [attributeKey]: newValue
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+    children: [field.spacer !== false && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      style: {
+        height: '16px'
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.SelectControl, {
+      label: label || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Field', 'directorist-gutenberg'),
+      value: value,
+      onChange: onChange,
+      options: options
     })]
   });
 }
@@ -3871,6 +3913,329 @@ function IconPicker({
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
+
+/***/ }),
+
+/***/ "./resources/js/gutenberg/components/controls/index.js":
+/*!*************************************************************!*\
+  !*** ./resources/js/gutenberg/components/controls/index.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Controls)
+/* harmony export */ });
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _render_field__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./render-field */ "./resources/js/gutenberg/components/controls/render-field.js");
+/* harmony import */ var _custom_field_select__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./custom-field-select */ "./resources/js/gutenberg/components/controls/custom-field-select.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+/**
+ * Controls component that renders fields from a definition object
+ * Similar to formgent's approach but simpler and tailored for directorist-gutenberg
+ *
+ * @param {Object} props - Component props
+ * @param {Object} props.fields - Fields definition object
+ * @param {Object} props.attributes - Block attributes
+ * @param {Function} props.setAttributes - Function to set block attributes
+ */
+
+function Controls({
+  fields,
+  attributes,
+  setAttributes
+}) {
+  if (!fields || (0,lodash__WEBPACK_IMPORTED_MODULE_3__.isEmpty)(fields)) {
+    return null;
+  }
+
+  // If fields is already a React component (backward compatibility)
+  if (typeof fields === 'function') {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("fields", {
+      attributes: attributes,
+      setAttributes: setAttributes
+    });
+  }
+
+  // Render fields from definition object
+  const panels = Object.keys(fields).map(panelKey => {
+    const panel = fields[panelKey];
+
+    // Support both panel structure and direct fields
+    const panelFields = panel.fields || panel;
+    const panelTitle = panel.title || panel.label || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Settings', 'directorist-gutenberg');
+    const initialOpen = panel.initialOpen !== undefined ? panel.initialOpen : true;
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+      title: panelTitle,
+      initialOpen: initialOpen,
+      children: Object.keys(panelFields).map(fieldKey => {
+        const field = panelFields[fieldKey];
+
+        // Skip field if condition is false
+        if (field.condition && !field.condition(attributes)) {
+          return null;
+        }
+
+        // Handle custom field select with hooks
+        if (field.type === 'customFieldSelect' && field.fieldType) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_custom_field_select__WEBPACK_IMPORTED_MODULE_5__["default"], {
+              fieldKey: fieldKey,
+              field: field,
+              attributes: attributes,
+              setAttributes: setAttributes
+            })
+          }, fieldKey);
+        }
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+          children: (0,_render_field__WEBPACK_IMPORTED_MODULE_4__["default"])(fieldKey, field, attributes, setAttributes)
+        }, fieldKey);
+      })
+    }, panelKey);
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InspectorControls, {
+    children: panels
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/gutenberg/components/controls/render-field.js":
+/*!********************************************************************!*\
+  !*** ./resources/js/gutenberg/components/controls/render-field.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ renderField)
+/* harmony export */ });
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _color_picker_control__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./color-picker-control */ "./resources/js/gutenberg/components/controls/color-picker-control.js");
+/* harmony import */ var _icon_picker__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon-picker */ "./resources/js/gutenberg/components/controls/icon-picker.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+/**
+ * Color Picker Wrapper Component with State Management
+ * This component wraps ColorPickerControl to manage its open/close state
+ */
+
+function ColorPickerWrapper({
+  fieldKey,
+  label,
+  value,
+  defaultValue,
+  onChange,
+  fieldProps
+}) {
+  const [isOpen, setIsOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_color_picker_control__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    label: label,
+    color: value,
+    defaultColor: defaultValue || '#000000',
+    onChange: onChange,
+    isOpen: isOpen,
+    onToggle: () => setIsOpen(!isOpen),
+    ...fieldProps
+  });
+}
+
+/**
+ * Render a field based on its type
+ *
+ * @param {string} fieldKey - The field key/name
+ * @param {Object} field - Field configuration
+ * @param {Object} attributes - Block attributes
+ * @param {Function} setAttributes - Function to set block attributes
+ * @returns {JSX.Element|null} Rendered field component
+ */
+function renderField(fieldKey, field, attributes, setAttributes) {
+  const {
+    type,
+    label,
+    help,
+    options,
+    placeholder,
+    defaultValue,
+    attrKey,
+    // Custom attribute key (if different from fieldKey)
+    ...fieldProps
+  } = field;
+  const attributeKey = attrKey || fieldKey;
+  const value = attributes[attributeKey] !== undefined ? attributes[attributeKey] : defaultValue;
+  const onChange = newValue => {
+    setAttributes({
+      [attributeKey]: newValue
+    });
+  };
+  switch (type) {
+    case 'text':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.TextControl, {
+        label: label,
+        help: help,
+        value: value || '',
+        onChange: onChange,
+        placeholder: placeholder,
+        ...fieldProps
+      }, fieldKey);
+    case 'toggle':
+    case 'switch':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.ToggleControl, {
+        label: label,
+        help: help,
+        checked: value || false,
+        onChange: onChange,
+        ...fieldProps
+      }, fieldKey);
+    case 'select':
+      // Support dynamic options via function
+      const selectOptions = typeof options === 'function' ? options(attributes) : options || [];
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.SelectControl, {
+        label: label,
+        help: help,
+        value: value || '',
+        onChange: onChange,
+        options: selectOptions,
+        ...fieldProps
+      }, fieldKey);
+    case 'radio':
+    case 'radioControl':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.RadioControl, {
+        label: label,
+        help: help,
+        selected: value || '',
+        onChange: onChange,
+        options: options || [],
+        ...fieldProps
+      }, fieldKey);
+    case 'toggleGroup':
+    case 'toggleGroupControl':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.__experimentalToggleGroupControl, {
+        label: label,
+        value: value || '',
+        onChange: onChange,
+        isBlock: field.isBlock !== false,
+        size: field.size || '__unstable-large',
+        __nextHasNoMarginBottom: field.__nextHasNoMarginBottom !== false,
+        ...fieldProps,
+        children: (options || []).map(option => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.__experimentalToggleGroupControlOption, {
+          label: option.label,
+          value: option.value
+        }, option.value))
+      }, fieldKey);
+    case 'color':
+    case 'colorPicker':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(ColorPickerWrapper, {
+        fieldKey: fieldKey,
+        label: label,
+        value: value,
+        defaultValue: field.defaultColor || defaultValue || '#000000',
+        onChange: onChange,
+        fieldProps: fieldProps
+      }, fieldKey);
+    case 'icon':
+    case 'iconPicker':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_icon_picker__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        attr_key: attributeKey,
+        attributes: attributes,
+        setAttributes: setAttributes,
+        label: label,
+        ...fieldProps
+      }, fieldKey);
+    case 'number':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.TextControl, {
+        label: label,
+        help: help,
+        value: value || '',
+        onChange: onChange,
+        type: "number",
+        ...fieldProps
+      }, fieldKey);
+    case 'unit':
+    case 'unitControl':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.__experimentalUnitControl, {
+        label: label,
+        help: help,
+        value: value || field.defaultValue || '',
+        onChange: onChange,
+        units: field.units || [{
+          value: 'px',
+          label: 'px'
+        }, {
+          value: 'em',
+          label: 'em'
+        }, {
+          value: 'rem',
+          label: 'rem'
+        }, {
+          value: 'vh',
+          label: 'vh'
+        }, {
+          value: 'vw',
+          label: 'vw'
+        }],
+        ...fieldProps
+      }, fieldKey);
+    default:
+      // If type is not recognized, try to render as custom component
+      if (typeof field.component === 'function') {
+        const CustomComponent = field.component;
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(CustomComponent, {
+          fieldKey: fieldKey,
+          field: field,
+          attributes: attributes,
+          setAttributes: setAttributes,
+          value: value,
+          onChange: onChange,
+          ...fieldProps
+        }, fieldKey);
+      }
+      console.warn(`Directorist: Unknown field type "${type}" for field "${fieldKey}"`);
+      return null;
+  }
+}
 
 /***/ }),
 
@@ -4469,6 +4834,76 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
 
 /***/ }),
 
+/***/ "./resources/js/gutenberg/hooks/useSubmissionFields.js":
+/*!*************************************************************!*\
+  !*** ./resources/js/gutenberg/hooks/useSubmissionFields.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useSubmissionFields: () => (/* binding */ useSubmissionFields)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/localized-data */ "./resources/js/gutenberg/localized-data.js");
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+const useSubmissionFields = () => {
+  const {
+    directory_type_id
+  } = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__.getLocalizedBlockData)();
+  const fields = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__.getSubmissionFormFields)();
+  function getFieldsOptions(type, name) {
+    const options = [{
+      value: '',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select...', 'directorist-gutenberg')
+    }];
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === type && field.widget_name === name) {
+        options.push({
+          value: field.field_key,
+          label: field.label
+        });
+      }
+    }
+    return options;
+  }
+  function doesPresetFieldExist(name) {
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === 'preset' && field.widget_name === name) {
+        return true;
+      }
+    }
+    return false;
+  }
+  function doesCustomFieldExist(name, fieldKey) {
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === 'custom' && field.widget_name === name && field.field_key === fieldKey) {
+        return true;
+      }
+    }
+    return false;
+  }
+  return {
+    directoryTypeId: directory_type_id ? parseInt(directory_type_id) : null,
+    fields,
+    doesPresetFieldExist,
+    doesCustomFieldExist,
+    getFieldsOptions
+  };
+};
+
+/***/ }),
+
 /***/ "./resources/js/gutenberg/localized-data.js":
 /*!**************************************************!*\
   !*** ./resources/js/gutenberg/localized-data.js ***!
@@ -4548,8 +4983,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _block__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block */ "./resources/js/gutenberg/block.js");
 /* harmony import */ var _localized_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./localized-data */ "./resources/js/gutenberg/localized-data.js");
 /* harmony import */ var _width_control__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./width-control */ "./resources/js/gutenberg/width-control.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _components_controls__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/controls */ "./resources/js/gutenberg/components/controls/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
 /**
  * WordPress dependencies
  */
@@ -4568,10 +5004,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 function registerBlock({
   metadata,
   Edit,
-  Controls,
+  Controls: ControlsComponent,
+  // Can be a component or fields definition
+  fields,
+  // Fields definition object (alternative to Controls)
   StylesControls,
   icon = '',
   exampleAttributes = {},
@@ -4594,7 +5034,7 @@ function registerBlock({
     // webpack asset/resource returns a URL string, but sometimes it's wrapped
     const logoUrl = typeof _block_icon_directorist_logo_svg__WEBPACK_IMPORTED_MODULE_2__ === 'string' ? _block_icon_directorist_logo_svg__WEBPACK_IMPORTED_MODULE_2__ : _block_icon_directorist_logo_svg__WEBPACK_IMPORTED_MODULE_2__?.default || _block_icon_directorist_logo_svg__WEBPACK_IMPORTED_MODULE_2__;
     if (logoUrl) {
-      icon = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      icon = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_1__["default"], {
         src: logoUrl
       });
     } else {
@@ -4603,14 +5043,19 @@ function registerBlock({
     }
   }
 
+  // Determine which Controls to use: fields definition or Controls component
+  // Priority: fields > ControlsComponent
+  const controlsToUse = fields || ControlsComponent;
+
   // Wrap Edit component with Block wrapper that handles useBlockProps
-  const WrappedEdit = editProps => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-    children: [showWidthControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_width_control__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  const WrappedEdit = editProps => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+    children: [showWidthControls && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_width_control__WEBPACK_IMPORTED_MODULE_5__["default"], {
       attributes: editProps.attributes,
       setAttributes: editProps.setAttributes
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_block__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_block__WEBPACK_IMPORTED_MODULE_3__["default"], {
       Edit: Edit,
-      Controls: Controls,
+      Controls: controlsToUse,
+      fields: fields,
       StylesControls: StylesControls,
       classNames: classNames,
       ...editProps
@@ -55375,6 +55820,17 @@ module.exports = window["wp"]["element"];
 
 "use strict";
 module.exports = window["wp"]["i18n"];
+
+/***/ }),
+
+/***/ "lodash":
+/*!*************************!*\
+  !*** external "lodash" ***!
+  \*************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = window["lodash"];
 
 /***/ }),
 
