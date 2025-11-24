@@ -17,6 +17,7 @@ import ReactSVG from 'react-inlinesvg';
  * Internal dependencies
  */
 import aiStarIcon from '@icon/ai-star-alt.svg';
+import assistantIcon from '@icon/ai-feel.svg';
 import closeIcon from '@icon/times.svg';
 import arrowRightIcon from '@icon/arrow-right.svg';
 import { StyledChatPanel } from './style';
@@ -334,7 +335,6 @@ export default function AiAssistantChatPanel() {
         }
     };
 
-
 	return (
 		<StyledChatPanel className="directorist-gutenberg-ai-assistant-chat-panel">
 			{ ! isOpen && (
@@ -384,7 +384,7 @@ export default function AiAssistantChatPanel() {
                                         {/* Greeting Section */}
                                         <div className="directorist-gutenberg-ai-assistant-chat-greeting">
                                             <div className="directorist-gutenberg-ai-assistant-chat-greeting-icon">
-                                                <ReactSVG width={ 48 } height={ 48 } src={ aiStarIcon } />
+                                                <ReactSVG width={ 48 } height={ 48 } src={ assistantIcon } />
                                             </div>
                                             <div className="directorist-gutenberg-ai-assistant-chat-greeting-text">
                                                 <h4 className="directorist-gutenberg-ai-assistant-chat-greeting-title">
@@ -441,17 +441,17 @@ export default function AiAssistantChatPanel() {
                                         ) }
 
                                         { messages.map( ( msg ) => (
-                                            <div key={ msg.id } className="directorist-gutenberg-ai-assistant-chat-conversation-area-item">
-                                                <div className="directorist-gutenberg-ai-assistant-chat-icon">
+                                            <div key={ msg.id } className={`directorist-gutenberg-ai-assistant-chat-conversation-area-item directorist-gutenberg-ai-assistant-chat-${msg.role}-message`}>
                                                     { msg.role === 'assistant' ? (
-                                                         <ReactSVG width={ 20 } height={ 20 } src={ aiStarIcon } />
+                                                    <div className="directorist-gutenberg-ai-assistant-chat-icon">
+                                                        <ReactSVG width={ 20 } height={ 20 } src={ assistantIcon } />
+                                                    </div>
                                                     ) : (
-                                                        <div className="directorist-gutenberg-ai-assistant-user-avatar">U</div> // Placeholder for user avatar
+                                                        ''
                                                     ) }
-                                                </div>
                                                 <div className="directorist-gutenberg-ai-assistant-chat-text">
                                                     <span className="directorist-gutenberg-ai-assistant-chat-text-role">
-                                                        { msg.role === 'assistant' ? 'Ai Assistant' : ( currentUser?.name || 'User' ) }
+                                                        { msg.role === 'assistant' ? 'Ai Assistant' : '' }
                                                     </span>
                                                     <span className="directorist-gutenberg-ai-assistant-chat-text-content">
                                                         { msg.message }
@@ -463,7 +463,7 @@ export default function AiAssistantChatPanel() {
                                         { ( isSending || isGenerating ) && (
                                             <div className="directorist-gutenberg-ai-assistant-chat-conversation-area-item">
                                                  <div className="directorist-gutenberg-ai-assistant-chat-icon">
-                                                    <ReactSVG width={ 20 } height={ 20 } src={ aiStarIcon } />
+                                                    <ReactSVG width={ 20 } height={ 20 } src={ assistantIcon } />
                                                 </div>
                                                  <div className="directorist-gutenberg-ai-assistant-chat-text">
                                                      <span className="directorist-gutenberg-ai-assistant-chat-text-role">Ai Assistant</span>

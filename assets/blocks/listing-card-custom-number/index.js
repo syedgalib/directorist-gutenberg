@@ -4164,6 +4164,14 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
         gap: 12px;
         align-items: flex-start;
     }
+    .directorist-gutenberg-ai-assistant-chat-user-message{
+        margin-left: auto;
+        .directorist-gutenberg-ai-assistant-chat-text-content{
+            padding: 10px 15px;
+            background: #F5F6F7;
+            border-radius: 8px;
+        }
+    }
 
     .directorist-gutenberg-ai-assistant-chat-icon {
         flex-shrink: 0;
@@ -4420,12 +4428,12 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
         font-size: 12px;
         font-weight: 600;
     }
-    
+
     .directorist-gutenberg-ai-assistant-typing-indicator {
         display: flex;
         gap: 4px;
         padding: 8px 0;
-        
+
         span {
             width: 6px;
             height: 6px;
@@ -4433,22 +4441,22 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
             border-radius: 50%;
             animation: typing 1.4s infinite ease-in-out both;
             opacity: 0.6;
-            
+
             &:nth-child(1) {
                 animation-delay: -0.32s;
             }
-            
+
             &:nth-child(2) {
                 animation-delay: -0.16s;
             }
         }
     }
-    
+
     @keyframes typing {
-        0%, 80%, 100% { 
+        0%, 80%, 100% {
             transform: scale(0);
         }
-        40% { 
+        40% {
             transform: scale(1);
         }
     }
@@ -4459,7 +4467,7 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
         align-items: flex-start;
         gap: 8px;
         padding: 0 0 0 44px;
-        
+
         p {
             margin: 0;
             color: #D92D20;
