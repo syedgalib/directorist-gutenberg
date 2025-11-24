@@ -8,7 +8,7 @@
   "category": "directorist-listings-archive",
   "attributes": {
     "directory_type_id": {
-      "description": "The ID of the directory type to display listings for",
+      "description": "The ID of the directory type to display listings for. This is used to get the listings from the directory type",
       "type": "number",
       "default": 0
     },
@@ -33,7 +33,7 @@
       "default": "grid"
     },
     "block_width": {
-      "description": "The width of the block",
+      "description": "Block width is used to set the width of the block in percentage",
       "type": "string",
       "default": "100"
     }

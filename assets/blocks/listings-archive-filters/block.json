@@ -23,7 +23,7 @@
       "default": "Clear All"
     },
     "block_width": {
-      "description": "The width of the block",
+      "description": "Block width is used to set the width of the block in percentage",
       "type": "string",
       "default": "100"
     }
