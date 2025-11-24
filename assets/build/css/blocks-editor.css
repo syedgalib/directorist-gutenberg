@@ -159,6 +159,7 @@
   border: 1px solid var(--directorist-color-border);
   background: #fff;
   color: var(--directorist-color-body);
+  min-width: 125px;
 }
 #directorist-ai-assistant-chat-button-wrapper {
   position: fixed;
