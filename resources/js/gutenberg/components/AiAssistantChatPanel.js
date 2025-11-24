@@ -26,8 +26,23 @@ import documentIcon from '@icon/document-text.svg';
 import star from '@icon/star.svg';
 import minusIcon from '@icon/minus.svg';
 import aiCreditIcon from '@icon/ai-credit.svg';
+import { getLocalizedBlockData, getLocalizedBlockDataByKey } from '@directorist-gutenberg/gutenberg/localized-data';
 
 export default function AiAssistantChatPanel() {
+    const localizedData            = getLocalizedBlockData();
+    const templateType             = localizedData?.template_type ?? '';
+    const waxIntelligentApiBaseUrl = localizedData?.wax_intelligent?.api_base_url ?? '';
+
+    const supportedTemplateTypes = [
+        'listings-archive',
+        'listings-archive-grid-view',
+        'listings-archive-list-view',
+    ];
+
+    if ( ! supportedTemplateTypes.includes( templateType ) ) {
+        return null;
+    }
+
 	const [ isOpen, setIsOpen ] = useState( false );
 	const [ inputValue, setInputValue ] = useState( '' );
     const [ messages, setMessages ] = useState( [] );
@@ -137,8 +152,9 @@ export default function AiAssistantChatPanel() {
 		};
 	}, [] );
 
-	const suggestedActions = [
-		{
+
+    const suggestedActionsArchiveListItem = [
+        {
 			id: 'hover-shadow',
 			label: __( 'Add subtle hover shadow', 'directorist-gutenberg' ),
 			icon: 'cube',
@@ -158,7 +174,31 @@ export default function AiAssistantChatPanel() {
 			label: __( 'Move price above rating', 'directorist-gutenberg' ),
 			icon: 'star',
 		},
-	];
+    ];
+
+    const allSuggestedActions = {
+        'listings-archive': [
+            {
+                id: 'add-search-form',
+                label: __( 'Add search form', 'directorist-gutenberg' ),
+                icon: 'star',
+            },
+            {
+                id: 'add-listing-filters',
+                label: __( 'Add listing filters', 'directorist-gutenberg' ),
+                icon: 'star',
+            },
+            {
+                id: 'make-3-columns-per-row',
+                label: __( 'Make 3 columns per row', 'directorist-gutenberg' ),
+                icon: 'star',
+            },
+        ],
+        'listings-archive-grid-view': suggestedActionsArchiveListItem,
+        'listings-archive-list-view': suggestedActionsArchiveListItem,
+    };
+
+    const suggestedActions = allSuggestedActions[ templateType ];
 
     const storeMessage = async ( role, message, template = null ) => {
         const data = {
@@ -197,6 +237,7 @@ export default function AiAssistantChatPanel() {
             // 2. Call Intelligent API
             await generateResponse( userMessage );
 
+            setRetryAction( null );
         } catch ( error ) {
             console.error( 'Error sending message:', error );
             setMessages( prev => prev.filter( m => m.id !== tempId ) ); // Remove optimistic message on failure
@@ -210,7 +251,7 @@ export default function AiAssistantChatPanel() {
     const generateResponse = async ( instruction ) => {
         setIsGenerating( true );
         try {
-            const apiURL = 'https://ongoing-draws-electronic-grades.trycloudflare.com/directorist/template/gutenberg/generate';
+            const apiURL = `${waxIntelligentApiBaseUrl}/directorist/template/gutenberg/generate`;
 
             // Format history for API
             const history = messages.map( msg => ({
@@ -230,7 +271,7 @@ export default function AiAssistantChatPanel() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify( {
-                    template_type: "listings_archive", // TODO: Make this dynamic based on context
+                    template_type: templateType,
                     instruction: instruction,
                     current_template: currentContent,
                     history: history
@@ -256,9 +297,8 @@ export default function AiAssistantChatPanel() {
             }
 
             // 3. Store assistant response
-             await storeMessage( 'assistant', assistantMessage, templateContent );
-             setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage, template: templateContent } ] );
-
+            await storeMessage( 'assistant', assistantMessage, templateContent );
+            setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage, template: templateContent } ] );
 
             // 4. Apply template
             applyTemplate( templateContent );
@@ -437,7 +477,7 @@ export default function AiAssistantChatPanel() {
                                         { retryAction && (
                                             <div className="directorist-gutenberg-ai-assistant-chat-retry">
                                                 <p>{ __( 'Something went wrong.', 'directorist-gutenberg' ) }</p>
-                                                <Button isSecondary onClick={ retryAction }>
+                                                <Button variant='secondary' onClick={ retryAction }>
                                                     { __( 'Retry', 'directorist-gutenberg' ) }
                                                 </Button>
                                             </div>
