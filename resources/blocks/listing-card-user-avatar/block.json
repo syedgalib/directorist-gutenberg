@@ -7,14 +7,17 @@
 	"category": "directorist-listing-card-preset-fields",
 	"attributes": {
 		"alignment": {
+			"description": "Alignment is used to set the alignment of the block",
 			"type": "string",
 			"default": "left"
 		},
 		"block_width": {
+			"description": "Block width is used to set the width of the block in percentage",
 			"type": "string",
 			"default": "100"
 		},
 		"avatar_overlap": {
+			"description": "The avatar overlap feature positions the avatar partially over the preceding block's content. When enabled, the avatar overlaps the top of the previous block by 50% of its height, creating a visually layered effect",
 			"type": "boolean",
 			"default": false
 		}
