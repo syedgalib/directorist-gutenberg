@@ -373,34 +373,63 @@ jQuery( document ).ready( function ( $ ) {
 				if ( loadingDiv ) loadingDiv.remove();
 
 				if ( html.count > 0 ) {
-					// Get the current column class from existing listings before appending
-					// Container is .directorist-row, so columns are direct children
-					const existingColumns = container.children(
-						'.directorist-col-2, .directorist-col-3, .directorist-col-4, .directorist-col-6'
-					).first();
+					// Get listings_columns from block data-atts
+					const archiveContainer = container.closest(
+						'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
+					);
 
 					let targetColumnClass = 'directorist-col-4'; // Default to col-4 for grid
 
-					if ( existingColumns.length ) {
-						// Get the column class from existing listings
-						const colClasses = ['directorist-col-2', 'directorist-col-3', 'directorist-col-4', 'directorist-col-6'];
-						for ( const colClass of colClasses ) {
-							if ( existingColumns.hasClass( colClass ) ) {
-								targetColumnClass = colClass;
-								break;
+					// Try to get listings_columns from block data-atts
+					if ( archiveContainer.length ) {
+						const blockElement = archiveContainer.closest( '[data-atts]' );
+
+						if ( blockElement.length ) {
+							try {
+								const dataAtts = blockElement.data( 'atts' );
+								if ( dataAtts && typeof dataAtts.listings_columns !== 'undefined' ) {
+									const listingsColumns = parseInt( dataAtts.listings_columns, 10 );
+
+									// Calculate column class: 12 / listings_columns
+									const columnValue = Math.round( 12 / listingsColumns );
+									const columnMap = {
+										12: 'directorist-col-12',
+										6: 'directorist-col-6',
+										4: 'directorist-col-4',
+										3: 'directorist-col-3',
+										2: 'directorist-col-2'
+									};
+
+									targetColumnClass = columnMap[columnValue] || 'directorist-col-4';
+								}
+							} catch ( e ) {
+								console.warn( 'Directorist: Failed to parse data-atts for listings_columns', e );
 							}
 						}
-					} else {
-						// If no existing columns found, check if we're in grid view
-						const archiveContainer = container.closest(
-							'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
-						);
-						if ( archiveContainer.length ) {
-							const isGridView = archiveContainer.hasClass( 'directorist-archive-grid-view' ) ||
-								archiveContainer.find( '.directorist-archive-grid-view' ).length > 0 ||
-								archiveContainer.closest( '.directorist-archive-grid-view' ).length > 0;
-							if ( !isGridView ) {
-								targetColumnClass = 'directorist-col-12'; // List view uses full width
+
+						// Fallback: detect from existing columns if data-atts not available
+						if ( targetColumnClass === 'directorist-col-4' ) {
+							const existingColumns = container.children(
+								'.directorist-col-2, .directorist-col-3, .directorist-col-4, .directorist-col-6'
+							).first();
+
+							if ( existingColumns.length ) {
+								// Get the column class from existing listings
+								const colClasses = ['directorist-col-2', 'directorist-col-3', 'directorist-col-4', 'directorist-col-6'];
+								for ( const colClass of colClasses ) {
+									if ( existingColumns.hasClass( colClass ) ) {
+										targetColumnClass = colClass;
+										break;
+									}
+								}
+							} else {
+								// Check if we're in list view
+								const isGridView = archiveContainer.hasClass( 'directorist-archive-grid-view' ) ||
+									archiveContainer.find( '.directorist-archive-grid-view' ).length > 0 ||
+									archiveContainer.closest( '.directorist-archive-grid-view' ).length > 0;
+								if ( !isGridView ) {
+									targetColumnClass = 'directorist-col-12'; // List view uses full width
+								}
 							}
 						}
 					}

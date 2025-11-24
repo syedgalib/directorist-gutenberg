@@ -18,6 +18,9 @@ $listings->columns = round(  12 / (int) $attributes['listings_columns'] );
 
 $listings->options['pagination_type'] = $attributes['pagination_type'];
 
+// Add listings_columns to atts so it's available in data-atts for JavaScript
+$listings->atts['listings_columns'] = (int) $attributes['listings_columns'];
+
 // Get block width class
 $block_width_class = directorist_gutenberg_get_block_width_class( $attributes );
 
