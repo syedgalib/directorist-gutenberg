@@ -47,6 +47,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<div
 			style={ { pointerEvents: 'none' } }
+			className="directorist-content-active"
 			dangerouslySetInnerHTML={ { __html: template } }
 		/>
 	);
