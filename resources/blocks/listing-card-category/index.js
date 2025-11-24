@@ -14,7 +14,6 @@ import categoryIcon from '@block-icon/category.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

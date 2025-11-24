@@ -14,7 +14,6 @@ import websiteIcon from '@block-icon/website.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

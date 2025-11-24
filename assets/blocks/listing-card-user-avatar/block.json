@@ -17,10 +17,6 @@
     "avatar_overlap": {
       "type": "boolean",
       "default": false
-    },
-    "is_preview": {
-      "type": "boolean",
-      "default": false
     }
   },
   "description": "Listing User Avatar Block",

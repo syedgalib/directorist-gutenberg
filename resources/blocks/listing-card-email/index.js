@@ -14,7 +14,6 @@ import emailIcon from '@block-icon/email.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

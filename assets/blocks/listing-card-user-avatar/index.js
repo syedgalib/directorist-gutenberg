@@ -1200,7 +1200,7 @@ module.exports = __webpack_require__.p + "icons/user-avatar.svg";
   \**************************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-user-avatar","version":"0.1.0","title":"Listing User Avatar","category":"directorist-listing-card-preset-fields","attributes":{"alignment":{"type":"string","default":"left"},"block_width":{"type":"string","default":"100"},"avatar_overlap":{"type":"boolean","default":false},"is_preview":{"type":"boolean","default":false}},"description":"Listing User Avatar Block","example":{},"supports":{"html":false,"spacing":{"margin":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-user-avatar","version":"0.1.0","title":"Listing User Avatar","category":"directorist-listing-card-preset-fields","attributes":{"alignment":{"type":"string","default":"left"},"block_width":{"type":"string","default":"100"},"avatar_overlap":{"type":"boolean","default":false}},"description":"Listing User Avatar Block","example":{},"supports":{"html":false,"spacing":{"margin":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -1375,9 +1375,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-const exampleAttributes = {
-  is_preview: true
-};
+const exampleAttributes = {};
 (0,_directorist_gutenberg_gutenberg_register_block__WEBPACK_IMPORTED_MODULE_0__["default"])({
   metadata: _block_json__WEBPACK_IMPORTED_MODULE_3__,
   Edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],

@@ -2918,7 +2918,7 @@ module.exports = __webpack_require__.p + "icons/posted-date.svg";
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-posted-date","version":"0.1.0","title":"Listing Posted Date","category":"directorist-listing-card-preset-fields","attributes":{"icon":{"type":"string","default":"line-awesome/calendar-alt-solid.svg"},"date_type":{"type":"string","default":"posted_date"},"icon_color":{"type":"string","default":""},"icon_size":{"type":"string","default":"16px"},"block_width":{"type":"string","default":"100"},"is_preview":{"type":"boolean","default":false},"textAlign":{"type":"string"}},"description":"Listing Posted Date Block","example":{},"supports":{"html":false,"color":{"text":true,"background":true,"gradients":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"spacing":{"padding":true,"margin":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-posted-date","version":"0.1.0","title":"Listing Posted Date","category":"directorist-listing-card-preset-fields","attributes":{"icon":{"type":"string","default":"line-awesome/calendar-alt-solid.svg"},"date_type":{"type":"string","default":"posted_date"},"icon_color":{"type":"string","default":""},"icon_size":{"type":"string","default":"16px"},"block_width":{"type":"string","default":"100"},"textAlign":{"type":"string"}},"description":"Listing Posted Date Block","example":{},"supports":{"html":false,"color":{"text":true,"background":true,"gradients":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"spacing":{"padding":true,"margin":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -3158,9 +3158,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-const exampleAttributes = {
-  is_preview: true
-};
+const exampleAttributes = {};
 (0,_directorist_gutenberg_gutenberg_register_block__WEBPACK_IMPORTED_MODULE_0__["default"])({
   metadata: _block_json__WEBPACK_IMPORTED_MODULE_3__,
   Edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],

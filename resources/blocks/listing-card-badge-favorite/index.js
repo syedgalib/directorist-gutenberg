@@ -13,7 +13,6 @@ import badgeFavoriteIcon from '@block-icon/badge-favorite.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

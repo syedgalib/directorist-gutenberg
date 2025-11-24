@@ -14,7 +14,6 @@ import customTimeIcon from '@block-icon/custom-time.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

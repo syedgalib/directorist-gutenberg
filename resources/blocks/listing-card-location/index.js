@@ -14,7 +14,6 @@ import locationIcon from '@block-icon/listing-location.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

@@ -14,7 +14,6 @@ import phoneIcon from '@block-icon/phone.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

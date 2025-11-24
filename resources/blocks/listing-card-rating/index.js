@@ -13,7 +13,6 @@ import ratingIcon from '@block-icon/rating.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

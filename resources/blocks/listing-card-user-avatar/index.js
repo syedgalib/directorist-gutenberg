@@ -14,7 +14,6 @@ import userAvatarIcon from '@block-icon/user-avatar.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {
