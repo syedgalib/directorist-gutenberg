@@ -14,7 +14,6 @@ import faxIcon from '@block-icon/fax.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

@@ -43,10 +43,6 @@
     },
     "customGradient": {
       "type": "string"
-    },
-    "is_preview": {
-      "type": "boolean",
-      "default": false
     }
   },
   "example": {},

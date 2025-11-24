@@ -14,7 +14,6 @@ import customUrlIcon from '@block-icon/custom-url.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

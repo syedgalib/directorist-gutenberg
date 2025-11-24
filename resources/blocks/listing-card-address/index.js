@@ -13,9 +13,7 @@ import addressIcon from '@block-icon/address.svg';
  */
 import ReactSVG from 'react-inlinesvg';
 
-const exampleAttributes = {
-	is_preview: true,
-};
+const exampleAttributes = {};
 
 registerBlock( {
 	metadata,

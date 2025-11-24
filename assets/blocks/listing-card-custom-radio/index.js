@@ -2918,7 +2918,7 @@ module.exports = __webpack_require__.p + "icons/directorist-logo.svg";
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-custom-radio","version":"0.1.0","title":"Custom Radio","category":"directorist-listing-card-custom-fields","attributes":{"icon":{"type":"string","default":""},"directory_type_id":{"type":"number","default":0},"meta_key":{"type":"string","default":""},"icon_color":{"type":"string","default":""},"icon_size":{"type":"string","default":"16px"},"block_width":{"type":"string","default":"100"},"is_preview":{"type":"boolean","default":false},"textAlign":{"type":"string"}},"description":"Listing custom radio block","example":{},"supports":{"html":false,"color":{"text":true,"background":true,"gradients":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"spacing":{"padding":true,"margin":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-custom-radio","version":"0.1.0","title":"Custom Radio","category":"directorist-listing-card-custom-fields","attributes":{"icon":{"description":"Icon is used to display the icon of the block","type":"string","default":""},"directory_type_id":{"description":"Directory type id is used to get the options of the custom radio to redder it dynamically","type":"number","default":0},"meta_key":{"description":"Meta key is used to get the dynamic value of the block from the listing","type":"string","default":""},"icon_color":{"description":"Icon color is used to set the color of the icon in hex format","type":"string","default":""},"icon_size":{"description":"Icon size is used to set the size of the icon in px format","type":"string","default":"16px"},"block_width":{"description":"Block width is used to set the width of the block in percentage","type":"string","default":"100"},"textAlign":{"description":"Text alignment is used to set the alignment of the text in the block","type":"string"}},"description":"Listing custom radio block","example":{},"supports":{"html":false,"color":{"text":true,"background":true,"gradients":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"spacing":{"padding":true,"margin":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -3177,9 +3177,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-const exampleAttributes = {
-  is_preview: true
-};
+const exampleAttributes = {};
 (0,_directorist_gutenberg_gutenberg_register_block__WEBPACK_IMPORTED_MODULE_0__["default"])({
   metadata: _block_json__WEBPACK_IMPORTED_MODULE_3__,
   Edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],

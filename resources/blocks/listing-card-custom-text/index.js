@@ -14,7 +14,6 @@ import customTextIcon from '@block-icon/custom-text.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

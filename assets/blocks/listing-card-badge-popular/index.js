@@ -1200,7 +1200,7 @@ module.exports = __webpack_require__.p + "icons/directorist-logo.svg";
   \****************************************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-badge-popular","version":"0.1.0","title":"Listing Badge Popular","category":"directorist-listing-card-preset-fields","attributes":{"block_width":{"type":"string","default":"100"},"textAlign":{"type":"string"},"text":{"type":"string","default":"Popular"},"text_color":{"type":"string","default":"#ffffff"},"background_color":{"type":"string","default":"#444752"},"is_preview":{"type":"boolean","default":false}},"description":"Listing Badge Popular Block","example":{},"supports":{"html":false},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-badge-popular","version":"0.1.0","title":"Listing Badge Popular","category":"directorist-listing-card-preset-fields","attributes":{"block_width":{"description":"Block width is used to set the width of the block in percentage","type":"string","default":"100"},"textAlign":{"description":"Text alignment is used to set the alignment of the text in the block","type":"string"},"text":{"description":"Text is used to set the text of the block","type":"string","default":"Popular"},"text_color":{"description":"Text color is used to set the color of the text in hex format","type":"string","default":"#ffffff"},"background_color":{"description":"Background color is used to set the background color of the block in hex format","type":"string","default":"#444752"}},"description":"Listing Badge Popular Block","example":{},"supports":{"html":false},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -1414,9 +1414,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-const exampleAttributes = {
-  is_preview: true
-};
+const exampleAttributes = {};
 (0,_directorist_gutenberg_gutenberg_register_block__WEBPACK_IMPORTED_MODULE_1__["default"])({
   metadata: _block_json__WEBPACK_IMPORTED_MODULE_4__,
   Edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],

@@ -14,7 +14,6 @@ import viewCountIcon from '@block-icon/view-count.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

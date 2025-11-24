@@ -14,7 +14,6 @@ import customDateIcon from '@block-icon/custom-date.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

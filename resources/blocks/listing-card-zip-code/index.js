@@ -14,7 +14,6 @@ import zipIcon from '@block-icon/zip.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

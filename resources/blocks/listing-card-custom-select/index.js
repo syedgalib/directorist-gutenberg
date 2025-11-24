@@ -14,7 +14,6 @@ import customSelectIcon from '@block-icon/custom-dropdown.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {

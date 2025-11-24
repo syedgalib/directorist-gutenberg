@@ -14,7 +14,6 @@ import customCheckboxIcon from '@block-icon/custom-checkbox.svg';
 import ReactSVG from 'react-inlinesvg';
 
 const exampleAttributes = {
-	is_preview: true,
 };
 
 registerBlock( {
