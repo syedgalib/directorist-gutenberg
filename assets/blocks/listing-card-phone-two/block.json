@@ -4,6 +4,7 @@
   "name": "directorist-gutenberg/listing-card-phone-two",
   "version": "0.1.0",
   "title": "Listing Phone Two",
+  "description": "Displays the phone two field of the listing",
   "category": "directorist-listing-card-preset-fields",
   "attributes": {
     "meta_key": {
@@ -41,7 +42,6 @@
       "type": "string"
     }
   },
-  "description": "Listing Phone Two Block",
   "example": {},
   "supports": {
     "html": false,

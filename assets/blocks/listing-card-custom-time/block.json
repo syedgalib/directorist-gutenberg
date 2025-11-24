@@ -4,6 +4,7 @@
   "name": "directorist-gutenberg/listing-card-custom-time",
   "version": "0.1.0",
   "title": "Custom Time",
+  "description": "Displays the custom time field of the listing",
   "category": "directorist-listing-card-custom-fields",
   "attributes": {
     "icon": {
@@ -36,7 +37,6 @@
       "type": "string"
     }
   },
-  "description": "Listing custom time block",
   "example": {},
   "supports": {
     "html": false,

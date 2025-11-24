@@ -4,7 +4,7 @@
 	"name": "directorist-gutenberg/listings-archive-search",
 	"version": "0.1.0",
 	"title": "Listings Archive Search",
-	"description": "Listings archive search block",
+	"description": "Displays the listings archive search",
 	"category": "directorist-listings-archive",
 	"attributes": {
 		"directory_type_id": {

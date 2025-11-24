@@ -4,6 +4,7 @@
 	"name": "directorist-gutenberg/listing-card-badge-new",
 	"version": "0.1.0",
 	"title": "Listing Badge New",
+	"description": "Displays the new badge of the listing",
 	"category": "directorist-listing-card-preset-fields",
 	"attributes": {
 		"block_width": {
@@ -31,7 +32,6 @@
 			"default": "#2C99FF"
 		}
 	},
-	"description": "Listing Badge New Block",
 	"example": {},
 	"supports": {
 		"html": false

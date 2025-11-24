@@ -4,6 +4,7 @@
 	"name": "directorist-gutenberg/listing-card-user-avatar",
 	"version": "0.1.0",
 	"title": "Listing User Avatar",
+	"description": "Displays the user avatar field of the listing",
 	"category": "directorist-listing-card-preset-fields",
 	"attributes": {
 		"alignment": {
@@ -22,7 +23,6 @@
 			"default": false
 		}
 	},
-	"description": "Listing User Avatar Block",
 	"example": {},
 	"supports": {
 		"html": false,

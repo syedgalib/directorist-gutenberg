@@ -4,6 +4,7 @@
   "name": "directorist-gutenberg/listing-card-category",
   "version": "0.1.0",
   "title": "Listing Category",
+  "description": "Displays the category field of the listing",
   "category": "directorist-listing-card-preset-fields",
   "attributes": {
     "icon": {
@@ -31,7 +32,6 @@
       "type": "string"
     }
   },
-  "description": "Listing Category Block",
   "example": {},
   "supports": {
     "html": false,

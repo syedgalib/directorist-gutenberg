@@ -2,9 +2,9 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "directorist-gutenberg/listings-archive",
-	"description": "This block shows the listing items",
 	"version": "0.1.0",
 	"title": "Listings Archive",
+	"description": "Displays the listings archive items",
 	"category": "directorist-listings-archive",
 	"attributes": {
 		"directory_type_id": {

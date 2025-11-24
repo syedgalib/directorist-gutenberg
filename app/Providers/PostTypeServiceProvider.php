@@ -13,6 +13,37 @@ class PostTypeServiceProvider implements Provider {
         add_filter( 'allowed_block_types_all', [ $this, 'allowed_block_types_all' ], 10, 2 );
         add_action( 'save_post_' . directorist_gutenberg_post_type(), [ $this, 'handle_template_enable_toggle' ], 10, 1 );
         add_filter( 'admin_body_class', [ $this, 'add_template_type_body_class' ], 10, 1 );
+
+        add_filter( 'directorist_instant_search_listings', [ $this, 'instant_search_listings' ], 10, 4 );
+        add_filter( 'directorist_instant_search_response', [ $this, 'instant_search_response' ], 10, 5 );
+    }
+
+    public function instant_search_listings( $listings, $args, $type, $post_data ) {
+        if ( ! empty( $post_data['directory_type_id'] ) ) {
+            $listings->directory_type_id = $post_data['directory_type_id'];
+        }
+
+        if ( ! empty( $post_data['default_view'] ) ) {
+            $listings->view = $post_data['default_view'];
+        }
+
+        if ( ! empty( $post_data['listings_columns'] ) ) {
+            $listings->columns = round(  12 / (int) $post_data['listings_columns'] );
+        }
+
+        if ( ! empty( $post_data['pagination_type'] ) ) {
+            $listings->options['pagination_type'] = $post_data['listings_per_page'];
+        }
+
+        return $listings;
+    }
+
+    public function instant_search_response( $response, $listings, $args, $type, $post_data ) {
+        if ( isset( $post_data['display_listings_count'] ) ) {
+            $response['header_title'] = $post_data['display_listings_count'] ? $listings->listings_header_title() : '';
+        }
+
+        return $response;
     }
 
     public function allowed_block_types_all( $allowed_block_types, $editor_context ) {

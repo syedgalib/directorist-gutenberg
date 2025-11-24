@@ -4,6 +4,7 @@
 	"name": "directorist-gutenberg/listing-card-custom-select",
 	"version": "0.1.0",
 	"title": "Custom Select",
+	"description": "Displays the custom select field of the listing",
 	"category": "directorist-listing-card-custom-fields",
 	"attributes": {
 		"icon": {
@@ -41,7 +42,6 @@
 			"type": "string"
 		}
 	},
-	"description": "Listing custom select block",
 	"example": {},
 	"supports": {
 		"html": false,

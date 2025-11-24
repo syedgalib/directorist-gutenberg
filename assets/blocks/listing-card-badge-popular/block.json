@@ -4,6 +4,7 @@
   "name": "directorist-gutenberg/listing-card-badge-popular",
   "version": "0.1.0",
   "title": "Listing Badge Popular",
+  "description": "Displays the popular badge of the listing",
   "category": "directorist-listing-card-preset-fields",
   "attributes": {
     "block_width": {
@@ -31,7 +32,6 @@
       "default": "#444752"
     }
   },
-  "description": "Listing Badge Popular Block",
   "example": {},
   "supports": {
     "html": false
