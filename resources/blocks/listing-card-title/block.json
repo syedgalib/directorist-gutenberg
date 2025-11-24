@@ -4,8 +4,8 @@
 	"name": "directorist-gutenberg/listing-card-title",
 	"version": "0.1.0",
 	"title": "Listing Title",
+	"description": "Displays the title of the listing",
 	"category": "directorist-listing-card-preset-fields",
-	"description": "Listing title block",
 	"attributes": {
 		"block_width": {
 			"description": "Block width is used to set the width of the block in percentage",

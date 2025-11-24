@@ -4,6 +4,7 @@
 	"name": "directorist-gutenberg/listing-card-custom-radio",
 	"version": "0.1.0",
 	"title": "Custom Radio",
+	"description": "Displays the custom radio field of the listing",
 	"category": "directorist-listing-card-custom-fields",
 	"attributes": {
 		"icon": {
@@ -41,7 +42,6 @@
 			"type": "string"
 		}
 	},
-	"description": "Listing custom radio block",
 	"example": {},
 	"supports": {
 		"html": false,

@@ -4,6 +4,7 @@
   "name": "directorist-gutenberg/listing-card-location",
   "version": "0.1.0",
   "title": "Listing Location",
+  "description": "Displays the location field of the listing",
   "category": "directorist-listing-card-preset-fields",
   "attributes": {
     "icon": {
@@ -36,7 +37,6 @@
       "type": "string"
     }
   },
-  "description": "Listing Location Block",
   "example": {},
   "supports": {
     "html": false,

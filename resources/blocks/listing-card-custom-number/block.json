@@ -4,6 +4,7 @@
 	"name": "directorist-gutenberg/listing-card-custom-number",
 	"version": "0.1.0",
 	"title": "Custom Number",
+	"description": "Displays the custom number field of the listing",
 	"category": "directorist-listing-card-custom-fields",
 	"attributes": {
 		"icon": {
@@ -36,7 +37,6 @@
 			"type": "string"
 		}
 	},
-	"description": "Listing custom number block",
 	"example": {},
 	"supports": {
 		"html": false,

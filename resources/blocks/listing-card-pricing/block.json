@@ -4,6 +4,7 @@
 	"name": "directorist-gutenberg/listing-card-pricing",
 	"version": "0.1.0",
 	"title": "Listing Pricing",
+	"description": "Displays the pricing field of the listing",
 	"category": "directorist-listing-card-preset-fields",
 	"attributes": {
 		"icon": {
@@ -31,7 +32,6 @@
 			"type": "string"
 		}
 	},
-	"description": "Listing Pricing Block",
 	"example": {},
 	"supports": {
 		"html": false,

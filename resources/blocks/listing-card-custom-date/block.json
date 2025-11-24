@@ -4,6 +4,7 @@
 	"name": "directorist-gutenberg/listing-card-custom-date",
 	"version": "0.1.0",
 	"title": "Custom Date",
+	"description": "Displays the custom date field of the listing",
 	"category": "directorist-listing-card-custom-fields",
 	"attributes": {
 		"icon": {
@@ -36,7 +37,6 @@
 			"type": "string"
 		}
 	},
-	"description": "Listing custom date block",
 	"example": {},
 	"supports": {
 		"html": false,

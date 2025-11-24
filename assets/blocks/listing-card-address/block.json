@@ -4,6 +4,7 @@
   "name": "directorist-gutenberg/listing-card-address",
   "version": "0.1.0",
   "title": "Listing Address",
+  "description": "Displays the address field of the listing",
   "category": "directorist-listing-card-preset-fields",
   "attributes": {
     "meta_key": {
@@ -41,7 +42,6 @@
       "type": "string"
     }
   },
-  "description": "Listing Address Block",
   "example": {},
   "supports": {
     "html": false,

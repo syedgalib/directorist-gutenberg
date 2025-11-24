@@ -4,7 +4,7 @@
 	"name": "directorist-gutenberg/listings-archive-header",
 	"version": "0.1.0",
 	"title": "Listings Archive Header",
-	"description": "Listings archive header block",
+	"description": "Displays the listings archive header",
 	"category": "directorist-listings-archive",
 	"attributes": {
 		"directory_type_id": {
