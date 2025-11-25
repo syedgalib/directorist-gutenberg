@@ -17,6 +17,7 @@ import ReactSVG from 'react-inlinesvg';
  * Internal dependencies
  */
 import aiStarIcon from '@icon/ai-star-alt.svg';
+import assistantIcon from '@icon/ai-feel.svg';
 import closeIcon from '@icon/times.svg';
 import arrowRightIcon from '@icon/arrow-right.svg';
 import { StyledChatPanel } from './style';
@@ -50,7 +51,7 @@ export default function AiAssistantChatPanel() {
     const [ isSending, setIsSending ] = useState( false );
     const [ isGenerating, setIsGenerating ] = useState( false );
     const [ retryAction, setRetryAction ] = useState( null );
-    
+
     // Pagination state
     const [ page, setPage ] = useState( 1 );
     const [ hasMore, setHasMore ] = useState( true );
@@ -100,10 +101,10 @@ export default function AiAssistantChatPanel() {
                 path: `/directorist-gutenberg/admin/templates/${ currentPostId }/ai-chats?page=${ pageNum }&per_page=10`,
                 method: 'GET',
             } );
-            
+
             if ( response && response.items ) {
                 const newMessages = response.items.reverse(); // Oldest first
-                
+
                 setMessages( prev => isFirstPage ? newMessages : [ ...newMessages, ...prev ] );
                 setHasMore( pageNum * 10 < response.total ); // Check if we have more pages
             }
@@ -233,7 +234,7 @@ export default function AiAssistantChatPanel() {
         try {
             // 1. Store user message
             await storeMessage( 'user', userMessage, currentContent );
-            
+
             // 2. Call Intelligent API
             await generateResponse( userMessage );
 
@@ -325,7 +326,7 @@ export default function AiAssistantChatPanel() {
                 editPost( {
                     content: cleanContent,
                 } );
-                
+
                 resetBlocks( parsedBlocks );
             }
         } catch ( parseError ) {
@@ -333,7 +334,6 @@ export default function AiAssistantChatPanel() {
             alert( __( 'Unable to replace blocks with AI template', 'directorist-gutenberg' ) );
         }
     };
-
 
 	return (
 		<StyledChatPanel className="directorist-gutenberg-ai-assistant-chat-panel">
@@ -372,7 +372,7 @@ export default function AiAssistantChatPanel() {
                         </Button>
                     </div>
 					<div className="directorist-gutenberg-ai-assistant-chat-content">
-                        
+
                         { isLoading ? (
                             <div className="directorist-gutenberg-ai-assistant-chat-loader">
                                 <Spinner />
@@ -384,7 +384,7 @@ export default function AiAssistantChatPanel() {
                                         {/* Greeting Section */}
                                         <div className="directorist-gutenberg-ai-assistant-chat-greeting">
                                             <div className="directorist-gutenberg-ai-assistant-chat-greeting-icon">
-                                                <ReactSVG width={ 48 } height={ 48 } src={ aiStarIcon } />
+                                                <ReactSVG width={ 48 } height={ 48 } src={ assistantIcon } />
                                             </div>
                                             <div className="directorist-gutenberg-ai-assistant-chat-greeting-text">
                                                 <h4 className="directorist-gutenberg-ai-assistant-chat-greeting-title">
@@ -429,7 +429,7 @@ export default function AiAssistantChatPanel() {
                                     </>
                                 ) : (
                                     /* Conversation Area */
-                                    <div 
+                                    <div
                                         className="directorist-gutenberg-ai-assistant-chat-conversation-area"
                                         onScroll={ handleScroll }
                                         ref={ chatContentRef }
@@ -441,17 +441,17 @@ export default function AiAssistantChatPanel() {
                                         ) }
 
                                         { messages.map( ( msg ) => (
-                                            <div key={ msg.id } className="directorist-gutenberg-ai-assistant-chat-conversation-area-item">
-                                                <div className="directorist-gutenberg-ai-assistant-chat-icon">
+                                            <div key={ msg.id } className={`directorist-gutenberg-ai-assistant-chat-conversation-area-item directorist-gutenberg-ai-assistant-chat-${msg.role}-message`}>
                                                     { msg.role === 'assistant' ? (
-                                                         <ReactSVG width={ 20 } height={ 20 } src={ aiStarIcon } />
+                                                    <div className="directorist-gutenberg-ai-assistant-chat-icon">
+                                                        <ReactSVG width={ 20 } height={ 20 } src={ assistantIcon } />
+                                                    </div>
                                                     ) : (
-                                                        <div className="directorist-gutenberg-ai-assistant-user-avatar">U</div> // Placeholder for user avatar
+                                                        ''
                                                     ) }
-                                                </div>
                                                 <div className="directorist-gutenberg-ai-assistant-chat-text">
                                                     <span className="directorist-gutenberg-ai-assistant-chat-text-role">
-                                                        { msg.role === 'assistant' ? 'Ai Assistant' : ( currentUser?.name || 'User' ) }
+                                                        { msg.role === 'assistant' ? 'Ai Assistant' : '' }
                                                     </span>
                                                     <span className="directorist-gutenberg-ai-assistant-chat-text-content">
                                                         { msg.message }
@@ -459,11 +459,11 @@ export default function AiAssistantChatPanel() {
                                                 </div>
                                             </div>
                                         ) ) }
-                                        
+
                                         { ( isSending || isGenerating ) && (
                                             <div className="directorist-gutenberg-ai-assistant-chat-conversation-area-item">
                                                  <div className="directorist-gutenberg-ai-assistant-chat-icon">
-                                                    <ReactSVG width={ 20 } height={ 20 } src={ aiStarIcon } />
+                                                    <ReactSVG width={ 20 } height={ 20 } src={ assistantIcon } />
                                                 </div>
                                                  <div className="directorist-gutenberg-ai-assistant-chat-text">
                                                      <span className="directorist-gutenberg-ai-assistant-chat-text-role">Ai Assistant</span>

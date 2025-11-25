@@ -11,7 +11,6 @@ import './style.scss';
 import Edit from './edit';
 import metadata from './block.json';
 import badgePopularIcon from '@block-icon/badge-popular.svg';
-import Controls from './controls';
 
 /**
  * External dependencies
@@ -21,10 +20,37 @@ import ReactSVG from 'react-inlinesvg';
 const exampleAttributes = {
 };
 
+// Define fields for this block
+const fields = {
+	badgeSettings: {
+		title: 'Badge Settings',
+		initialOpen: true,
+		fields: {
+			text: {
+				type: 'text',
+				label: 'Badge Text',
+				attrKey: 'text',
+			},
+			text_color: {
+				type: 'colorPicker',
+				label: 'Text Color',
+				attrKey: 'text_color',
+				defaultColor: '#ffffff',
+			},
+			background_color: {
+				type: 'colorPicker',
+				label: 'Background Color',
+				attrKey: 'background_color',
+				defaultColor: '#444752',
+			},
+		},
+	},
+};
+
 registerBlock( {
 	metadata,
 	Edit,
-	Controls,
+	fields,
 	exampleAttributes,
 	icon: <ReactSVG src={ badgePopularIcon } />,
 	templateTypes: [

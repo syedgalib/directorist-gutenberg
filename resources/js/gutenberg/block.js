@@ -5,6 +5,11 @@ import { useBlockProps } from '@wordpress/block-editor';
 import clsx from 'clsx';
 
 /**
+ * Internal dependencies
+ */
+import Controls from './components/controls';
+
+/**
  * Set custom class names to the block
  *
  * @param {string|string[]|undefined} classNames - Class names as string, array, or undefined
@@ -35,12 +40,16 @@ export default function Block( {
 	Edit,
 	attributes,
 	setAttributes,
-	Controls,
+	Controls: ControlsComponent, // Can be a component or fields definition
+	fields, // Fields definition object (alternative to Controls)
 	StylesControls,
 	classNames = '',
 	name,
 	...rest
 } ) {
+	// Determine which Controls to use: fields definition or Controls component
+	// Priority: fields > ControlsComponent
+	const controlsToUse = fields || ControlsComponent;
 	const customClasses = setCustomClassNames( classNames );
 
 	// For thumbnail block, don't use useBlockProps on outer wrapper (Edit component handles it)
@@ -54,8 +63,9 @@ export default function Block( {
 					attributes.block_width
 				) }` }
 			>
-				{ Controls && (
+				{ controlsToUse && (
 					<Controls
+						fields={ controlsToUse }
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 					/>
@@ -103,8 +113,9 @@ export default function Block( {
 
 	return (
 		<div { ...blockProps }>
-			{ Controls && (
+			{ controlsToUse && (
 				<Controls
+					fields={ controlsToUse }
 					attributes={ attributes }
 					setAttributes={ setAttributes }
 				/>

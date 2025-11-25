@@ -11,7 +11,6 @@ import Edit from './edit';
 import metadata from './block.json';
 import badgeFeaturedIcon from '@block-icon/badge-featured.svg';
 import './style.scss';
-import Controls from './controls';
 
 /**
  * External dependencies
@@ -21,10 +20,39 @@ import ReactSVG from 'react-inlinesvg';
 const exampleAttributes = {
 };
 
+// Define fields for this block (similar to formgent approach)
+const fields = {
+	badgeSettings: {
+		title: 'Badge Settings',
+		initialOpen: true,
+		fields: {
+			text: {
+				type: 'text',
+				label: 'Badge Text',
+				attrKey: 'text',
+			},
+			text_color: {
+				type: 'colorPicker',
+				label: 'Text Color',
+				attrKey: 'text_color',
+				defaultColor: '#000',
+				// Note: For color picker with state management, you can still use Controls component
+				// or enhance render-field.js to handle state internally
+			},
+			background_color: {
+				type: 'colorPicker',
+				label: 'Background Color',
+				attrKey: 'background_color',
+				defaultColor: '#000',
+			},
+		},
+	},
+};
+
 registerBlock( {
 	metadata,
 	Edit,
-	Controls,
+	fields,
 	exampleAttributes,
 	icon: <ReactSVG src={ badgeFeaturedIcon } />,
 	templateTypes: [

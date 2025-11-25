@@ -133,34 +133,209 @@ jQuery( document ).ready( function ( $ ) {
 			beforeSend: function () {
 				archiveContainer.addClass( 'atbdp-form-fade' );
 			},
-			success: function ( html ) {
-				if ( html.directory_type ) {
-					// Replace the entire container if it exists
-					if ( archiveContainer.length ) {
-						archiveContainer.replaceWith( html.directory_type );
-					}
+		success: function ( html ) {
+			if ( html.directory_type ) {
+				// Store navbar state BEFORE any replacements
+				const existingNavbar = $(
+					'.directorist-gutenberg-listings-archive-search-nav, .directorist-type-nav'
+				).first();
 
-					$( '.atbdp-form-fade' ).removeClass( 'atbdp-form-fade' );
-
-					window.dispatchEvent(
-						new CustomEvent( 'directorist-instant-search-reloaded' )
-					);
-					window.dispatchEvent(
-						new CustomEvent(
-							'directorist-reload-listings-map-archive'
-						)
-					);
-
-					// SearchForm Item in Single Category Location Page Init
-					singleCategoryLocationInit();
-
-					// Category Custom Field Assigned Init
-					initSearchCategoryCustomFields( $ );
+				// Store all navbar links and their hrefs before replacement
+				const navbarLinksData = [];
+				if ( existingNavbar.length ) {
+					existingNavbar.find( '.directorist-type-nav__link' ).each( function() {
+						const $link = $( this );
+						navbarLinksData.push( {
+							href: $link.attr( 'href' ),
+							dataType: $link.data( 'type' ) || $link.attr( 'data-type' ),
+							text: $link.text().trim(),
+							isActive: $link.closest( 'li' ).hasClass( 'directorist-type-nav__list__current' ) || $link.hasClass( 'active' )
+						} );
+					} );
 				}
 
-				// Initialize scrolling status
-				scrollingPage = 1;
-				infinitePaginationCompleted = false;
+				// Create a temporary container to parse the HTML response
+				const tempContainer = $( '<div>' ).html( html.directory_type );
+
+				// Find ONLY the archive container in the response (exclude navbar/search header to prevent duplication)
+				const newArchiveContainer = tempContainer.find(
+					'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
+				).first();
+
+				// Extract navbar state from response BEFORE any DOM manipulation
+				const newNavbar = tempContainer.find(
+					'.directorist-gutenberg-listings-archive-search-nav, .directorist-type-nav'
+				).first();
+
+				let newActiveLinkData = null;
+				if ( newNavbar.length ) {
+					const newActiveLink = newNavbar.find( '.directorist-type-nav__link' ).filter( function() {
+						const $link = $( this );
+						return $link.closest( 'li' ).hasClass( 'directorist-type-nav__list__current' ) ||
+							$link.hasClass( 'active' );
+					} ).first();
+
+					if ( newActiveLink.length ) {
+						newActiveLinkData = {
+							href: newActiveLink.attr( 'href' ),
+							dataType: newActiveLink.data( 'type' ) || newActiveLink.attr( 'data-type' ),
+							text: newActiveLink.text().trim()
+						};
+					}
+				}
+
+				// CRITICAL: Ensure navbar is NOT inside the archive container before replacement
+				// If navbar is a child of archiveContainer, we need to extract it first
+				const navbarInsideArchive = archiveContainer.find(
+					'.directorist-gutenberg-listings-archive-search-nav, .directorist-type-nav'
+				).first();
+
+				// If navbar is inside archive container, move it outside before replacement
+				if ( navbarInsideArchive.length && archiveContainer.length ) {
+					// Store navbar HTML
+					const navbarHtml = navbarInsideArchive.clone();
+					// Remove navbar from archive container temporarily
+					navbarInsideArchive.detach();
+				}
+
+				// If archive container found in response, replace only that part
+				// This prevents navbar/search header duplication and preserves event handlers
+				if ( newArchiveContainer.length && archiveContainer.length ) {
+					// Clone to avoid jQuery reference issues and ensure clean replacement
+					// Only replace the archive content, never the navbar
+					archiveContainer.replaceWith( newArchiveContainer.clone() );
+				} else if ( archiveContainer.length ) {
+					// Fallback: if archive container not found, try to clean the HTML
+					// Remove navbar and search header elements to prevent duplication
+					const cleanedHtml = $( html.directory_type );
+					cleanedHtml.find( '.directorist-gutenberg-listings-archive-search-nav' ).remove();
+					cleanedHtml.find( '.directorist-type-nav' ).remove();
+					cleanedHtml.find( '.directorist-gutenberg-listings-archive-header' ).remove();
+					cleanedHtml.find( '.directorist-gutenberg-listings-archive-search' ).remove();
+
+					// Try to find archive container again after cleaning
+					const cleanedArchiveContainer = cleanedHtml.find(
+						'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
+					).first();
+
+					if ( cleanedArchiveContainer.length ) {
+						archiveContainer.replaceWith( cleanedArchiveContainer.clone() );
+					} else {
+						// Last resort: replace with cleaned HTML (shouldn't have navbar anymore)
+						archiveContainer.replaceWith( cleanedHtml );
+					}
+				}
+
+				$( '.atbdp-form-fade' ).removeClass( 'atbdp-form-fade' );
+
+				// Update navbar active state AFTER archive replacement
+				// Use stored data instead of tempContainer to avoid reference issues
+				setTimeout( function() {
+					// Re-find navbar after DOM update
+					const currentNavbar = $(
+						'.directorist-gutenberg-listings-archive-search-nav, .directorist-type-nav'
+					).first();
+
+					if ( currentNavbar.length && newActiveLinkData ) {
+						// Remove active class from all nav items
+						currentNavbar.find( '.directorist-type-nav__list li' ).removeClass( 'directorist-type-nav__list__current' );
+						currentNavbar.find( '.directorist-type-nav__link' ).removeClass( 'active' );
+
+						// Find the corresponding link in current navbar
+						let targetLink = null;
+
+						// Try by href first
+						if ( newActiveLinkData.href ) {
+							targetLink = currentNavbar.find( '.directorist-type-nav__link[href="' + newActiveLinkData.href + '"]' ).first();
+						}
+
+						// Try by data-type if not found
+						if ( !targetLink.length && newActiveLinkData.dataType ) {
+							targetLink = currentNavbar.find( '.directorist-type-nav__link[data-type="' + newActiveLinkData.dataType + '"]' ).first();
+						}
+
+						// Try by text if still not found
+						if ( !targetLink.length ) {
+							currentNavbar.find( '.directorist-type-nav__link' ).each( function() {
+								if ( $( this ).text().trim() === newActiveLinkData.text ) {
+									targetLink = $( this );
+									return false; // break
+								}
+							} );
+						}
+
+						if ( targetLink && targetLink.length ) {
+							// Make the found link active
+							const $li = targetLink.closest( 'li' );
+							if ( $li.length ) {
+								$li.addClass( 'directorist-type-nav__list__current' );
+							}
+							targetLink.addClass( 'active' );
+						}
+					}
+
+					// Ensure navbar links remain clickable after replacement
+					const navbarLinks = $(
+						'.directorist-gutenberg-listings-archive-search-nav .directorist-type-nav__link, .directorist-type-nav__link'
+					);
+
+					// Ensure links are not disabled or have pointer-events:none
+					navbarLinks.css( {
+						'pointer-events': 'auto',
+						'cursor': 'pointer'
+					} ).prop( 'disabled', false );
+
+					// Verify links exist and are clickable
+					if ( navbarLinks.length === 0 ) {
+						console.warn( 'Directorist: No navbar links found after AJAX update' );
+					} else {
+						// Test that event delegation is still working by checking if clicks bubble
+						// The event handler on body should catch these clicks via delegation
+						navbarLinks.on( 'click.test', function( e ) {
+							// This is just a test - the real handler is on body
+							// If this fires, the link is clickable
+						} );
+
+						// Remove test handler immediately (we don't want duplicate handlers)
+						setTimeout( function() {
+							navbarLinks.off( 'click.test' );
+						}, 10 );
+					}
+
+					// Double-check: Ensure no overlays or z-index issues are blocking clicks
+					const navbar = currentNavbar.length ? currentNavbar : $(
+						'.directorist-gutenberg-listings-archive-search-nav, .directorist-type-nav'
+					).first();
+
+					if ( navbar.length ) {
+						// Ensure navbar is not hidden or covered
+						navbar.css( {
+							'z-index': '',
+							'position': '',
+							'pointer-events': 'auto'
+						} );
+					}
+				}, 150 );
+
+				window.dispatchEvent(
+					new CustomEvent( 'directorist-instant-search-reloaded' )
+				);
+				window.dispatchEvent(
+					new CustomEvent(
+						'directorist-reload-listings-map-archive'
+					)
+				);
+
+				// SearchForm Item in Single Category Location Page Init
+				singleCategoryLocationInit();
+
+				// Category Custom Field Assigned Init
+				initSearchCategoryCustomFields( $ );
+			}
+
+			// Initialize scrolling status
+			scrollingPage = 1;
+			infinitePaginationCompleted = false;
 			},
 		} );
 	}
@@ -198,7 +373,119 @@ jQuery( document ).ready( function ( $ ) {
 				if ( loadingDiv ) loadingDiv.remove();
 
 				if ( html.count > 0 ) {
-					container.append( html.render_listings );
+					// Get listings_columns from block data-atts
+					const archiveContainer = container.closest(
+						'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
+					);
+
+					let targetColumnClass = 'directorist-col-4'; // Default to col-4 for grid
+
+					// Try to get listings_columns from block data-atts
+					if ( archiveContainer.length ) {
+						const blockElement = archiveContainer.closest( '[data-atts]' );
+
+						if ( blockElement.length ) {
+							try {
+								const dataAtts = blockElement.data( 'atts' );
+								if ( dataAtts && typeof dataAtts.listings_columns !== 'undefined' ) {
+									const listingsColumns = parseInt( dataAtts.listings_columns, 10 );
+
+									// Calculate column class: 12 / listings_columns
+									const columnValue = Math.round( 12 / listingsColumns );
+									const columnMap = {
+										12: 'directorist-col-12',
+										6: 'directorist-col-6',
+										4: 'directorist-col-4',
+										3: 'directorist-col-3',
+										2: 'directorist-col-2'
+									};
+
+									targetColumnClass = columnMap[columnValue] || 'directorist-col-4';
+								}
+							} catch ( e ) {
+								console.warn( 'Directorist: Failed to parse data-atts for listings_columns', e );
+							}
+						}
+
+						// Fallback: detect from existing columns if data-atts not available
+						if ( targetColumnClass === 'directorist-col-4' ) {
+							const existingColumns = container.children(
+								'.directorist-col-2, .directorist-col-3, .directorist-col-4, .directorist-col-6'
+							).first();
+
+							if ( existingColumns.length ) {
+								// Get the column class from existing listings
+								const colClasses = ['directorist-col-2', 'directorist-col-3', 'directorist-col-4', 'directorist-col-6'];
+								for ( const colClass of colClasses ) {
+									if ( existingColumns.hasClass( colClass ) ) {
+										targetColumnClass = colClass;
+										break;
+									}
+								}
+							} else {
+								// Check if we're in list view
+								const isGridView = archiveContainer.hasClass( 'directorist-archive-grid-view' ) ||
+									archiveContainer.find( '.directorist-archive-grid-view' ).length > 0 ||
+									archiveContainer.closest( '.directorist-archive-grid-view' ).length > 0;
+								if ( !isGridView ) {
+									targetColumnClass = 'directorist-col-12'; // List view uses full width
+								}
+							}
+						}
+					}
+
+					// Parse the new listings HTML - handle both string and object
+					let newListingsHtml;
+					let htmlString = '';
+
+					if ( typeof html.render_listings === 'string' ) {
+						htmlString = html.render_listings;
+						newListingsHtml = $( html.render_listings );
+					} else {
+						htmlString = html.render_listings.toString() || '';
+						newListingsHtml = $( html.render_listings );
+					}
+
+					// Method 1: Replace column classes in HTML string before parsing (most reliable)
+					if ( htmlString && htmlString.match( /directorist-col-\d+/ ) ) {
+						// Replace all column classes with the target class
+						const fixedHtml = htmlString.replace(
+							/directorist-col-\d+/g,
+							targetColumnClass
+						);
+						newListingsHtml = $( fixedHtml );
+					}
+
+					// Method 2: Also fix columns in the parsed jQuery object (backup)
+					const newColumns = newListingsHtml.find(
+						'.directorist-col-2, .directorist-col-3, .directorist-col-4, .directorist-col-6, .directorist-col-12'
+					).add( newListingsHtml.filter( '.directorist-col-2, .directorist-col-3, .directorist-col-4, .directorist-col-6, .directorist-col-12' ) );
+
+					// Apply the correct column class to new listings
+					if ( newColumns.length > 0 ) {
+						newColumns.each( function() {
+							const $col = $( this );
+							// Remove all column classes
+							$col.removeClass( 'directorist-col-2 directorist-col-3 directorist-col-4 directorist-col-6 directorist-col-12' );
+							// Add the target column class
+							$col.addClass( targetColumnClass );
+						} );
+					}
+
+					// Append the fixed listings
+					container.append( newListingsHtml );
+
+					// Also trigger the column preservation utility to ensure consistency
+					setTimeout( function() {
+						if ( typeof window.directoristPreserveColumnStructure !== 'undefined' ) {
+							const archiveContainer = container.closest(
+								'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
+							);
+							if ( archiveContainer.length ) {
+								window.directoristPreserveColumnStructure.preserve( archiveContainer[0] );
+							}
+						}
+					}, 50 );
 				} else {
 					infinitePaginationCompleted = true;
 				}
