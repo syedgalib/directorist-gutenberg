@@ -3437,11 +3437,6 @@ function AiAssistantChatPanel() {
       role,
       message
     };
-
-    // if ( template ) {
-    //     data.template = template;
-    // }
-
     return await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_5___default()({
       path: `/directorist-gutenberg/admin/templates/${currentPostId}/ai-chats`,
       method: 'POST',
@@ -3498,10 +3493,6 @@ function AiAssistantChatPanel() {
       };
       const apiURL = apiURLs[templateType];
       const currentBlocks = sanitizeBlocks(getBlocks());
-      console.log('@currentBlocks');
-      console.log({
-        currentBlocks
-      });
       const apiData = {
         template_type: templateType,
         instruction: instruction,

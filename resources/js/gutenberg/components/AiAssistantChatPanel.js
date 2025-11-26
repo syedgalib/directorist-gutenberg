@@ -232,10 +232,6 @@ export default function AiAssistantChatPanel() {
             message,
         };
 
-        // if ( template ) {
-        //     data.template = template;
-        // }
-
         return await apiFetch( {
             path: `/directorist-gutenberg/admin/templates/${ currentPostId }/ai-chats`,
             method: 'POST',
@@ -298,9 +294,6 @@ export default function AiAssistantChatPanel() {
             const apiURL = apiURLs[templateType];
 
             const currentBlocks = sanitizeBlocks( getBlocks() );
-
-            console.log( '@currentBlocks' );
-            console.log( { currentBlocks } );
 
             const apiData = {
                 template_type: templateType,
