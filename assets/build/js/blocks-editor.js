@@ -3228,9 +3228,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icon_star_svg__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @icon/star.svg */ "./resources/svg/icons/star.svg");
 /* harmony import */ var _icon_minus_svg__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @icon/minus.svg */ "./resources/svg/icons/minus.svg");
 /* harmony import */ var _icon_ai_credit_svg__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @icon/ai-credit.svg */ "./resources/svg/icons/ai-credit.svg");
-/* harmony import */ var _directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/localized-data */ "./resources/js/gutenberg/localized-data.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__);
+/* harmony import */ var _directorist_gutenberg_gutenberg_hooks_useSubmissionFields__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/hooks/useSubmissionFields */ "./resources/js/gutenberg/hooks/useSubmissionFields.js");
+/* harmony import */ var _directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/localized-data */ "./resources/js/gutenberg/localized-data.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__);
 /**
  * WordPress dependencies
  */
@@ -3262,11 +3263,35 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 function AiAssistantChatPanel() {
   var _localizedData$templa, _localizedData$wax_in;
-  const localizedData = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_18__.getLocalizedBlockData)();
+  const localizedData = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_19__.getLocalizedBlockData)();
+  const directoryTypeID = parseInt(localizedData?.directory_type_id) || 0;
   const templateType = (_localizedData$templa = localizedData?.template_type) !== null && _localizedData$templa !== void 0 ? _localizedData$templa : '';
   const waxIntelligentApiBaseUrl = (_localizedData$wax_in = localizedData?.wax_intelligent?.api_base_url) !== null && _localizedData$wax_in !== void 0 ? _localizedData$wax_in : '';
+  const {
+    getCustomFields
+  } = (0,_directorist_gutenberg_gutenberg_hooks_useSubmissionFields__WEBPACK_IMPORTED_MODULE_18__.useSubmissionFields)();
+  const customFields = getCustomFields();
+  const customFieldsBlocks = {
+    'checkbox': 'listing-card-custom-text',
+    'date': 'listing-card-custom-date',
+    'number': 'listing-card-custom-number',
+    'radio': 'listing-card-custom-radio',
+    'select': 'listing-card-custom-select',
+    'text': 'listing-card-custom-text',
+    'textarea': 'listing-card-custom-textarea',
+    'time': 'listing-card-custom-time',
+    'url': 'listing-card-custom-url'
+  };
+  const availableCustomFields = customFields.filter(field => customFieldsBlocks.hasOwnProperty(field.type)).map(field => {
+    return {
+      block: customFieldsBlocks[field.type],
+      meta_key: field.field_key,
+      label: field.label
+    };
+  });
   const supportedTemplateTypes = ['listings-archive', 'listings-archive-grid-view', 'listings-archive-list-view'];
   if (!supportedTemplateTypes.includes(templateType)) {
     return null;
@@ -3294,7 +3319,6 @@ function AiAssistantChatPanel() {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)('core/block-editor');
   const currentContent = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getEditedPostContent(), []);
   const currentPostId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getCurrentPostId(), []);
-  const currentUser = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core').getCurrentUser(), []);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth"
@@ -3458,34 +3482,38 @@ function AiAssistantChatPanel() {
   const generateResponse = async instruction => {
     setIsGenerating(true);
     try {
-      const apiURL = `${waxIntelligentApiBaseUrl}/directorist/template/gutenberg/generate`;
+      const baseAPIURL = `${waxIntelligentApiBaseUrl}/directorist/template/gutenberg/generate`;
+      const listingsArchiveItemAPIURL = `${baseAPIURL}/listings-archive-item`;
+      const apiURLs = {
+        'listings-archive': `${baseAPIURL}/listings-archive`,
+        'listings-archive-grid-view': listingsArchiveItemAPIURL,
+        'listings-archive-list-view': listingsArchiveItemAPIURL
+      };
+      const apiURL = apiURLs[templateType];
+      const apiData = {
+        template_type: templateType,
+        instruction: instruction,
+        current_template: currentContent
+      };
+      const listingsArchiveItemViews = ['listings-archive-grid-view', 'listings-archive-list-view'];
+      if (listingsArchiveItemViews.includes(templateType)) {
+        apiData.directory_type_id = directoryTypeID;
+        apiData.available_custom_fields = availableCustomFields;
+        apiData.view_type = templateType === 'listings-archive-grid-view' ? 'grid_view' : 'list_view';
+      }
 
       // Format history for API
       const history = messages.map(msg => ({
         role: msg.role,
-        message: msg.message,
-        template: msg.template || ""
+        message: msg.message
       }));
-
-      // Add current user message to history if not already present (it was added optimistically)
-      if (history.length === 0 || history[history.length - 1].message !== instruction) {
-        history.push({
-          role: 'user',
-          message: instruction,
-          template: ""
-        });
-      }
+      apiData.history = history;
       const response = await fetch(apiURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          template_type: templateType,
-          instruction: instruction,
-          current_template: currentContent,
-          history: history
-        })
+        body: JSON.stringify(apiData)
       });
       if (!response.ok) {
         throw new Error('API generation failed');
@@ -3531,9 +3559,6 @@ function AiAssistantChatPanel() {
       const cleanContent = templateContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
       const parsedBlocks = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(cleanContent) || [];
       if (parsedBlocks.length > 0) {
-        editPost({
-          content: cleanContent
-        });
         resetBlocks(parsedBlocks);
       }
     } catch (parseError) {
@@ -3541,101 +3566,101 @@ function AiAssistantChatPanel() {
       alert((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Unable to replace blocks with AI template', 'directorist-gutenberg'));
     }
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)(_style__WEBPACK_IMPORTED_MODULE_11__.StyledChatPanel, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)(_style__WEBPACK_IMPORTED_MODULE_11__.StyledChatPanel, {
     className: "directorist-gutenberg-ai-assistant-chat-panel",
-    children: [!isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
+    children: [!isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
       className: "directorist-gutenberg-ai-assistant-chat-toggle",
       onClick: togglePanel,
       "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Open AI Assistant', 'directorist-gutenberg'),
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
         width: 24,
         height: 24,
         src: _icon_ai_star_alt_svg__WEBPACK_IMPORTED_MODULE_7__
       })
-    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
       className: "directorist-gutenberg-ai-assistant-chat-panel-content",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
         className: "directorist-gutenberg-ai-assistant-chat-header",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
           className: "directorist-gutenberg-ai-assistant-chat-header-left",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
             className: "directorist-gutenberg-ai-assistant-chat-close",
             onClick: togglePanel,
             "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Close', 'directorist-gutenberg'),
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
               width: 16,
               height: 16,
               src: _icon_times_svg__WEBPACK_IMPORTED_MODULE_9__
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("h3", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("h3", {
             className: "directorist-gutenberg-ai-assistant-chat-title",
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('AI Assistant', 'directorist-gutenberg')
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
           className: "directorist-gutenberg-ai-assistant-chat-minimize",
           onClick: togglePanel,
           "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Minimize', 'directorist-gutenberg'),
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
             width: 16,
             height: 16,
             src: _icon_minus_svg__WEBPACK_IMPORTED_MODULE_16__
           })
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
         className: "directorist-gutenberg-ai-assistant-chat-content",
         onScroll: handleScroll,
         ref: chatContentRef,
-        children: isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+        children: isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
           className: "directorist-gutenberg-ai-assistant-chat-loader",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Spinner, {})
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.Fragment, {
-          children: messages.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Spinner, {})
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.Fragment, {
+          children: messages.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
               className: "directorist-gutenberg-ai-assistant-chat-greeting",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
                 className: "directorist-gutenberg-ai-assistant-chat-greeting-icon",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
                   width: 48,
                   height: 48,
                   src: _icon_ai_feel_svg__WEBPACK_IMPORTED_MODULE_8__
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
                 className: "directorist-gutenberg-ai-assistant-chat-greeting-text",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("h4", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("h4", {
                   className: "directorist-gutenberg-ai-assistant-chat-greeting-title",
                   children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Hi, I'm your AI Design Assistant", 'directorist-gutenberg')
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("p", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("p", {
                   className: "directorist-gutenberg-ai-assistant-chat-greeting-description",
                   children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Tell me what you want your All Listings to look. You can attach a screenshot for vives.', 'directorist-gutenberg')
                 })]
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
               className: "directorist-gutenberg-ai-assistant-chat-suggestions",
-              children: suggestedActions.map(action => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("span", {
+              children: suggestedActions.map(action => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("span", {
                 className: "directorist-gutenberg-ai-assistant-chat-suggestion-button",
                 onClick: () => {
                   setInputValue(action.label);
                 },
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("span", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("span", {
                   className: "directorist-gutenberg-ai-assistant-chat-suggestion-icon",
-                  children: [action.icon === 'cube' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                  children: [action.icon === 'cube' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
                     width: 20,
                     height: 20,
                     src: _icon_cube_svg__WEBPACK_IMPORTED_MODULE_12__
-                  }), action.icon === 'grid' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                  }), action.icon === 'grid' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
                     width: 20,
                     height: 20,
                     src: _icon_grid_bar_svg__WEBPACK_IMPORTED_MODULE_13__
-                  }), action.icon === 'document' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                  }), action.icon === 'document' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
                     width: 20,
                     height: 20,
                     src: _icon_document_text_svg__WEBPACK_IMPORTED_MODULE_14__
-                  }), action.icon === 'star' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                  }), action.icon === 'star' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
                     width: 20,
                     height: 20,
                     src: _icon_star_svg__WEBPACK_IMPORTED_MODULE_15__
                   })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("span", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("span", {
                   className: "directorist-gutenberg-ai-assistant-chat-suggestion-label",
                   children: action.label
                 })]
@@ -3644,66 +3669,66 @@ function AiAssistantChatPanel() {
           }) :
           /*#__PURE__*/
           /* Conversation Area */
-          (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+          (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
             className: "directorist-gutenberg-ai-assistant-chat-conversation-area",
-            children: [isFetchingMore && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+            children: [isFetchingMore && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
               className: "directorist-gutenberg-ai-assistant-chat-loader-more",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Spinner, {})
-            }), messages.map(msg => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Spinner, {})
+            }), messages.map(msg => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
               className: `directorist-gutenberg-ai-assistant-chat-conversation-area-item directorist-gutenberg-ai-assistant-chat-${msg.role}-message`,
-              children: [msg.role === 'assistant' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+              children: [msg.role === 'assistant' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
                 className: "directorist-gutenberg-ai-assistant-chat-icon",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
                   width: 20,
                   height: 20,
                   src: _icon_ai_feel_svg__WEBPACK_IMPORTED_MODULE_8__
                 })
-              }) : '', /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+              }) : '', /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
                 className: "directorist-gutenberg-ai-assistant-chat-text",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("span", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("span", {
                   className: "directorist-gutenberg-ai-assistant-chat-text-role",
                   children: msg.role === 'assistant' ? 'Ai Assistant' : ''
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("span", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("span", {
                   className: "directorist-gutenberg-ai-assistant-chat-text-content",
                   children: msg.message
                 })]
               })]
-            }, msg.id)), (isSending || isGenerating) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+            }, msg.id)), (isSending || isGenerating) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
               className: "directorist-gutenberg-ai-assistant-chat-conversation-area-item",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
                 className: "directorist-gutenberg-ai-assistant-chat-icon",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
                   width: 20,
                   height: 20,
                   src: _icon_ai_feel_svg__WEBPACK_IMPORTED_MODULE_8__
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
                 className: "directorist-gutenberg-ai-assistant-chat-text",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("span", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("span", {
                   className: "directorist-gutenberg-ai-assistant-chat-text-role",
                   children: "Ai Assistant"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
                   className: "directorist-gutenberg-ai-assistant-typing-indicator",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("span", {})]
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("span", {})]
                 })]
               })]
-            }), retryAction && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+            }), retryAction && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
               className: "directorist-gutenberg-ai-assistant-chat-retry",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("p", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("p", {
                 children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Something went wrong.', 'directorist-gutenberg')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
                 variant: "secondary",
                 onClick: retryAction,
                 children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Retry', 'directorist-gutenberg')
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
               ref: messagesEndRef
             })]
           })
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
         className: "directorist-gutenberg-ai-assistant-chat-input-wrapper",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.TextareaControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.TextareaControl, {
           className: "directorist-gutenberg-ai-assistant-chat-input",
           value: inputValue,
           onChange: setInputValue,
@@ -3715,32 +3740,32 @@ function AiAssistantChatPanel() {
               handleSendMessage();
             }
           }
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("div", {
           className: "directorist-gutenberg-ai-assistant-chat-input-actions",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
             className: "directorist-gutenberg-ai-assistant-chat-send",
             "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Send', 'directorist-gutenberg'),
             onClick: handleSendMessage,
             disabled: !inputValue.trim() || isSending || isGenerating,
-            children: isSending || isGenerating ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Spinner, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+            children: isSending || isGenerating ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Spinner, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
               width: 20,
               height: 20,
               src: _icon_arrow_right_svg__WEBPACK_IMPORTED_MODULE_10__
             })
           })
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("div", {
         className: "directorist-gutenberg-ai-assistant-chat-footer",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("span", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)("span", {
           className: "directorist-gutenberg-ai-assistant-chat-footer-text",
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Generation:', 'directorist-gutenberg')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("span", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("span", {
           className: "directorist-gutenberg-ai-assistant-chat-footer-credits",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_6__["default"], {
             width: 16,
             height: 16,
             src: _icon_ai_credit_svg__WEBPACK_IMPORTED_MODULE_17__
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)("span", {
             children: ["0 ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('credits', 'directorist-gutenberg')]
           })]
         })]
@@ -4912,6 +4937,86 @@ const withShadowControl = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__.cre
     wrapperProps: newWrapperProps
   });
 });
+
+/***/ }),
+
+/***/ "./resources/js/gutenberg/hooks/useSubmissionFields.js":
+/*!*************************************************************!*\
+  !*** ./resources/js/gutenberg/hooks/useSubmissionFields.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useSubmissionFields: () => (/* binding */ useSubmissionFields)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/localized-data */ "./resources/js/gutenberg/localized-data.js");
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+const useSubmissionFields = () => {
+  const {
+    directory_type_id
+  } = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__.getLocalizedBlockData)();
+  const fields = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__.getSubmissionFormFields)();
+  function getFieldsOptions(type, name) {
+    const options = [{
+      value: '',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select...', 'directorist-gutenberg')
+    }];
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === type && field.widget_name === name) {
+        options.push({
+          value: field.field_key,
+          label: field.label
+        });
+      }
+    }
+    return options;
+  }
+  function doesPresetFieldExist(name) {
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === 'preset' && field.widget_name === name) {
+        return true;
+      }
+    }
+    return false;
+  }
+  function doesCustomFieldExist(name, fieldKey) {
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === 'custom' && field.widget_name === name && field.field_key === fieldKey) {
+        return true;
+      }
+    }
+    return false;
+  }
+  function getCustomFields() {
+    const customFields = [];
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === 'custom') {
+        customFields.push(field);
+      }
+    }
+    return customFields;
+  }
+  return {
+    directoryTypeId: directory_type_id ? parseInt(directory_type_id) : null,
+    fields,
+    getCustomFields,
+    doesPresetFieldExist,
+    doesCustomFieldExist,
+    getFieldsOptions
+  };
+};
 
 /***/ }),
 

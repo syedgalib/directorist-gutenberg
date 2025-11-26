@@ -27,12 +27,39 @@ import documentIcon from '@icon/document-text.svg';
 import star from '@icon/star.svg';
 import minusIcon from '@icon/minus.svg';
 import aiCreditIcon from '@icon/ai-credit.svg';
+import { useSubmissionFields } from '@directorist-gutenberg/gutenberg/hooks/useSubmissionFields';
 import { getLocalizedBlockData, getLocalizedBlockDataByKey } from '@directorist-gutenberg/gutenberg/localized-data';
 
 export default function AiAssistantChatPanel() {
     const localizedData            = getLocalizedBlockData();
+    const directoryTypeID          = parseInt( localizedData?.directory_type_id ) || 0;
     const templateType             = localizedData?.template_type ?? '';
     const waxIntelligentApiBaseUrl = localizedData?.wax_intelligent?.api_base_url ?? '';
+
+    const { getCustomFields } = useSubmissionFields();
+    const customFields = getCustomFields();
+
+    const customFieldsBlocks = {
+        'checkbox': 'listing-card-custom-text',
+        'date': 'listing-card-custom-date',
+        'number': 'listing-card-custom-number',
+        'radio': 'listing-card-custom-radio',
+        'select': 'listing-card-custom-select',
+        'text': 'listing-card-custom-text',
+        'textarea': 'listing-card-custom-textarea',
+        'time': 'listing-card-custom-time',
+        'url': 'listing-card-custom-url',
+    };
+
+    const availableCustomFields = customFields
+        .filter( field => customFieldsBlocks.hasOwnProperty( field.type ) )
+        .map( field => {
+            return {
+                block: customFieldsBlocks[field.type],
+                meta_key: field.field_key,
+                label: field.label,
+            };
+    } );
 
     const supportedTemplateTypes = [
         'listings-archive',
@@ -65,7 +92,6 @@ export default function AiAssistantChatPanel() {
     const { resetBlocks } = useDispatch( 'core/block-editor' );
     const currentContent = useSelect( ( select ) => select( 'core/editor' ).getEditedPostContent(), [] );
     const currentPostId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId(), [] );
-    const currentUser = useSelect( ( select ) => select( 'core' ).getCurrentUser(), [] );
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -253,31 +279,45 @@ export default function AiAssistantChatPanel() {
     const generateResponse = async ( instruction ) => {
         setIsGenerating( true );
         try {
-            const apiURL = `${waxIntelligentApiBaseUrl}/directorist/template/gutenberg/generate`;
+            const baseAPIURL = `${waxIntelligentApiBaseUrl}/directorist/template/gutenberg/generate`;
+            const listingsArchiveItemAPIURL = `${baseAPIURL}/listings-archive-item`;
+
+            const apiURLs = {
+                'listings-archive': `${baseAPIURL}/listings-archive`,
+                'listings-archive-grid-view': listingsArchiveItemAPIURL,
+                'listings-archive-list-view': listingsArchiveItemAPIURL,
+            };
+
+            const apiURL = apiURLs[templateType];
+
+            const apiData = {
+                template_type: templateType,
+                instruction: instruction,
+                current_template: currentContent,
+            };
+
+            const listingsArchiveItemViews = [ 'listings-archive-grid-view', 'listings-archive-list-view' ];
+
+            if ( listingsArchiveItemViews.includes( templateType ) ) {
+                apiData.directory_type_id = directoryTypeID;
+                apiData.available_custom_fields = availableCustomFields;
+                apiData.view_type = templateType === 'listings-archive-grid-view' ? 'grid_view' : 'list_view';
+            }
 
             // Format history for API
-            const history = messages.map( msg => ({
+            const history = messages.map( msg => ( {
                 role: msg.role,
                 message: msg.message,
-                template: msg.template || ""
-            }) );
+            } ) );
 
-            // Add current user message to history if not already present (it was added optimistically)
-            if ( history.length === 0 || history[history.length - 1].message !== instruction ) {
-                 history.push({ role: 'user', message: instruction, template: "" });
-            }
+            apiData.history = history;
 
             const response = await fetch( apiURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify( {
-                    template_type: templateType,
-                    instruction: instruction,
-                    current_template: currentContent,
-                    history: history
-                } ),
+                body: JSON.stringify( apiData ),
             } );
 
             if ( ! response.ok ) {
@@ -324,10 +364,6 @@ export default function AiAssistantChatPanel() {
             const parsedBlocks = parse( cleanContent ) || [];
 
             if ( parsedBlocks.length > 0 ) {
-                editPost( {
-                    content: cleanContent,
-                } );
-
                 resetBlocks( parsedBlocks );
             }
         } catch ( parseError ) {

@@ -5316,9 +5316,19 @@ const useSubmissionFields = () => {
     }
     return false;
   }
+  function getCustomFields() {
+    const customFields = [];
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === 'custom') {
+        customFields.push(field);
+      }
+    }
+    return customFields;
+  }
   return {
     directoryTypeId: directory_type_id ? parseInt(directory_type_id) : null,
     fields,
+    getCustomFields,
     doesPresetFieldExist,
     doesCustomFieldExist,
     getFieldsOptions
