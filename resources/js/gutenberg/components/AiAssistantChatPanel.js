@@ -5,7 +5,7 @@ import { Button, TextareaControl, Spinner } from '@wordpress/components';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { parse } from '@wordpress/blocks';
+import { parse, createBlock } from '@wordpress/blocks';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
@@ -89,7 +89,8 @@ export default function AiAssistantChatPanel() {
     const prevScrollHeightRef = useRef( 0 );
 
     const { editPost } = useDispatch( 'core/editor' );
-    const { resetBlocks } = useDispatch( 'core/block-editor' );
+    const { resetBlocks,  } = useDispatch( 'core/block-editor' );
+    const { getBlocks } = useSelect( ( select ) => select( 'core/block-editor' ) );
     const currentContent = useSelect( ( select ) => select( 'core/editor' ).getEditedPostContent(), [] );
     const currentPostId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId(), [] );
 
@@ -233,9 +234,9 @@ export default function AiAssistantChatPanel() {
             message,
         };
 
-        if ( template ) {
-            data.template = template;
-        }
+        // if ( template ) {
+        //     data.template = template;
+        // }
 
         return await apiFetch( {
             path: `/directorist-gutenberg/admin/templates/${ currentPostId }/ai-chats`,
@@ -259,7 +260,7 @@ export default function AiAssistantChatPanel() {
 
         try {
             // 1. Store user message
-            await storeMessage( 'user', userMessage, currentContent );
+            await storeMessage( 'user', userMessage );
 
             // 2. Call Intelligent API
             await generateResponse( userMessage );
@@ -275,8 +276,17 @@ export default function AiAssistantChatPanel() {
         }
     };
 
+    const sanitizeBlocks = (blocks) => {
+        return blocks.map(block => ({
+            name: block.name,
+            attributes: block.attributes || {},
+            innerBlocks: sanitizeBlocks(block.innerBlocks || [])
+        }));
+    }
+
     const generateResponse = async ( instruction ) => {
         setIsGenerating( true );
+        
         try {
             const baseAPIURL = `${waxIntelligentApiBaseUrl}/directorist/template/gutenberg/generate`;
             const listingsArchiveItemAPIURL = `${baseAPIURL}/listings-archive-item`;
@@ -289,10 +299,15 @@ export default function AiAssistantChatPanel() {
 
             const apiURL = apiURLs[templateType];
 
+            const currentBlocks = sanitizeBlocks( getBlocks() );
+
+            console.log( '@currentBlocks' );
+            console.log( { currentBlocks } );
+
             const apiData = {
                 template_type: templateType,
                 instruction: instruction,
-                current_template: currentContent,
+                current_template: JSON.stringify( currentBlocks ),
             };
 
             const listingsArchiveItemViews = [ 'listings-archive-grid-view', 'listings-archive-list-view' ];
@@ -324,10 +339,10 @@ export default function AiAssistantChatPanel() {
             }
 
             const data = await response.json();
-            let templateContent = data?.template;
+            const blockList = data?.template;
             let assistantMessage = data?.message || __( 'Here is your updated design.', 'directorist-gutenberg' );
 
-            if ( ! templateContent ) {
+            if ( ! blockList ) {
                 console.warn( 'No template content returned from the AI Assistant API.' );
                  // Fallback if only message returned
                  if( assistantMessage ) {
@@ -338,12 +353,11 @@ export default function AiAssistantChatPanel() {
             }
 
             // 3. Store assistant response
-            await storeMessage( 'assistant', assistantMessage, templateContent );
-            setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage, template: templateContent } ] );
+            await storeMessage( 'assistant', assistantMessage );
+            setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage } ] );
 
             // 4. Apply template
-            applyTemplate( templateContent );
-
+            applyTemplate( blockList );
         } catch ( error ) {
             console.error( 'Error generating response:', error );
              setRetryAction( () => () => generateResponse( instruction ) );
@@ -352,22 +366,30 @@ export default function AiAssistantChatPanel() {
         }
     };
 
-    const applyTemplate = ( templateContent ) => {
+    /**
+     * Recursively converts block structure to WordPress block objects
+     */
+    const createBlocksFromList = ( blockList ) => {
+        if ( ! blockList || ! Array.isArray( blockList ) ) {
+            return [];
+        }
+
+        return blockList.map( blockData => {
+            const { name, attributes = {}, innerBlocks = [] } = blockData;
+            
+            // Recursively create inner blocks
+            const parsedInnerBlocks = createBlocksFromList( innerBlocks );
+            
+            // Create the block with inner blocks
+            return createBlock( name, attributes, parsedInnerBlocks );
+        } );
+    };
+
+    const applyTemplate = ( blockList ) => {
         try {
-            // Clean up template content
-            const cleanContent = templateContent
-                .replace( /\\"/g, '"' )
-                .replace( /\\n/g, '\n' )
-                .replace( /\\\\/g, '\\' );
-
-            const parsedBlocks = parse( cleanContent ) || [];
-
-            if ( parsedBlocks.length > 0 ) {
-                resetBlocks( parsedBlocks );
-            }
+            resetBlocks( createBlocksFromList( blockList ) );
         } catch ( parseError ) {
             console.error( 'Unable to replace blocks with AI template', parseError );
-            alert( __( 'Unable to replace blocks with AI template', 'directorist-gutenberg' ) );
         }
     };
 
