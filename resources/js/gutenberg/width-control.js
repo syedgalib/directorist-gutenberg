@@ -17,6 +17,7 @@ const widthOptions = [
 	{ label: __( '50%', 'directorist-gutenberg' ), value: '50' },
 	{ label: __( '33%', 'directorist-gutenberg' ), value: '33.33' },
 	{ label: __( '25%', 'directorist-gutenberg' ), value: '25' },
+	{ label: __( 'Inline', 'directorist-gutenberg' ), value: 'inline' },
 ];
 
 export default function WidthControls( { attributes, setAttributes } ) {
