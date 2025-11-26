@@ -3320,17 +3320,29 @@ function AiAssistantChatPanel() {
   const currentContent = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getEditedPostContent(), []);
   const currentPostId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getCurrentPostId(), []);
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth"
-    });
+    if (chatContentRef.current) {
+      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+    }
   };
 
-  // Scroll to bottom on new message (if user was near bottom)
+  // Scroll to bottom on new message (only when not fetching older messages)
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    if (isOpen && !isFetchingMore && page === 1) {
-      scrollToBottom();
+    if (isOpen && !isFetchingMore && !isLoading) {
+      // Use setTimeout to ensure DOM has updated
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isFetchingMore, isLoading]);
+
+  // Scroll to bottom when AI starts generating (to show typing indicator)
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (isOpen && isGenerating) {
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+    }
+  }, [isGenerating, isOpen]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (isOpen && currentPostId) {
       // Reset pagination on open
@@ -3364,7 +3376,9 @@ function AiAssistantChatPanel() {
       if (isFirstPage) {
         setIsLoading(false);
         // Scroll to bottom after initial load
-        setTimeout(scrollToBottom, 100);
+        setTimeout(() => {
+          scrollToBottom();
+        }, 100);
       } else {
         setIsFetchingMore(false);
         // Restore scroll position
@@ -3463,6 +3477,11 @@ function AiAssistantChatPanel() {
       message: userMessage
     };
     setMessages(prev => [...prev, optimisticMessage]);
+
+    // Scroll to bottom after adding user message
+    setTimeout(() => {
+      scrollToBottom();
+    }, 50);
     try {
       // 1. Store user message
       await storeMessage('user', userMessage, currentContent);
@@ -3531,6 +3550,10 @@ function AiAssistantChatPanel() {
             role: 'assistant',
             message: assistantMessage
           }]);
+          // Scroll to bottom after adding assistant message
+          setTimeout(() => {
+            scrollToBottom();
+          }, 100);
         }
         return;
       }
@@ -3543,6 +3566,11 @@ function AiAssistantChatPanel() {
         message: assistantMessage,
         template: templateContent
       }]);
+
+      // Scroll to bottom after adding assistant message
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
 
       // 4. Apply template
       applyTemplate(templateContent);
