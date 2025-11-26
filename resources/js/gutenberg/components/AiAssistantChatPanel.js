@@ -88,10 +88,8 @@ export default function AiAssistantChatPanel() {
     const chatContentRef = useRef( null );
     const prevScrollHeightRef = useRef( 0 );
 
-    const { editPost } = useDispatch( 'core/editor' );
-    const { resetBlocks,  } = useDispatch( 'core/block-editor' );
+    const { resetBlocks } = useDispatch( 'core/block-editor' );
     const { getBlocks } = useSelect( ( select ) => select( 'core/block-editor' ) );
-    const currentContent = useSelect( ( select ) => select( 'core/editor' ).getEditedPostContent(), [] );
     const currentPostId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId(), [] );
 
     const scrollToBottom = () => {
@@ -308,6 +306,10 @@ export default function AiAssistantChatPanel() {
                 template_type: templateType,
                 instruction: instruction,
                 current_template: JSON.stringify( currentBlocks ),
+                dynamic_identifiers: {
+                    directory_type_id: directoryTypeID,
+                    template_id: currentPostId,
+                }
             };
 
             const listingsArchiveItemViews = [ 'listings-archive-grid-view', 'listings-archive-list-view' ];

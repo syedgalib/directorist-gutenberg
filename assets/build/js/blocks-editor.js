@@ -3312,15 +3312,11 @@ function AiAssistantChatPanel() {
   const chatContentRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const prevScrollHeightRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(0);
   const {
-    editPost
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)('core/editor');
-  const {
     resetBlocks
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)('core/block-editor');
   const {
     getBlocks
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/block-editor'));
-  const currentContent = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getEditedPostContent(), []);
   const currentPostId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getCurrentPostId(), []);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
@@ -3509,7 +3505,11 @@ function AiAssistantChatPanel() {
       const apiData = {
         template_type: templateType,
         instruction: instruction,
-        current_template: JSON.stringify(currentBlocks)
+        current_template: JSON.stringify(currentBlocks),
+        dynamic_identifiers: {
+          directory_type_id: directoryTypeID,
+          template_id: currentPostId
+        }
       };
       const listingsArchiveItemViews = ['listings-archive-grid-view', 'listings-archive-list-view'];
       if (listingsArchiveItemViews.includes(templateType)) {
