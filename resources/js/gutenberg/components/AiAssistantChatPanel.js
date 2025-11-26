@@ -128,8 +128,9 @@ export default function AiAssistantChatPanel() {
     };
 
     const handleScroll = ( e ) => {
-        if ( e.target.scrollTop === 0 && hasMore && ! isFetchingMore && ! isLoading ) {
-            prevScrollHeightRef.current = e.target.scrollHeight;
+        const scrollElement = chatContentRef.current || e.target;
+        if ( scrollElement && scrollElement.scrollTop <= 5 && hasMore && ! isFetchingMore && ! isLoading ) {
+            prevScrollHeightRef.current = scrollElement.scrollHeight;
             const nextPage = page + 1;
             setPage( nextPage );
             fetchMessages( nextPage );
@@ -371,7 +372,11 @@ export default function AiAssistantChatPanel() {
                             <ReactSVG width={ 16 } height={ 16 } src={ minusIcon } />
                         </Button>
                     </div>
-					<div className="directorist-gutenberg-ai-assistant-chat-content">
+					<div
+                        className="directorist-gutenberg-ai-assistant-chat-content"
+                        onScroll={ handleScroll }
+                        ref={ chatContentRef }
+                    >
 
                         { isLoading ? (
                             <div className="directorist-gutenberg-ai-assistant-chat-loader">
@@ -431,8 +436,6 @@ export default function AiAssistantChatPanel() {
                                     /* Conversation Area */
                                     <div
                                         className="directorist-gutenberg-ai-assistant-chat-conversation-area"
-                                        onScroll={ handleScroll }
-                                        ref={ chatContentRef }
                                     >
                                         { isFetchingMore && (
                                             <div className="directorist-gutenberg-ai-assistant-chat-loader-more">

@@ -30,6 +30,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: none;
 }
 .directorist-gutenberg-listing-category .directorist-icon-mask:after,
 .directorist-gutenberg-listing-category .directorist-gutenberg-listing-category-icon:after {

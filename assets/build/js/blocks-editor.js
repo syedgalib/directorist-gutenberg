@@ -3353,8 +3353,9 @@ function AiAssistantChatPanel() {
     }
   };
   const handleScroll = e => {
-    if (e.target.scrollTop === 0 && hasMore && !isFetchingMore && !isLoading) {
-      prevScrollHeightRef.current = e.target.scrollHeight;
+    const scrollElement = chatContentRef.current || e.target;
+    if (scrollElement && scrollElement.scrollTop <= 5 && hasMore && !isFetchingMore && !isLoading) {
+      prevScrollHeightRef.current = scrollElement.scrollHeight;
       const nextPage = page + 1;
       setPage(nextPage);
       fetchMessages(nextPage);
@@ -3582,6 +3583,8 @@ function AiAssistantChatPanel() {
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
         className: "directorist-gutenberg-ai-assistant-chat-content",
+        onScroll: handleScroll,
+        ref: chatContentRef,
         children: isLoading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
           className: "directorist-gutenberg-ai-assistant-chat-loader",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Spinner, {})
@@ -3643,8 +3646,6 @@ function AiAssistantChatPanel() {
           /* Conversation Area */
           (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)("div", {
             className: "directorist-gutenberg-ai-assistant-chat-conversation-area",
-            onScroll: handleScroll,
-            ref: chatContentRef,
             children: [isFetchingMore && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
               className: "directorist-gutenberg-ai-assistant-chat-loader-more",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Spinner, {})
