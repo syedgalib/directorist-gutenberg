@@ -3,6 +3,7 @@
 		// Ensure back element doesn't interfere with interactions
 		user-select: none;
 		pointer-events: none !important; // Critical: prevent blocking clicks
+		height: 100%;
 
 		// Make sure the image also doesn't capture events
 		img {

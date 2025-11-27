@@ -3,7 +3,6 @@
   \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .directorist-gutenberg-listing-card-thumbnail {
   display: grid;
-  min-height: 300px;
   width: 100%;
   position: relative;
   box-sizing: border-box;
@@ -26,9 +25,16 @@
   z-index: 1;
   position: relative;
   border-radius: inherit;
+  aspect-ratio: inherit;
+}
+.directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-back a {
+  display: block;
+  height: 100%;
+  width: 100%;
 }
 .directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-back a, .directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-back img {
   border-radius: inherit;
+  aspect-ratio: inherit;
 }
 .directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-overlay {
   border-radius: inherit;

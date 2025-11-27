@@ -1,6 +1,6 @@
 .directorist-gutenberg-listing-card-thumbnail {
 	display: grid;
-	min-height: 300px;
+	// min-height: 300px;
 	width: 100%;
 	position: relative;
 	box-sizing: border-box;
@@ -23,8 +23,15 @@
 		z-index: 1;
 		position: relative;
 		border-radius: inherit;
+		aspect-ratio: inherit;
+		a{
+			display: block;
+			height: 100%;
+			width: 100%;
+		}
 		a, img{
 			border-radius: inherit;
+			aspect-ratio: inherit;
 		}
 	}
 

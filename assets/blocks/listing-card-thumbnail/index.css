@@ -199,6 +199,7 @@
      -moz-user-select: none;
           user-select: none;
   pointer-events: none !important;
+  height: 100%;
 }
 .directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-back img {
   pointer-events: none !important;
