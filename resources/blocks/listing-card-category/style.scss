@@ -27,6 +27,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        flex: none;
         &:after{
             background-color: var(--directorist-color-primary);
             width: 14px;

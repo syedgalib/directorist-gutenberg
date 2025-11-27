@@ -5651,6 +5651,9 @@ const widthOptions = [{
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('25%', 'directorist-gutenberg'),
   value: '25'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Inline', 'directorist-gutenberg'),
+  value: 'inline'
 }];
 function WidthControls({
   attributes,

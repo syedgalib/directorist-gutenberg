@@ -93,15 +93,29 @@ export default function AiAssistantChatPanel() {
     const currentPostId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId(), [] );
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        if ( chatContentRef.current ) {
+            chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+        }
     };
 
-    // Scroll to bottom on new message (if user was near bottom)
+    // Scroll to bottom on new message (only when not fetching older messages)
     useEffect( () => {
-        if ( isOpen && ! isFetchingMore && page === 1 ) {
-            scrollToBottom();
+        if ( isOpen && ! isFetchingMore && ! isLoading ) {
+            // Use setTimeout to ensure DOM has updated
+            setTimeout( () => {
+                scrollToBottom();
+            }, 100 );
         }
-    }, [ messages, isOpen ] );
+    }, [ messages, isOpen, isFetchingMore, isLoading ] );
+
+    // Scroll to bottom when AI starts generating (to show typing indicator)
+    useEffect( () => {
+        if ( isOpen && isGenerating ) {
+            setTimeout( () => {
+                scrollToBottom();
+            }, 100 );
+        }
+    }, [ isGenerating, isOpen ] );
 
     useEffect( () => {
         if ( isOpen && currentPostId ) {
@@ -139,7 +153,9 @@ export default function AiAssistantChatPanel() {
             if ( isFirstPage ) {
                 setIsLoading( false );
                 // Scroll to bottom after initial load
-                setTimeout( scrollToBottom, 100 );
+                setTimeout( () => {
+                    scrollToBottom();
+                }, 100 );
             } else {
                 setIsFetchingMore( false );
                 // Restore scroll position
@@ -153,8 +169,9 @@ export default function AiAssistantChatPanel() {
     };
 
     const handleScroll = ( e ) => {
-        if ( e.target.scrollTop === 0 && hasMore && ! isFetchingMore && ! isLoading ) {
-            prevScrollHeightRef.current = e.target.scrollHeight;
+        const scrollElement = chatContentRef.current || e.target;
+        if ( scrollElement && scrollElement.scrollTop <= 5 && hasMore && ! isFetchingMore && ! isLoading ) {
+            prevScrollHeightRef.current = scrollElement.scrollHeight;
             const nextPage = page + 1;
             setPage( nextPage );
             fetchMessages( nextPage );
@@ -252,6 +269,11 @@ export default function AiAssistantChatPanel() {
         const optimisticMessage = { id: tempId, role: 'user', message: userMessage };
         setMessages( prev => [ ...prev, optimisticMessage ] );
 
+        // Scroll to bottom after adding user message
+        setTimeout( () => {
+            scrollToBottom();
+        }, 50 );
+
         try {
             // 1. Store user message
             await storeMessage( 'user', userMessage );
@@ -343,6 +365,10 @@ export default function AiAssistantChatPanel() {
                  if( assistantMessage ) {
                      await storeMessage('assistant', assistantMessage);
                      setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage } ] );
+                     // Scroll to bottom after adding assistant message
+                     setTimeout( () => {
+                         scrollToBottom();
+                     }, 100 );
                  }
                 return;
             }
@@ -350,6 +376,11 @@ export default function AiAssistantChatPanel() {
             // 3. Store assistant response
             await storeMessage( 'assistant', assistantMessage );
             setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage } ] );
+
+            // Scroll to bottom after adding assistant message
+            setTimeout( () => {
+                scrollToBottom();
+            }, 100 );
 
             // 4. Apply template
             applyTemplate( blockList );
@@ -424,7 +455,11 @@ export default function AiAssistantChatPanel() {
                             <ReactSVG width={ 16 } height={ 16 } src={ minusIcon } />
                         </Button>
                     </div>
-					<div className="directorist-gutenberg-ai-assistant-chat-content">
+					<div
+                        className="directorist-gutenberg-ai-assistant-chat-content"
+                        onScroll={ handleScroll }
+                        ref={ chatContentRef }
+                    >
 
                         { isLoading ? (
                             <div className="directorist-gutenberg-ai-assistant-chat-loader">
@@ -484,8 +519,6 @@ export default function AiAssistantChatPanel() {
                                     /* Conversation Area */
                                     <div
                                         className="directorist-gutenberg-ai-assistant-chat-conversation-area"
-                                        onScroll={ handleScroll }
-                                        ref={ chatContentRef }
                                     >
                                         { isFetchingMore && (
                                             <div className="directorist-gutenberg-ai-assistant-chat-loader-more">
