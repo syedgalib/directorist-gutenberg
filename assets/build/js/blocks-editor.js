@@ -3312,12 +3312,11 @@ function AiAssistantChatPanel() {
   const chatContentRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const prevScrollHeightRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(0);
   const {
-    editPost
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)('core/editor');
-  const {
     resetBlocks
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)('core/block-editor');
-  const currentContent = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getEditedPostContent(), []);
+  const {
+    getBlocks
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/block-editor'));
   const currentPostId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getCurrentPostId(), []);
   const scrollToBottom = () => {
     if (chatContentRef.current) {
@@ -3453,9 +3452,6 @@ function AiAssistantChatPanel() {
       role,
       message
     };
-    if (template) {
-      data.template = template;
-    }
     return await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_5___default()({
       path: `/directorist-gutenberg/admin/templates/${currentPostId}/ai-chats`,
       method: 'POST',
@@ -3484,7 +3480,7 @@ function AiAssistantChatPanel() {
     }, 50);
     try {
       // 1. Store user message
-      await storeMessage('user', userMessage, currentContent);
+      await storeMessage('user', userMessage);
 
       // 2. Call Intelligent API
       await generateResponse(userMessage);
@@ -3498,6 +3494,13 @@ function AiAssistantChatPanel() {
       setIsSending(false);
     }
   };
+  const sanitizeBlocks = blocks => {
+    return blocks.map(block => ({
+      name: block.name,
+      attributes: block.attributes || {},
+      innerBlocks: sanitizeBlocks(block.innerBlocks || [])
+    }));
+  };
   const generateResponse = async instruction => {
     setIsGenerating(true);
     try {
@@ -3509,10 +3512,15 @@ function AiAssistantChatPanel() {
         'listings-archive-list-view': listingsArchiveItemAPIURL
       };
       const apiURL = apiURLs[templateType];
+      const currentBlocks = sanitizeBlocks(getBlocks());
       const apiData = {
         template_type: templateType,
         instruction: instruction,
-        current_template: currentContent
+        current_template: JSON.stringify(currentBlocks),
+        dynamic_identifiers: {
+          directory_type_id: directoryTypeID,
+          template_id: currentPostId
+        }
       };
       const listingsArchiveItemViews = ['listings-archive-grid-view', 'listings-archive-list-view'];
       if (listingsArchiveItemViews.includes(templateType)) {
@@ -3538,9 +3546,9 @@ function AiAssistantChatPanel() {
         throw new Error('API generation failed');
       }
       const data = await response.json();
-      let templateContent = data?.template;
+      const blockList = data?.template;
       let assistantMessage = data?.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Here is your updated design.', 'directorist-gutenberg');
-      if (!templateContent) {
+      if (!blockList) {
         console.warn('No template content returned from the AI Assistant API.');
         // Fallback if only message returned
         if (assistantMessage) {
@@ -3559,12 +3567,11 @@ function AiAssistantChatPanel() {
       }
 
       // 3. Store assistant response
-      await storeMessage('assistant', assistantMessage, templateContent);
+      await storeMessage('assistant', assistantMessage);
       setMessages(prev => [...prev, {
         id: Date.now(),
         role: 'assistant',
-        message: assistantMessage,
-        template: templateContent
+        message: assistantMessage
       }]);
 
       // Scroll to bottom after adding assistant message
@@ -3573,7 +3580,7 @@ function AiAssistantChatPanel() {
       }, 100);
 
       // 4. Apply template
-      applyTemplate(templateContent);
+      applyTemplate(blockList);
     } catch (error) {
       console.error('Error generating response:', error);
       setRetryAction(() => () => generateResponse(instruction));
@@ -3581,17 +3588,33 @@ function AiAssistantChatPanel() {
       setIsGenerating(false);
     }
   };
-  const applyTemplate = templateContent => {
+
+  /**
+   * Recursively converts block structure to WordPress block objects
+   */
+  const createBlocksFromList = blockList => {
+    if (!blockList || !Array.isArray(blockList)) {
+      return [];
+    }
+    return blockList.map(blockData => {
+      const {
+        name,
+        attributes = {},
+        innerBlocks = []
+      } = blockData;
+
+      // Recursively create inner blocks
+      const parsedInnerBlocks = createBlocksFromList(innerBlocks);
+
+      // Create the block with inner blocks
+      return (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.createBlock)(name, attributes, parsedInnerBlocks);
+    });
+  };
+  const applyTemplate = blockList => {
     try {
-      // Clean up template content
-      const cleanContent = templateContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-      const parsedBlocks = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(cleanContent) || [];
-      if (parsedBlocks.length > 0) {
-        resetBlocks(parsedBlocks);
-      }
+      resetBlocks(createBlocksFromList(blockList));
     } catch (parseError) {
       console.error('Unable to replace blocks with AI template', parseError);
-      alert((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Unable to replace blocks with AI template', 'directorist-gutenberg'));
     }
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_20__.jsxs)(_style__WEBPACK_IMPORTED_MODULE_11__.StyledChatPanel, {
