@@ -55,7 +55,7 @@ export default function AiAssistantChatPanel() {
         .filter( field => customFieldsBlocks.hasOwnProperty( field.type ) )
         .map( field => {
             return {
-                block: customFieldsBlocks[field.type],
+                block_name: customFieldsBlocks[field.type],
                 meta_key: field.field_key,
                 label: field.label,
             };
