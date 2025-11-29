@@ -359,6 +359,8 @@ export default function AiAssistantChatPanel() {
             const blockList = data?.template;
             let assistantMessage = data?.message || __( 'Here is your updated design.', 'directorist-gutenberg' );
 
+            console.log( { blockList } );
+
             if ( ! blockList ) {
                 console.warn( 'No template content returned from the AI Assistant API.' );
                  // Fallback if only message returned
