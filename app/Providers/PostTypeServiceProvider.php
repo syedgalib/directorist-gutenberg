@@ -143,7 +143,7 @@ class PostTypeServiceProvider implements Provider {
             'hierarchical'          => false,
             'public'                => true,
             'show_ui'               => true,
-            'show_in_menu'          => 'edit.php?post_type=at_biz_dir',
+            'show_in_menu'          => false,
             'rewrite'               => [ 'slug' => 'directorist-gutenberg-template' ],
             'show_in_nav_menus'     => false,
             'can_export'            => true,

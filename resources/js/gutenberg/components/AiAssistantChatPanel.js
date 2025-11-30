@@ -18,7 +18,7 @@ import { getLocalizedBlockData } from '@directorist-gutenberg/gutenberg/localize
 import { useDragPosition } from '@directorist-gutenberg/gutenberg/hooks/useDragPosition';
 import { useChatMessages } from '@directorist-gutenberg/gutenberg/hooks/useChatMessages';
 import { usePanelPosition } from '@directorist-gutenberg/gutenberg/hooks/usePanelPosition';
-import { sanitizeBlocks, createBlocksFromList } from '@directorist-gutenberg/gutenberg/utils/utils';
+import { sanitizeBlocks, createBlocksFromList } from '@directorist-gutenberg/gutenberg/utils/blockUtils';
 import { formatChatHistory, getApiUrl, prepareApiData } from '@directorist-gutenberg/gutenberg/utils/aiApi';
 import {
 	supportedTemplateTypes,
