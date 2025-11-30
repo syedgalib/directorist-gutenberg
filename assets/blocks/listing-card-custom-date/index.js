@@ -4656,7 +4656,8 @@ function TemplateIdHandler({
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   IconPickerStyle: () => (/* binding */ IconPickerStyle),
-/* harmony export */   StyledChatPanel: () => (/* binding */ StyledChatPanel)
+/* harmony export */   StyledChatPanel: () => (/* binding */ StyledChatPanel),
+/* harmony export */   StyledChatToggle: () => (/* binding */ StyledChatToggle)
 /* harmony export */ });
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! styled-components */ "./node_modules/.pnpm/styled-components@6.1.19_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/styled-components/dist/styled-components.browser.esm.js");
 
@@ -4745,35 +4746,9 @@ const IconPickerStyle = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
 `;
 const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"].div`
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: 20px;
+    right: 20px;
     z-index: 100000;
-
-    .directorist-gutenberg-ai-assistant-chat-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        border: 1px solid #3E62F5;
-        background: #3E62F5;
-        width: 48px;
-        height: 48px;
-        box-shadow: 0 4px 8px 0 rgba(16, 24, 40, 0.08);
-        cursor: pointer;
-        animation: zoomInOut 1.5s ease-in-out infinite;
-        padding: 0;
-        min-width: 48px;
-
-        svg {
-            width: 24px;
-            height: 24px;
-            color: #fff;
-        }
-
-        &:hover {
-            animation-play-state: paused;
-        }
-    }
 
     .directorist-gutenberg-ai-assistant-chat-panel-content {
         width: 420px;
@@ -4818,12 +4793,20 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
         justify-content: space-between;
         padding: 16px 20px;
         border-bottom: 1px solid #E0E0E0;
+        cursor: move;
+        user-select: none;
+        -webkit-user-select: none;
     }
 
     .directorist-gutenberg-ai-assistant-chat-header-left {
         display: flex;
         align-items: center;
         gap: 12px;
+        pointer-events: auto;
+
+        button {
+            pointer-events: auto;
+        }
     }
 
     .directorist-gutenberg-ai-assistant-chat-close,
@@ -5235,6 +5218,45 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
             line-height: 26px;
             padding: 0 12px;
         }
+    }
+`;
+const StyledChatToggle = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"].div`
+    position: fixed !important;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #3E62F5;
+    background: #3E62F5;
+    width: 48px;
+    height: 48px;
+    box-shadow: 0 4px 8px 0 rgba(16, 24, 40, 0.08);
+    animation: zoomInOut 1.5s ease-in-out infinite;
+    padding: 0;
+    min-width: 48px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+
+    svg {
+        width: 24px;
+        height: 24px;
+        color: #fff;
+        pointer-events: none;
+    }
+
+    &:hover {
+        animation-play-state: paused;
+    }
+
+    &:active {
+        cursor: grabbing;
+    }
+    button{
+        cursor: move;
     }
 `;
 
