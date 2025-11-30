@@ -85,16 +85,15 @@ function GreetingSection( { suggestedActions, onSuggestionClick } ) {
  * @param {Array} messages Array of message objects
  * @param {boolean} isSending Whether a message is being sent
  * @param {boolean} isGenerating Whether AI is generating response
- * @param {Function} retryAction Retry action callback
  * @returns {JSX.Element} Conversation area
  */
-function ConversationArea( { messages, isSending, isGenerating, retryAction } ) {
+function ConversationArea( { messages, isSending, isGenerating } ) {
 	return (
 		<div className="directorist-gutenberg-ai-assistant-chat-conversation-area">
 			{ messages.map( ( msg ) => (
 				<div
 					key={ msg.id }
-					className={ `directorist-gutenberg-ai-assistant-chat-conversation-area-item directorist-gutenberg-ai-assistant-chat-${ msg.role }-message` }
+					className={ `directorist-gutenberg-ai-assistant-chat-conversation-area-item directorist-gutenberg-ai-assistant-chat-${ msg.role }-message ${ msg.isError ? 'directorist-gutenberg-ai-assistant-chat-error-message' : '' }` }
 				>
 					{ msg.role === 'assistant' && (
 						<div className="directorist-gutenberg-ai-assistant-chat-icon">
@@ -108,6 +107,13 @@ function ConversationArea( { messages, isSending, isGenerating, retryAction } ) 
 						<span className="directorist-gutenberg-ai-assistant-chat-text-content">
 							{ msg.message }
 						</span>
+						{ msg.isError && msg.retryAction && (
+							<div className="directorist-gutenberg-ai-assistant-chat-error-actions">
+								<Button variant="secondary" onClick={ msg.retryAction } size="small">
+									{ __( 'Try Again', 'directorist-gutenberg' ) }
+								</Button>
+							</div>
+						) }
 					</div>
 				</div>
 			) ) }
@@ -125,15 +131,6 @@ function ConversationArea( { messages, isSending, isGenerating, retryAction } ) 
 					</div>
 				</div>
 			) }
-
-			{ retryAction && (
-				<div className="directorist-gutenberg-ai-assistant-chat-retry">
-					<p>{ __( 'Something went wrong.', 'directorist-gutenberg' ) }</p>
-					<Button variant="secondary" onClick={ retryAction }>
-						{ __( 'Retry', 'directorist-gutenberg' ) }
-					</Button>
-				</div>
-			) }
 		</div>
 	);
 }
@@ -149,7 +146,6 @@ export default function ChatContent( {
 	messages,
 	isSending,
 	isGenerating,
-	retryAction,
 	suggestedActions,
 	onSuggestionClick,
 	chatContentRef,
@@ -186,7 +182,6 @@ export default function ChatContent( {
 					messages={ messages }
 					isSending={ isSending }
 					isGenerating={ isGenerating }
-					retryAction={ retryAction }
 				/>
 			) }
 		</div>

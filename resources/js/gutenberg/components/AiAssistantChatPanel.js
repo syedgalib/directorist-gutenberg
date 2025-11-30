@@ -61,7 +61,6 @@ export default function AiAssistantChatPanel() {
 	const [ inputValue, setInputValue ] = useState( '' );
 	const [ isSending, setIsSending ] = useState( false );
 	const [ isGenerating, setIsGenerating ] = useState( false );
-	const [ retryAction, setRetryAction ] = useState( null );
 
 	// Button drag hook
 	const defaultButtonX = typeof window !== 'undefined' ? window.innerWidth - 48 - 24 : 0;
@@ -189,7 +188,8 @@ export default function AiAssistantChatPanel() {
 			} );
 
 			if ( ! response.ok ) {
-				throw new Error( 'API generation failed' );
+				const errorText = await response.text();
+				throw new Error( errorText || __( 'API generation failed', 'directorist-gutenberg' ) );
 			}
 
 			const data = await response.json();
@@ -215,7 +215,21 @@ export default function AiAssistantChatPanel() {
 			applyTemplate( blockList );
 		} catch ( error ) {
 			console.error( 'Error generating response:', error );
-			setRetryAction( () => () => generateResponse( instruction ) );
+
+			// Add error message to chat
+			const errorMessage = error.message || __( 'Something went wrong. Please try again.', 'directorist-gutenberg' );
+			const errorId = Date.now();
+			addMessage( {
+				id: errorId,
+				role: 'assistant',
+				message: errorMessage,
+				isError: true,
+				retryAction: () => {
+					removeMessage( errorId );
+					generateResponse( instruction );
+				},
+			} );
+			setTimeout( () => scrollToBottom(), 100 );
 		} finally {
 			setIsGenerating( false );
 		}
@@ -237,7 +251,7 @@ export default function AiAssistantChatPanel() {
 		const userMessage = inputValue;
 		setInputValue( '' );
 		setIsSending( true );
-		setRetryAction( null );
+		// setRetryAction( null );
 
 		// Optimistically add user message
 		const tempId = Date.now();
@@ -249,12 +263,30 @@ export default function AiAssistantChatPanel() {
 		try {
 			await storeMessage( 'user', userMessage );
 			await generateResponse( userMessage );
-			setRetryAction( null );
 		} catch ( error ) {
 			console.error( 'Error sending message:', error );
+
+			// Remove optimistic message
 			removeMessage( tempId );
+
+			// Add error message to chat
+			const errorMessage = error.message || __( 'Failed to send message. Please try again.', 'directorist-gutenberg' );
+			const errorId = Date.now();
+			addMessage( {
+				id: errorId,
+				role: 'assistant',
+				message: errorMessage,
+				isError: true,
+				retryAction: () => {
+					removeMessage( errorId );
+					setInputValue( userMessage );
+					handleSendMessage();
+				},
+			} );
+			setTimeout( () => scrollToBottom(), 100 );
+
+			// Restore input value
 			setInputValue( userMessage );
-			setRetryAction( () => handleSendMessage );
 		} finally {
 			setIsSending( false );
 		}
@@ -308,7 +340,6 @@ export default function AiAssistantChatPanel() {
 							messages={ messages }
 							isSending={ isSending }
 							isGenerating={ isGenerating }
-							retryAction={ retryAction }
 							suggestedActions={ suggestedActions }
 							onSuggestionClick={ handleSuggestionClick }
 							chatContentRef={ chatContentRef }

@@ -3291,7 +3291,6 @@ function AiAssistantChatPanel() {
   const [inputValue, setInputValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const [isSending, setIsSending] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [isGenerating, setIsGenerating] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-  const [retryAction, setRetryAction] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
 
   // Button drag hook
   const defaultButtonX = typeof window !== 'undefined' ? window.innerWidth - 48 - 24 : 0;
@@ -3410,7 +3409,8 @@ function AiAssistantChatPanel() {
         body: JSON.stringify(apiData)
       });
       if (!response.ok) {
-        throw new Error('API generation failed');
+        const errorText = await response.text();
+        throw new Error(errorText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('API generation failed', 'directorist-gutenberg'));
       }
       const data = await response.json();
       const blockList = data?.template;
@@ -3442,7 +3442,21 @@ function AiAssistantChatPanel() {
       applyTemplate(blockList);
     } catch (error) {
       console.error('Error generating response:', error);
-      setRetryAction(() => () => generateResponse(instruction));
+
+      // Add error message to chat
+      const errorMessage = error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Something went wrong. Please try again.', 'directorist-gutenberg');
+      const errorId = Date.now();
+      addMessage({
+        id: errorId,
+        role: 'assistant',
+        message: errorMessage,
+        isError: true,
+        retryAction: () => {
+          removeMessage(errorId);
+          generateResponse(instruction);
+        }
+      });
+      setTimeout(() => scrollToBottom(), 100);
     } finally {
       setIsGenerating(false);
     }
@@ -3463,7 +3477,7 @@ function AiAssistantChatPanel() {
     const userMessage = inputValue;
     setInputValue('');
     setIsSending(true);
-    setRetryAction(null);
+    // setRetryAction( null );
 
     // Optimistically add user message
     const tempId = Date.now();
@@ -3477,12 +3491,30 @@ function AiAssistantChatPanel() {
     try {
       await storeMessage('user', userMessage);
       await generateResponse(userMessage);
-      setRetryAction(null);
     } catch (error) {
       console.error('Error sending message:', error);
+
+      // Remove optimistic message
       removeMessage(tempId);
+
+      // Add error message to chat
+      const errorMessage = error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Failed to send message. Please try again.', 'directorist-gutenberg');
+      const errorId = Date.now();
+      addMessage({
+        id: errorId,
+        role: 'assistant',
+        message: errorMessage,
+        isError: true,
+        retryAction: () => {
+          removeMessage(errorId);
+          setInputValue(userMessage);
+          handleSendMessage();
+        }
+      });
+      setTimeout(() => scrollToBottom(), 100);
+
+      // Restore input value
       setInputValue(userMessage);
-      setRetryAction(() => handleSendMessage);
     } finally {
       setIsSending(false);
     }
@@ -3533,7 +3565,6 @@ function AiAssistantChatPanel() {
           messages: messages,
           isSending: isSending,
           isGenerating: isGenerating,
-          retryAction: retryAction,
           suggestedActions: suggestedActions,
           onSuggestionClick: handleSuggestionClick,
           chatContentRef: chatContentRef,
@@ -3687,19 +3718,17 @@ function GreetingSection({
  * @param {Array} messages Array of message objects
  * @param {boolean} isSending Whether a message is being sent
  * @param {boolean} isGenerating Whether AI is generating response
- * @param {Function} retryAction Retry action callback
  * @returns {JSX.Element} Conversation area
  */
 function ConversationArea({
   messages,
   isSending,
-  isGenerating,
-  retryAction
+  isGenerating
 }) {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     className: "directorist-gutenberg-ai-assistant-chat-conversation-area",
     children: [messages.map(msg => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-      className: `directorist-gutenberg-ai-assistant-chat-conversation-area-item directorist-gutenberg-ai-assistant-chat-${msg.role}-message`,
+      className: `directorist-gutenberg-ai-assistant-chat-conversation-area-item directorist-gutenberg-ai-assistant-chat-${msg.role}-message ${msg.isError ? 'directorist-gutenberg-ai-assistant-chat-error-message' : ''}`,
       children: [msg.role === 'assistant' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
         className: "directorist-gutenberg-ai-assistant-chat-icon",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -3715,6 +3744,14 @@ function ConversationArea({
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
           className: "directorist-gutenberg-ai-assistant-chat-text-content",
           children: msg.message
+        }), msg.isError && msg.retryAction && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+          className: "directorist-gutenberg-ai-assistant-chat-error-actions",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
+            variant: "secondary",
+            onClick: msg.retryAction,
+            size: "small",
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Try Again', 'directorist-gutenberg')
+          })
         })]
       })]
     }, msg.id)), (isSending || isGenerating) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
@@ -3736,15 +3773,6 @@ function ConversationArea({
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {})]
         })]
       })]
-    }), retryAction && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-      className: "directorist-gutenberg-ai-assistant-chat-retry",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
-        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Something went wrong.', 'directorist-gutenberg')
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
-        variant: "secondary",
-        onClick: retryAction,
-        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Retry', 'directorist-gutenberg')
-      })]
     })]
   });
 }
@@ -3760,7 +3788,6 @@ function ChatContent({
   messages,
   isSending,
   isGenerating,
-  retryAction,
   suggestedActions,
   onSuggestionClick,
   chatContentRef,
@@ -3786,8 +3813,7 @@ function ChatContent({
     }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(ConversationArea, {
       messages: messages,
       isSending: isSending,
-      isGenerating: isGenerating,
-      retryAction: retryAction
+      isGenerating: isGenerating
     })]
   });
 }
@@ -4750,6 +4776,34 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
         line-height: 1.6;
         word-wrap: break-word;
         white-space: pre-wrap;
+    }
+
+    .directorist-gutenberg-ai-assistant-chat-error-message {
+        .directorist-gutenberg-ai-assistant-chat-text-content {
+            color: #D92D20;
+        }
+
+        .directorist-gutenberg-ai-assistant-chat-icon {
+            background: #FEE4E2;
+            color: #D92D20;
+
+            svg {
+                color: #D92D20;
+            }
+        }
+    }
+
+    .directorist-gutenberg-ai-assistant-chat-error-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+
+        button {
+            font-size: 12px;
+            height: 28px;
+            line-height: 26px;
+            padding: 0 12px;
+        }
     }
 
     .directorist-gutenberg-ai-assistant-chat-suggestions {

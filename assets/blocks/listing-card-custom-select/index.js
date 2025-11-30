@@ -4953,6 +4953,34 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
         white-space: pre-wrap;
     }
 
+    .directorist-gutenberg-ai-assistant-chat-error-message {
+        .directorist-gutenberg-ai-assistant-chat-text-content {
+            color: #D92D20;
+        }
+
+        .directorist-gutenberg-ai-assistant-chat-icon {
+            background: #FEE4E2;
+            color: #D92D20;
+
+            svg {
+                color: #D92D20;
+            }
+        }
+    }
+
+    .directorist-gutenberg-ai-assistant-chat-error-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+
+        button {
+            font-size: 12px;
+            height: 28px;
+            line-height: 26px;
+            padding: 0 12px;
+        }
+    }
+
     .directorist-gutenberg-ai-assistant-chat-suggestions {
         display: flex;
         flex-direction: column;
