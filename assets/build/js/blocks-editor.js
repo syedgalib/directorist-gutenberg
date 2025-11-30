@@ -3287,7 +3287,7 @@ function AiAssistantChatPanel() {
   };
   const availableCustomFields = customFields.filter(field => customFieldsBlocks.hasOwnProperty(field.type)).map(field => {
     return {
-      block: customFieldsBlocks[field.type],
+      block_name: customFieldsBlocks[field.type],
       meta_key: field.field_key,
       label: field.label
     };
@@ -3548,6 +3548,9 @@ function AiAssistantChatPanel() {
       const data = await response.json();
       const blockList = data?.template;
       let assistantMessage = data?.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Here is your updated design.', 'directorist-gutenberg');
+      console.log({
+        blockList
+      });
       if (!blockList) {
         console.warn('No template content returned from the AI Assistant API.');
         // Fallback if only message returned
