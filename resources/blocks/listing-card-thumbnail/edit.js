@@ -116,6 +116,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		objectFit: !! ( height || aspectRatio ) && scale,
 	};
 
+	const defaultHeight = height ? height : '300px';
+
 	return (
 		<>
 			<InspectorControls group="color">
@@ -132,7 +134,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					setAttributes={ setAttributes }
 				/>
 			</InspectorControls>
-			<div { ...blockProps }>
+			<div { ...blockProps } style={{ "--directorist-thumbnail-height": defaultHeight }}>
 				<div className="directorist-gutenberg-listing-card-thumbnail-back">
 					<img
 						className="directorist-gutenberg-listing-card-thumbnail-preview-img"

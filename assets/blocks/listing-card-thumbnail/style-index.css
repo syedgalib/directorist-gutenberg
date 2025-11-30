@@ -3,9 +3,11 @@
   \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .directorist-gutenberg-listing-card-thumbnail {
   display: grid;
+  height: var(--directorist-thumbnail-height);
   width: 100%;
   position: relative;
   box-sizing: border-box;
+  overflow: hidden;
 }
 .directorist-gutenberg-listing-card-thumbnail img {
   width: 100%;
@@ -26,6 +28,7 @@
   position: relative;
   border-radius: inherit;
   aspect-ratio: inherit;
+  height: 100%;
 }
 .directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-back a {
   display: block;
@@ -33,7 +36,6 @@
   width: 100%;
 }
 .directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-back a, .directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-back img {
-  border-radius: inherit;
   aspect-ratio: inherit;
 }
 .directorist-gutenberg-listing-card-thumbnail .directorist-gutenberg-listing-card-thumbnail-overlay {
@@ -93,6 +95,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+.directorist-gutenberg-listing-is-featured {
+  border: 1px solid #ffb048;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

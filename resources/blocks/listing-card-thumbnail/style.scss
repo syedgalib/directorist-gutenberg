@@ -1,9 +1,10 @@
 .directorist-gutenberg-listing-card-thumbnail {
 	display: grid;
-	// min-height: 300px;
+	height: var(--directorist-thumbnail-height);
 	width: 100%;
 	position: relative;
 	box-sizing: border-box;
+	overflow: hidden;
 
 	img {
 		width: 100%;
@@ -24,13 +25,13 @@
 		position: relative;
 		border-radius: inherit;
 		aspect-ratio: inherit;
+		height: 100%;
 		a{
 			display: block;
 			height: 100%;
 			width: 100%;
 		}
 		a, img{
-			border-radius: inherit;
 			aspect-ratio: inherit;
 		}
 	}
@@ -68,4 +69,10 @@
 		flex-wrap: wrap;
 		gap: 12px;
 	}
+}
+
+.directorist-gutenberg-listing-is-featured{
+	border: 1px solid #ffb048;
+	border-radius: 10px;
+	overflow: hidden;
 }

@@ -1,4 +1,5 @@
 .directorist-gutenberg-listing-card-thumbnail {
+	height: var(--directorist-thumbnail-height);
 	.directorist-gutenberg-listing-card-thumbnail-back {
 		// Ensure back element doesn't interfere with interactions
 		user-select: none;

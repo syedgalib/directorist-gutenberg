@@ -7,7 +7,7 @@
 	"description": "Displays the thumbnail of the listing",
 	"category": "directorist-listing-card-preset-fields",
 	"attributes": {
-		"block_width": {	
+		"block_width": {
 			"description": "Block width is used to set the width of the block in percentage",
 			"type": "string",
 			"default": "100"
@@ -27,14 +27,15 @@
 		},
 		"height": {
 			"description": "Height is used to set the height of the block",
-			"type": "string"
+			"type": "string",
+			"default": "300"
 		},
 		"scale": {
 			"description": "Scale is used to set the scale of the image",
 			"type": "string",
 			"default": "cover"
 		},
-		"overlayColor": {	
+		"overlayColor": {
 			"description": "Overlay color is used to set the color of the overlay",
 			"type": "string"
 		},

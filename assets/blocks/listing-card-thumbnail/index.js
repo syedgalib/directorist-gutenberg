@@ -2918,7 +2918,7 @@ module.exports = __webpack_require__.p + "icons/thumbnail.svg";
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-thumbnail","version":"0.1.0","title":"Listing Thumbnail","description":"Displays the thumbnail of the listing","category":"directorist-listing-card-preset-fields","attributes":{"block_width":{"description":"Block width is used to set the width of the block in percentage","type":"string","default":"100"},"image_quality":{"description":"Image quality is used to set the quality of the image","type":"string","default":"default"},"aspectRatio":{"description":"Aspect ratio is used to set the aspect ratio of the image","type":"string"},"width":{"description":"Width is used to set the width of the block","type":"string"},"height":{"description":"Height is used to set the height of the block","type":"string"},"scale":{"description":"Scale is used to set the scale of the image","type":"string","default":"cover"},"overlayColor":{"description":"Overlay color is used to set the color of the overlay","type":"string"},"dimRatio":{"description":"Dim ratio is used to set opacity of the overlay color","type":"number","default":0},"gradient":{"description":"Gradient is used to set the gradient of the image","type":"string"},"customGradient":{"description":"Custom gradient is used to set the custom gradient of the image","type":"string"}},"example":{},"supports":{"html":false,"spacing":{"margin":true,"padding":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-thumbnail","version":"0.1.0","title":"Listing Thumbnail","description":"Displays the thumbnail of the listing","category":"directorist-listing-card-preset-fields","attributes":{"block_width":{"description":"Block width is used to set the width of the block in percentage","type":"string","default":"100"},"image_quality":{"description":"Image quality is used to set the quality of the image","type":"string","default":"default"},"aspectRatio":{"description":"Aspect ratio is used to set the aspect ratio of the image","type":"string"},"width":{"description":"Width is used to set the width of the block","type":"string"},"height":{"description":"Height is used to set the height of the block","type":"string","default":"300"},"scale":{"description":"Scale is used to set the scale of the image","type":"string","default":"cover"},"overlayColor":{"description":"Overlay color is used to set the color of the overlay","type":"string"},"dimRatio":{"description":"Dim ratio is used to set opacity of the overlay color","type":"number","default":0},"gradient":{"description":"Gradient is used to set the gradient of the image","type":"string"},"customGradient":{"description":"Custom gradient is used to set the custom gradient of the image","type":"string"}},"example":{},"supports":{"html":false,"spacing":{"margin":true,"padding":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -3252,6 +3252,7 @@ function Edit({
     width: !!aspectRatio && '100%',
     objectFit: !!(height || aspectRatio) && scale
   };
+  const defaultHeight = height ? height : '300px';
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
       group: "color",
@@ -3269,6 +3270,9 @@ function Edit({
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
       ...blockProps,
+      style: {
+        "--directorist-thumbnail-height": defaultHeight
+      },
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
         className: "directorist-gutenberg-listing-card-thumbnail-back",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("img", {
