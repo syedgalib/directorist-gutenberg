@@ -2224,16 +2224,8 @@ jQuery(document).ready(function ($) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   createBlocksFromList: () => (/* binding */ createBlocksFromList),
-/* harmony export */   handleRadiusVisibility: () => (/* binding */ handleRadiusVisibility),
-/* harmony export */   sanitizeBlocks: () => (/* binding */ sanitizeBlocks)
+/* harmony export */   handleRadiusVisibility: () => (/* binding */ handleRadiusVisibility)
 /* harmony export */ });
-Object(function webpackMissingModule() { var e = new Error("Cannot find module '@wordpress/blocks'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-/**
- * WordPress dependencies
- */
-
-
 /**
  * Hide or show the radius search field depending on whether the location field is empty.
  * Vanilla JS implementation using modern JS conventions.
@@ -2274,41 +2266,6 @@ const handleRadiusVisibility = () => {
     });
   });
 };
-
-/**
- * Sanitizes blocks by removing unnecessary properties
- *
- * @param {Array} blocks Array of block objects
- * @returns {Array} Sanitized blocks
- */
-function sanitizeBlocks(blocks) {
-  return blocks.map(block => ({
-    name: block.name,
-    attributes: block.attributes || {},
-    innerBlocks: sanitizeBlocks(block.innerBlocks || [])
-  }));
-}
-
-/**
- * Recursively converts block structure to WordPress block objects
- *
- * @param {Array} blockList Array of block data
- * @returns {Array} WordPress block objects
- */
-function createBlocksFromList(blockList) {
-  if (!blockList || !Array.isArray(blockList)) {
-    return [];
-  }
-  return blockList.map(blockData => {
-    const {
-      name,
-      attributes = {},
-      innerBlocks = []
-    } = blockData;
-    const parsedInnerBlocks = createBlocksFromList(innerBlocks);
-    return Object(function webpackMissingModule() { var e = new Error("Cannot find module '@wordpress/blocks'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(name, attributes, parsedInnerBlocks);
-  });
-}
 
 /***/ }),
 

@@ -3221,7 +3221,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _directorist_gutenberg_gutenberg_hooks_useDragPosition__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/hooks/useDragPosition */ "./resources/js/gutenberg/hooks/useDragPosition.js");
 /* harmony import */ var _directorist_gutenberg_gutenberg_hooks_useChatMessages__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/hooks/useChatMessages */ "./resources/js/gutenberg/hooks/useChatMessages.js");
 /* harmony import */ var _directorist_gutenberg_gutenberg_hooks_usePanelPosition__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/hooks/usePanelPosition */ "./resources/js/gutenberg/hooks/usePanelPosition.js");
-/* harmony import */ var _directorist_gutenberg_gutenberg_utils_utils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/utils/utils */ "./resources/js/gutenberg/utils/utils.js");
+/* harmony import */ var _directorist_gutenberg_gutenberg_utils_blockUtils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/utils/blockUtils */ "./resources/js/gutenberg/utils/blockUtils.js");
 /* harmony import */ var _directorist_gutenberg_gutenberg_utils_aiApi__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/utils/aiApi */ "./resources/js/gutenberg/utils/aiApi.js");
 /* harmony import */ var _AiAssistantChatPanel_constants__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./AiAssistantChatPanel/constants */ "./resources/js/gutenberg/components/AiAssistantChatPanel/constants.js");
 /* harmony import */ var _AiAssistantChatPanel_ChatHeader__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./AiAssistantChatPanel/ChatHeader */ "./resources/js/gutenberg/components/AiAssistantChatPanel/ChatHeader.js");
@@ -3390,7 +3390,7 @@ function AiAssistantChatPanel() {
     setIsGenerating(true);
     try {
       const apiURL = (0,_directorist_gutenberg_gutenberg_utils_aiApi__WEBPACK_IMPORTED_MODULE_14__.getApiUrl)(templateType, waxIntelligentApiBaseUrl);
-      const currentBlocks = (0,_directorist_gutenberg_gutenberg_utils_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeBlocks)(getBlocks());
+      const currentBlocks = (0,_directorist_gutenberg_gutenberg_utils_blockUtils__WEBPACK_IMPORTED_MODULE_13__.sanitizeBlocks)(getBlocks());
       const history = (0,_directorist_gutenberg_gutenberg_utils_aiApi__WEBPACK_IMPORTED_MODULE_14__.formatChatHistory)(messages);
       const apiData = (0,_directorist_gutenberg_gutenberg_utils_aiApi__WEBPACK_IMPORTED_MODULE_14__.prepareApiData)({
         templateType,
@@ -3465,7 +3465,7 @@ function AiAssistantChatPanel() {
   // Apply template to editor
   const applyTemplate = blockList => {
     try {
-      resetBlocks((0,_directorist_gutenberg_gutenberg_utils_utils__WEBPACK_IMPORTED_MODULE_13__.createBlocksFromList)(blockList));
+      resetBlocks((0,_directorist_gutenberg_gutenberg_utils_blockUtils__WEBPACK_IMPORTED_MODULE_13__.createBlocksFromList)(blockList));
     } catch (parseError) {
       console.error('Unable to replace blocks with AI template', parseError);
     }
@@ -5822,17 +5822,16 @@ function prepareApiData({
 
 /***/ }),
 
-/***/ "./resources/js/gutenberg/utils/utils.js":
-/*!***********************************************!*\
-  !*** ./resources/js/gutenberg/utils/utils.js ***!
-  \***********************************************/
+/***/ "./resources/js/gutenberg/utils/blockUtils.js":
+/*!****************************************************!*\
+  !*** ./resources/js/gutenberg/utils/blockUtils.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   createBlocksFromList: () => (/* binding */ createBlocksFromList),
-/* harmony export */   handleRadiusVisibility: () => (/* binding */ handleRadiusVisibility),
 /* harmony export */   sanitizeBlocks: () => (/* binding */ sanitizeBlocks)
 /* harmony export */ });
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
@@ -5841,47 +5840,6 @@ __webpack_require__.r(__webpack_exports__);
  * WordPress dependencies
  */
 
-
-/**
- * Hide or show the radius search field depending on whether the location field is empty.
- * Vanilla JS implementation using modern JS conventions.
- * Works with both old structure (.directorist-contents-wrap) and new Gutenberg blocks.
- */
-const handleRadiusVisibility = () => {
-  // Add class to mark the radius search field
-  document.querySelectorAll('.directorist-range-slider-wrap').forEach(wrap => {
-    const searchField = wrap.closest('.directorist-search-field');
-    searchField?.classList.add('directorist-search-field-radius_search');
-  });
-  const basedOnElem = document.querySelector('.directorist-radius_search_based_on');
-  const basedOn = basedOnElem?.value;
-  const selector = basedOn === 'zip' ? '.directorist-zipcode-search .zip-radius-search' : '.directorist-location-js';
-  document.querySelectorAll(selector).forEach(locationDOM => {
-    const isEmpty = locationDOM.value === '';
-
-    // Try to find container in old structure first
-    let contentsWrap = locationDOM.closest('.directorist-contents-wrap');
-
-    // If not found, try new Gutenberg block structure
-    if (!contentsWrap) {
-      // Look for radius search fields in the same form or nearby blocks
-      const form = locationDOM.closest('form');
-      if (form) {
-        contentsWrap = form.closest('[data-atts]') || form;
-      } else {
-        // Fallback: search in document
-        contentsWrap = document.body;
-      }
-    }
-    if (!contentsWrap) return;
-
-    // Find radius search fields within the container
-    const radiusFields = contentsWrap.querySelectorAll ? contentsWrap.querySelectorAll('.directorist-search-field-radius_search, .directorist-radius-search') : document.querySelectorAll('.directorist-search-field-radius_search, .directorist-radius-search');
-    radiusFields.forEach(container => {
-      container.style.display = isEmpty ? 'none' : 'block';
-    });
-  });
-};
 
 /**
  * Sanitizes blocks by removing unnecessary properties
