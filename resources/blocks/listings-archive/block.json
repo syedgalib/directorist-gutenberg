@@ -15,7 +15,7 @@
 		"listings_columns": {
 			"description": "The number of columns to display the listings in",
 			"type": "number",
-			"default": "2"
+			"default": 2
 		},
 		"listings_per_page": {
 			"description": "The number of listings to display per page",
