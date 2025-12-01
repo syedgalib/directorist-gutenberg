@@ -66,9 +66,13 @@
         $thumbnail_styles .= "height:{$attributes['height']};";
     }
 
+    // Default thumbnail height
+    $default_height = $attributes['height'] ? $attributes['height'] : '300px';
+
     // Get wrapper attributes (includes margin, padding, border, border-radius from block supports)
     $wrapper_attributes = get_block_wrapper_attributes( [
         'class' => 'directorist-gutenberg-listing-card-thumbnail',
+        'style' => "--directorist-thumbnail-height: {$default_height};",
     ] );
 
     // Merge custom thumbnail styles with wrapper attributes

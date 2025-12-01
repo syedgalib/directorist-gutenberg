@@ -1,184 +1,142 @@
 /**
  * WordPress dependencies
  */
-import { Button, TextareaControl, Spinner } from '@wordpress/components';
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { Button } from '@wordpress/components';
+import { useState, useEffect } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { parse, createBlock } from '@wordpress/blocks';
-import apiFetch from '@wordpress/api-fetch';
-
-/**
- * External dependencies
- */
 import ReactSVG from 'react-inlinesvg';
 
 /**
  * Internal dependencies
  */
 import aiStarIcon from '@icon/ai-star-alt.svg';
-import assistantIcon from '@icon/ai-feel.svg';
-import closeIcon from '@icon/times.svg';
-import arrowRightIcon from '@icon/arrow-right.svg';
-import { StyledChatPanel } from './style';
-import cube from '@icon/cube.svg';
-import gridIcon from '@icon/grid-bar.svg';
-import documentIcon from '@icon/document-text.svg';
-import star from '@icon/star.svg';
-import minusIcon from '@icon/minus.svg';
 import aiCreditIcon from '@icon/ai-credit.svg';
+import { StyledChatPanel, StyledChatToggle } from './style';
 import { useSubmissionFields } from '@directorist-gutenberg/gutenberg/hooks/useSubmissionFields';
-import { getLocalizedBlockData, getLocalizedBlockDataByKey } from '@directorist-gutenberg/gutenberg/localized-data';
+import { getLocalizedBlockData } from '@directorist-gutenberg/gutenberg/localized-data';
+import { useDragPosition } from '@directorist-gutenberg/gutenberg/hooks/useDragPosition';
+import { useChatMessages } from '@directorist-gutenberg/gutenberg/hooks/useChatMessages';
+import { usePanelPosition } from '@directorist-gutenberg/gutenberg/hooks/usePanelPosition';
+import { sanitizeBlocks, createBlocksFromList } from '@directorist-gutenberg/gutenberg/utils/blockUtils';
+import { formatChatHistory, getApiUrl, prepareApiData } from '@directorist-gutenberg/gutenberg/utils/aiApi';
+import {
+	supportedTemplateTypes,
+	customFieldsBlocks,
+	allSuggestedActions,
+} from './AiAssistantChatPanel/constants';
+import ChatHeader from './AiAssistantChatPanel/ChatHeader';
+import ChatContent from './AiAssistantChatPanel/ChatContent';
+import ChatInput from './AiAssistantChatPanel/ChatInput';
 
 export default function AiAssistantChatPanel() {
-    const localizedData            = getLocalizedBlockData();
-    const directoryTypeID          = parseInt( localizedData?.directory_type_id ) || 0;
-    const templateType             = localizedData?.template_type ?? '';
-    const waxIntelligentApiBaseUrl = localizedData?.wax_intelligent?.api_base_url ?? '';
+	const localizedData = getLocalizedBlockData();
+	const directoryTypeID = parseInt( localizedData?.directory_type_id ) || 0;
+	const templateType = localizedData?.template_type ?? '';
+	const waxIntelligentApiBaseUrl = localizedData?.wax_intelligent?.api_base_url ?? '';
 
-    const { getCustomFields } = useSubmissionFields();
-    const customFields = getCustomFields();
+	const { getCustomFields } = useSubmissionFields();
+	const customFields = getCustomFields();
 
-    const customFieldsBlocks = {
-        'checkbox': 'listing-card-custom-text',
-        'date': 'listing-card-custom-date',
-        'number': 'listing-card-custom-number',
-        'radio': 'listing-card-custom-radio',
-        'select': 'listing-card-custom-select',
-        'text': 'listing-card-custom-text',
-        'textarea': 'listing-card-custom-textarea',
-        'time': 'listing-card-custom-time',
-        'url': 'listing-card-custom-url',
-    };
+	const { resetBlocks } = useDispatch( 'core/block-editor' );
+	const { getBlocks } = useSelect( ( select ) => select( 'core/block-editor' ) );
+	const currentPostId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId(), [] );
 
-    const availableCustomFields = customFields
-        .filter( field => customFieldsBlocks.hasOwnProperty( field.type ) )
-        .map( field => {
-            return {
-                block_name: customFieldsBlocks[field.type],
-                meta_key: field.field_key,
-                label: field.label,
-            };
-    } );
+	// Early return if template type not supported
+	if ( ! supportedTemplateTypes.includes( templateType ) ) {
+		return null;
+	}
 
-    const supportedTemplateTypes = [
-        'listings-archive',
-        'listings-archive-grid-view',
-        'listings-archive-list-view',
-    ];
+	// Prepare available custom fields
+	const availableCustomFields = customFields
+		.filter( field => customFieldsBlocks.hasOwnProperty( field.type ) )
+		.map( field => ( {
+			block_name: customFieldsBlocks[ field.type ],
+			meta_key: field.field_key,
+			label: field.label,
+		} ) );
 
-    if ( ! supportedTemplateTypes.includes( templateType ) ) {
-        return null;
-    }
-
+	// Panel state
 	const [ isOpen, setIsOpen ] = useState( false );
 	const [ inputValue, setInputValue ] = useState( '' );
-    const [ messages, setMessages ] = useState( [] );
-    const [ isLoading, setIsLoading ] = useState( false );
-    const [ isSending, setIsSending ] = useState( false );
-    const [ isGenerating, setIsGenerating ] = useState( false );
-    const [ retryAction, setRetryAction ] = useState( null );
+	const [ isSending, setIsSending ] = useState( false );
+	const [ isGenerating, setIsGenerating ] = useState( false );
 
-    // Pagination state
-    const [ page, setPage ] = useState( 1 );
-    const [ hasMore, setHasMore ] = useState( true );
-    const [ isFetchingMore, setIsFetchingMore ] = useState( false );
+	// Button drag hook
+	const defaultButtonX = typeof window !== 'undefined' ? window.innerWidth - 48 - 24 : 0;
+	const defaultButtonY = typeof window !== 'undefined' ? window.innerHeight - 48 - 24 : 0;
+	const {
+		position: buttonPosition,
+		isDragging: isDraggingButton,
+		elementRef: buttonRef,
+		handleMouseDown: handleButtonMouseDown,
+	} = useDragPosition( {
+		defaultX: defaultButtonX,
+		defaultY: defaultButtonY,
+		elementWidth: 48,
+		elementHeight: 48,
+	} );
 
-    const messagesEndRef = useRef( null );
-    const chatContentRef = useRef( null );
-    const prevScrollHeightRef = useRef( 0 );
+	// Panel drag hook
+	const {
+		position: panelPosition,
+		setPosition: setPanelPosition,
+		isDragging: isDraggingPanel,
+		elementRef: panelRef,
+		handleMouseDown: handlePanelMouseDownBase,
+		resetPosition: resetPanelPosition,
+	} = useDragPosition( {
+		defaultX: null,
+		defaultY: null,
+		elementWidth: 420,
+		elementHeight: 500,
+	} );
 
-    const { resetBlocks } = useDispatch( 'core/block-editor' );
-    const { getBlocks } = useSelect( ( select ) => select( 'core/block-editor' ) );
-    const currentPostId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId(), [] );
+	// Chat messages hook
+	const {
+		messages,
+		addMessage,
+		removeMessage,
+		isLoading,
+		isFetchingMore,
+		hasMore,
+		chatContentRef,
+		handleScroll,
+		storeMessage,
+		scrollToBottom,
+	} = useChatMessages( currentPostId, isOpen );
 
-    const scrollToBottom = () => {
-        if ( chatContentRef.current ) {
-            chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
-        }
-    };
+	// Panel position style
+	const panelStyle = usePanelPosition( isOpen, panelPosition );
 
-    // Scroll to bottom on new message (only when not fetching older messages)
-    useEffect( () => {
-        if ( isOpen && ! isFetchingMore && ! isLoading ) {
-            // Use setTimeout to ensure DOM has updated
-            setTimeout( () => {
-                scrollToBottom();
-            }, 100 );
-        }
-    }, [ messages, isOpen, isFetchingMore, isLoading ] );
+	// Panel drag handler with header check
+	const handlePanelMouseDown = ( e ) => {
+		const target = e.target;
+		const header = e.currentTarget;
 
-    // Scroll to bottom when AI starts generating (to show typing indicator)
-    useEffect( () => {
-        if ( isOpen && isGenerating ) {
-            setTimeout( () => {
-                scrollToBottom();
-            }, 100 );
-        }
-    }, [ isGenerating, isOpen ] );
+		// Don't drag if clicking on buttons or other interactive elements
+		if ( target.closest( 'button' ) || target.closest( 'textarea' ) || target.closest( 'input' ) || target.closest( 'a' ) ) {
+			return;
+		}
 
-    useEffect( () => {
-        if ( isOpen && currentPostId ) {
-            // Reset pagination on open
-            setMessages( [] );
-            setPage( 1 );
-            setHasMore( true );
-            fetchMessages( 1 );
-        }
-    }, [ isOpen, currentPostId ] );
+		// Only allow dragging from the header element itself
+		if ( target !== header && ! header.contains( target ) ) {
+			return;
+		}
 
-    const fetchMessages = async ( pageNum = 1 ) => {
-        const isFirstPage = pageNum === 1;
-        if ( isFirstPage ) {
-            setIsLoading( true );
-        } else {
-            setIsFetchingMore( true );
-        }
+		handlePanelMouseDownBase( e );
+	};
 
-        try {
-            const response = await apiFetch( {
-                path: `/directorist-gutenberg/admin/templates/${ currentPostId }/ai-chats?page=${ pageNum }&per_page=10`,
-                method: 'GET',
-            } );
+	// Toggle panel
+	const togglePanel = ( e ) => {
+		if ( isDraggingButton || isDraggingPanel ) {
+			return;
+		}
 
-            if ( response && response.items ) {
-                const newMessages = response.items.reverse(); // Oldest first
+		if ( isOpen ) {
+			resetPanelPosition();
+		}
 
-                setMessages( prev => isFirstPage ? newMessages : [ ...newMessages, ...prev ] );
-                setHasMore( pageNum * 10 < response.total ); // Check if we have more pages
-            }
-        } catch ( error ) {
-            console.error( 'Error fetching messages:', error );
-        } finally {
-            if ( isFirstPage ) {
-                setIsLoading( false );
-                // Scroll to bottom after initial load
-                setTimeout( () => {
-                    scrollToBottom();
-                }, 100 );
-            } else {
-                setIsFetchingMore( false );
-                // Restore scroll position
-                if ( chatContentRef.current ) {
-                    const newScrollHeight = chatContentRef.current.scrollHeight;
-                    const scrollDiff = newScrollHeight - prevScrollHeightRef.current;
-                    chatContentRef.current.scrollTop = scrollDiff;
-                }
-            }
-        }
-    };
-
-    const handleScroll = ( e ) => {
-        const scrollElement = chatContentRef.current || e.target;
-        if ( scrollElement && scrollElement.scrollTop <= 5 && hasMore && ! isFetchingMore && ! isLoading ) {
-            prevScrollHeightRef.current = scrollElement.scrollHeight;
-            const nextPage = page + 1;
-            setPage( nextPage );
-            fetchMessages( nextPage );
-        }
-    };
-
-	const togglePanel = () => {
 		setIsOpen( ! isOpen );
 	};
 
@@ -195,429 +153,221 @@ export default function AiAssistantChatPanel() {
 		};
 	}, [] );
 
+	// Scroll to bottom when AI starts generating
+	useEffect( () => {
+		if ( isOpen && isGenerating ) {
+			setTimeout( () => scrollToBottom(), 100 );
+		}
+	}, [ isGenerating, isOpen ] );
 
-    const suggestedActionsArchiveListItem = [
-        {
-			id: 'hover-shadow',
-			label: __( 'Add subtle hover shadow', 'directorist-gutenberg' ),
-			icon: 'cube',
-		},
-		{
-			id: 'cards-per-row',
-			label: __( 'Make cards 3 per row with rounded corners', 'directorist-gutenberg' ),
-			icon: 'grid',
-		},
-		{
-			id: 'title-on-hover',
-			label: __( 'Show listing titles on hover', 'directorist-gutenberg' ),
-			icon: 'document',
-		},
-		{
-			id: 'price-above-rating',
-			label: __( 'Move price above rating', 'directorist-gutenberg' ),
-			icon: 'star',
-		},
-    ];
+	// Generate AI response
+	const generateResponse = async ( instruction ) => {
+		setIsGenerating( true );
 
-    const allSuggestedActions = {
-        'listings-archive': [
-            {
-                id: 'add-search-form',
-                label: __( 'Add search form', 'directorist-gutenberg' ),
-                icon: 'star',
-            },
-            {
-                id: 'add-listing-filters',
-                label: __( 'Add listing filters', 'directorist-gutenberg' ),
-                icon: 'star',
-            },
-            {
-                id: 'make-3-columns-per-row',
-                label: __( 'Make 3 columns per row', 'directorist-gutenberg' ),
-                icon: 'star',
-            },
-        ],
-        'listings-archive-grid-view': suggestedActionsArchiveListItem,
-        'listings-archive-list-view': suggestedActionsArchiveListItem,
-    };
+		try {
+			const apiURL = getApiUrl( templateType, waxIntelligentApiBaseUrl );
+			const currentBlocks = sanitizeBlocks( getBlocks() );
+			const history = formatChatHistory( messages );
 
-    const suggestedActions = allSuggestedActions[ templateType ];
+			const apiData = prepareApiData( {
+				templateType,
+				instruction,
+				currentTemplate: JSON.stringify( currentBlocks ),
+				directoryTypeId: directoryTypeID,
+				templateId: currentPostId,
+				history,
+				availableCustomFields,
+			} );
 
-    const storeMessage = async ( role, message, template = null ) => {
-        const data = {
-            role,
-            message,
-        };
+			const response = await fetch( apiURL, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify( apiData ),
+			} );
 
-        return await apiFetch( {
-            path: `/directorist-gutenberg/admin/templates/${ currentPostId }/ai-chats`,
-            method: 'POST',
-            data: data
-        } );
-    };
+			if ( ! response.ok ) {
+				const errorText = await response.text();
+				throw new Error( errorText || __( 'API generation failed', 'directorist-gutenberg' ) );
+			}
 
-    const handleSendMessage = async () => {
-        if ( ! inputValue.trim() ) return;
+			const data = await response.json();
+			const blockList = data?.template;
+			let assistantMessage = data?.message || __( 'Here is your updated design.', 'directorist-gutenberg' );
 
-        const userMessage = inputValue;
-        setInputValue( '' );
-        setIsSending( true );
-        setRetryAction( null );
+			if ( ! blockList ) {
+				console.warn( 'No template content returned from the AI Assistant API.' );
+				if ( assistantMessage ) {
+					await storeMessage( 'assistant', assistantMessage );
+					addMessage( { id: Date.now(), role: 'assistant', message: assistantMessage } );
+					setTimeout( () => scrollToBottom(), 100 );
+				}
+				return;
+			}
 
-        // Optimistically add user message
-        const tempId = Date.now();
-        const optimisticMessage = { id: tempId, role: 'user', message: userMessage };
-        setMessages( prev => [ ...prev, optimisticMessage ] );
+			// Store assistant response
+			await storeMessage( 'assistant', assistantMessage );
+			addMessage( { id: Date.now(), role: 'assistant', message: assistantMessage } );
+			setTimeout( () => scrollToBottom(), 100 );
 
-        // Scroll to bottom after adding user message
-        setTimeout( () => {
-            scrollToBottom();
-        }, 50 );
+			// Apply template
+			applyTemplate( blockList );
+		} catch ( error ) {
+			console.error( 'Error generating response:', error );
 
-        try {
-            // 1. Store user message
-            await storeMessage( 'user', userMessage );
+			// Add error message to chat
+			const errorMessage = error.message || __( 'Something went wrong. Please try again.', 'directorist-gutenberg' );
+			const errorId = Date.now();
+			addMessage( {
+				id: errorId,
+				role: 'assistant',
+				message: errorMessage,
+				isError: true,
+				retryAction: () => {
+					removeMessage( errorId );
+					generateResponse( instruction );
+				},
+			} );
+			setTimeout( () => scrollToBottom(), 100 );
+		} finally {
+			setIsGenerating( false );
+		}
+	};
 
-            // 2. Call Intelligent API
-            await generateResponse( userMessage );
+	// Apply template to editor
+	const applyTemplate = ( blockList ) => {
+		try {
+			resetBlocks( createBlocksFromList( blockList ) );
+		} catch ( parseError ) {
+			console.error( 'Unable to replace blocks with AI template', parseError );
+		}
+	};
 
-            setRetryAction( null );
-        } catch ( error ) {
-            console.error( 'Error sending message:', error );
-            setMessages( prev => prev.filter( m => m.id !== tempId ) ); // Remove optimistic message on failure
-            setInputValue( userMessage ); // Restore input
-            setRetryAction( () => handleSendMessage );
-        } finally {
-            setIsSending( false );
-        }
-    };
+	// Handle send message
+	const handleSendMessage = async () => {
+		if ( ! inputValue.trim() ) return;
 
-    const sanitizeBlocks = (blocks) => {
-        return blocks.map(block => ({
-            name: block.name,
-            attributes: block.attributes || {},
-            innerBlocks: sanitizeBlocks(block.innerBlocks || [])
-        }));
-    }
+		const userMessage = inputValue;
+		setInputValue( '' );
+		setIsSending( true );
+		// setRetryAction( null );
 
-    const generateResponse = async ( instruction ) => {
-        setIsGenerating( true );
-        
-        try {
-            const baseAPIURL = `${waxIntelligentApiBaseUrl}/directorist/template/gutenberg/generate`;
-            const listingsArchiveItemAPIURL = `${baseAPIURL}/listings-archive-item`;
+		// Optimistically add user message
+		const tempId = Date.now();
+		const optimisticMessage = { id: tempId, role: 'user', message: userMessage };
+		addMessage( optimisticMessage );
 
-            const apiURLs = {
-                'listings-archive': `${baseAPIURL}/listings-archive`,
-                'listings-archive-grid-view': listingsArchiveItemAPIURL,
-                'listings-archive-list-view': listingsArchiveItemAPIURL,
-            };
+		setTimeout( () => scrollToBottom(), 50 );
 
-            const apiURL = apiURLs[templateType];
+		try {
+			await storeMessage( 'user', userMessage );
+			await generateResponse( userMessage );
+		} catch ( error ) {
+			console.error( 'Error sending message:', error );
 
-            const currentBlocks = sanitizeBlocks( getBlocks() );
+			// Remove optimistic message
+			removeMessage( tempId );
 
-            const apiData = {
-                template_type: templateType,
-                instruction: instruction,
-                current_template: JSON.stringify( currentBlocks ),
-                dynamic_identifiers: {
-                    directory_type_id: directoryTypeID,
-                    template_id: currentPostId,
-                }
-            };
+			// Add error message to chat
+			const errorMessage = error.message || __( 'Failed to send message. Please try again.', 'directorist-gutenberg' );
+			const errorId = Date.now();
+			addMessage( {
+				id: errorId,
+				role: 'assistant',
+				message: errorMessage,
+				isError: true,
+				retryAction: () => {
+					removeMessage( errorId );
+					setInputValue( userMessage );
+					handleSendMessage();
+				},
+			} );
+			setTimeout( () => scrollToBottom(), 100 );
 
-            const listingsArchiveItemViews = [ 'listings-archive-grid-view', 'listings-archive-list-view' ];
+			// Restore input value
+			setInputValue( userMessage );
+		} finally {
+			setIsSending( false );
+		}
+	};
 
-            if ( listingsArchiveItemViews.includes( templateType ) ) {
-                apiData.directory_type_id = directoryTypeID;
-                apiData.available_custom_fields = availableCustomFields;
-                apiData.view_type = templateType === 'listings-archive-grid-view' ? 'grid_view' : 'list_view';
-            }
+	// Handle suggestion click
+	const handleSuggestionClick = ( label ) => {
+		setInputValue( label );
+	};
 
-            // Format history for API
-            const history = messages.map( msg => ( {
-                role: msg.role,
-                message: msg.message,
-            } ) );
+	// Get suggested actions for current template type
+	const suggestedActions = allSuggestedActions[ templateType ] || [];
 
-            apiData.history = history;
-
-            const response = await fetch( apiURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify( apiData ),
-            } );
-
-            if ( ! response.ok ) {
-                throw new Error( 'API generation failed' );
-            }
-
-            const data = await response.json();
-            const blockList = data?.template;
-            let assistantMessage = data?.message || __( 'Here is your updated design.', 'directorist-gutenberg' );
-
-            if ( ! blockList ) {
-                console.warn( 'No template content returned from the AI Assistant API.' );
-                 // Fallback if only message returned
-                 if( assistantMessage ) {
-                     await storeMessage('assistant', assistantMessage);
-                     setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage } ] );
-                     // Scroll to bottom after adding assistant message
-                     setTimeout( () => {
-                         scrollToBottom();
-                     }, 100 );
-                 }
-                return;
-            }
-
-            // 3. Store assistant response
-            await storeMessage( 'assistant', assistantMessage );
-            setMessages( prev => [ ...prev, { id: Date.now(), role: 'assistant', message: assistantMessage } ] );
-
-            // Scroll to bottom after adding assistant message
-            setTimeout( () => {
-                scrollToBottom();
-            }, 100 );
-
-            // 4. Apply template
-            applyTemplate( blockList );
-        } catch ( error ) {
-            console.error( 'Error generating response:', error );
-             setRetryAction( () => () => generateResponse( instruction ) );
-        } finally {
-            setIsGenerating( false );
-        }
-    };
-
-    /**
-     * Recursively converts block structure to WordPress block objects
-     */
-    const createBlocksFromList = ( blockList ) => {
-        if ( ! blockList || ! Array.isArray( blockList ) ) {
-            return [];
-        }
-
-        return blockList.map( blockData => {
-            const { name, attributes = {}, innerBlocks = [] } = blockData;
-            
-            // Recursively create inner blocks
-            const parsedInnerBlocks = createBlocksFromList( innerBlocks );
-            
-            // Create the block with inner blocks
-            return createBlock( name, attributes, parsedInnerBlocks );
-        } );
-    };
-
-    const applyTemplate = ( blockList ) => {
-        try {
-            resetBlocks( createBlocksFromList( blockList ) );
-        } catch ( parseError ) {
-            console.error( 'Unable to replace blocks with AI template', parseError );
-        }
-    };
+	// Calculate button style
+	const buttonStyle = buttonPosition.x !== null && buttonPosition.y !== null
+		? { left: `${ buttonPosition.x }px`, top: `${ buttonPosition.y }px`, right: 'auto', bottom: 'auto' }
+		: {};
 
 	return (
-		<StyledChatPanel className="directorist-gutenberg-ai-assistant-chat-panel">
+		<>
+			{/* Chat toggle button */}
 			{ ! isOpen && (
-				<Button
-					className="directorist-gutenberg-ai-assistant-chat-toggle"
-					onClick={ togglePanel }
-					aria-label={ __( 'Open AI Assistant', 'directorist-gutenberg' ) }
-				>
-					<ReactSVG width={ 24 } height={ 24 } src={ aiStarIcon } />
-				</Button>
+				<StyledChatToggle ref={ buttonRef } style={ buttonStyle }>
+					<Button
+						className="directorist-gutenberg-ai-assistant-chat-toggle"
+						onClick={ togglePanel }
+						onMouseDown={ handleButtonMouseDown }
+						aria-label={ __( 'Open AI Assistant', 'directorist-gutenberg' ) }
+					>
+						<ReactSVG width={ 24 } height={ 24 } src={ aiStarIcon } />
+					</Button>
+				</StyledChatToggle>
 			) }
 
+			{/* Chat panel */}
 			{ isOpen && (
-				<div className="directorist-gutenberg-ai-assistant-chat-panel-content">
-                    {/* Header */}
-                    <div className="directorist-gutenberg-ai-assistant-chat-header">
-                        <div className="directorist-gutenberg-ai-assistant-chat-header-left">
-                            <Button
-                                className="directorist-gutenberg-ai-assistant-chat-close"
-                                onClick={ togglePanel }
-                                aria-label={ __( 'Close', 'directorist-gutenberg' ) }
-                            >
-                                <ReactSVG width={ 16 } height={ 16 } src={ closeIcon } />
-                            </Button>
-                            <h3 className="directorist-gutenberg-ai-assistant-chat-title">
-                                { __( 'AI Assistant', 'directorist-gutenberg' ) }
-                            </h3>
-                        </div>
-                        <Button
-                            className="directorist-gutenberg-ai-assistant-chat-minimize"
-                            onClick={ togglePanel }
-                            aria-label={ __( 'Minimize', 'directorist-gutenberg' ) }
-                        >
-                            <ReactSVG width={ 16 } height={ 16 } src={ minusIcon } />
-                        </Button>
-                    </div>
-					<div
-                        className="directorist-gutenberg-ai-assistant-chat-content"
-                        onScroll={ handleScroll }
-                        ref={ chatContentRef }
-                    >
-
-                        { isLoading ? (
-                            <div className="directorist-gutenberg-ai-assistant-chat-loader">
-                                <Spinner />
-                            </div>
-                        ) : (
-                            <>
-                                { messages.length === 0 ? (
-                                    <>
-                                        {/* Greeting Section */}
-                                        <div className="directorist-gutenberg-ai-assistant-chat-greeting">
-                                            <div className="directorist-gutenberg-ai-assistant-chat-greeting-icon">
-                                                <ReactSVG width={ 48 } height={ 48 } src={ assistantIcon } />
-                                            </div>
-                                            <div className="directorist-gutenberg-ai-assistant-chat-greeting-text">
-                                                <h4 className="directorist-gutenberg-ai-assistant-chat-greeting-title">
-                                                    { __( "Hi, I'm your AI Design Assistant", 'directorist-gutenberg' ) }
-                                                </h4>
-                                                <p className="directorist-gutenberg-ai-assistant-chat-greeting-description">
-                                                    { __( 'Tell me what you want your All Listings to look. You can attach a screenshot for vives.', 'directorist-gutenberg' ) }
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Suggested Actions */}
-                                        <div className="directorist-gutenberg-ai-assistant-chat-suggestions">
-                                            { suggestedActions.map( ( action ) => (
-                                                <span
-                                                    key={ action.id }
-                                                    className="directorist-gutenberg-ai-assistant-chat-suggestion-button"
-                                                    onClick={ () => {
-                                                        setInputValue( action.label );
-                                                    } }
-                                                >
-                                                    <span className="directorist-gutenberg-ai-assistant-chat-suggestion-icon">
-                                                        { action.icon === 'cube' && (
-                                                            <ReactSVG width={ 20 } height={ 20 } src={ cube } />
-                                                        ) }
-                                                        { action.icon === 'grid' && (
-                                                            <ReactSVG width={ 20 } height={ 20 } src={ gridIcon } />
-                                                        ) }
-                                                        { action.icon === 'document' && (
-                                                            <ReactSVG width={ 20 } height={ 20 } src={ documentIcon } />
-                                                        ) }
-                                                        { action.icon === 'star' && (
-                                                            <ReactSVG width={ 20 } height={ 20 } src={ star } />
-                                                        ) }
-                                                    </span>
-                                                    <span className="directorist-gutenberg-ai-assistant-chat-suggestion-label">
-                                                        { action.label }
-                                                    </span>
-                                                </span>
-                                            ) ) }
-                                        </div>
-                                    </>
-                                ) : (
-                                    /* Conversation Area */
-                                    <div
-                                        className="directorist-gutenberg-ai-assistant-chat-conversation-area"
-                                    >
-                                        { isFetchingMore && (
-                                            <div className="directorist-gutenberg-ai-assistant-chat-loader-more">
-                                                <Spinner />
-                                            </div>
-                                        ) }
-
-                                        { messages.map( ( msg ) => (
-                                            <div key={ msg.id } className={`directorist-gutenberg-ai-assistant-chat-conversation-area-item directorist-gutenberg-ai-assistant-chat-${msg.role}-message`}>
-                                                    { msg.role === 'assistant' ? (
-                                                    <div className="directorist-gutenberg-ai-assistant-chat-icon">
-                                                        <ReactSVG width={ 20 } height={ 20 } src={ assistantIcon } />
-                                                    </div>
-                                                    ) : (
-                                                        ''
-                                                    ) }
-                                                <div className="directorist-gutenberg-ai-assistant-chat-text">
-                                                    <span className="directorist-gutenberg-ai-assistant-chat-text-role">
-                                                        { msg.role === 'assistant' ? 'Ai Assistant' : '' }
-                                                    </span>
-                                                    <span className="directorist-gutenberg-ai-assistant-chat-text-content">
-                                                        { msg.message }
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ) ) }
-
-                                        { ( isSending || isGenerating ) && (
-                                            <div className="directorist-gutenberg-ai-assistant-chat-conversation-area-item">
-                                                 <div className="directorist-gutenberg-ai-assistant-chat-icon">
-                                                    <ReactSVG width={ 20 } height={ 20 } src={ assistantIcon } />
-                                                </div>
-                                                 <div className="directorist-gutenberg-ai-assistant-chat-text">
-                                                     <span className="directorist-gutenberg-ai-assistant-chat-text-role">Ai Assistant</span>
-                                                    <div className="directorist-gutenberg-ai-assistant-typing-indicator">
-                                                        <span></span><span></span><span></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ) }
-
-                                        { retryAction && (
-                                            <div className="directorist-gutenberg-ai-assistant-chat-retry">
-                                                <p>{ __( 'Something went wrong.', 'directorist-gutenberg' ) }</p>
-                                                <Button variant='secondary' onClick={ retryAction }>
-                                                    { __( 'Retry', 'directorist-gutenberg' ) }
-                                                </Button>
-                                            </div>
-                                        ) }
-                                        <div ref={ messagesEndRef } />
-                                    </div>
-                                ) }
-                            </>
-                        ) }
-                    </div>
-
-					{/* Input Field */}
-					<div className="directorist-gutenberg-ai-assistant-chat-input-wrapper">
-						<TextareaControl
-							className="directorist-gutenberg-ai-assistant-chat-input"
-							value={ inputValue }
-							onChange={ setInputValue }
-							placeholder={ __( 'Ask for changes', 'directorist-gutenberg' ) }
-							rows={ 3 }
-                            onKeyDown={ ( event ) => {
-                                if ( event.key === 'Enter' && ! event.shiftKey ) {
-                                    event.preventDefault();
-                                    handleSendMessage();
-                                }
-                            } }
+				<StyledChatPanel
+					ref={ panelRef }
+					className="directorist-gutenberg-ai-assistant-chat-panel"
+					style={ panelStyle }
+				>
+					<div className="directorist-gutenberg-ai-assistant-chat-panel-content">
+						<ChatHeader
+							onClose={ togglePanel }
+							onMouseDown={ handlePanelMouseDown }
+							isDragging={ isDraggingPanel }
 						/>
-						<div className="directorist-gutenberg-ai-assistant-chat-input-actions">
-							<Button
-								className="directorist-gutenberg-ai-assistant-chat-send"
-								aria-label={ __( 'Send', 'directorist-gutenberg' ) }
-								onClick={ handleSendMessage }
-								disabled={ ! inputValue.trim() || isSending || isGenerating }
-							>
-                                { ( isSending || isGenerating ) ? (
-                                    <Spinner />
-                                ) : (
-								    <ReactSVG width={ 20 } height={ 20 } src={ arrowRightIcon } />
-                                ) }
-							</Button>
+
+						<ChatContent
+							isLoading={ isLoading }
+							messages={ messages }
+							isSending={ isSending }
+							isGenerating={ isGenerating }
+							suggestedActions={ suggestedActions }
+							onSuggestionClick={ handleSuggestionClick }
+							chatContentRef={ chatContentRef }
+							onScroll={ handleScroll }
+							isFetchingMore={ isFetchingMore }
+						/>
+
+						<ChatInput
+							inputValue={ inputValue }
+							setInputValue={ setInputValue }
+							onSend={ handleSendMessage }
+							isSending={ isSending }
+							isGenerating={ isGenerating }
+						/>
+
+						{/* Footer */}
+						<div className="directorist-gutenberg-ai-assistant-chat-footer">
+							<span className="directorist-gutenberg-ai-assistant-chat-footer-text">
+								{ __( 'Generation:', 'directorist-gutenberg' ) }
+							</span>
+							<span className="directorist-gutenberg-ai-assistant-chat-footer-credits">
+								<ReactSVG width={ 16 } height={ 16 } src={ aiCreditIcon } />
+								<span>0 { __( 'credits', 'directorist-gutenberg' ) }</span>
+							</span>
 						</div>
 					</div>
-
-					{/* Footer */}
-					<div className="directorist-gutenberg-ai-assistant-chat-footer">
-						<span className="directorist-gutenberg-ai-assistant-chat-footer-text">
-							{ __( 'Generation:', 'directorist-gutenberg' ) }
-						</span>
-						<span className="directorist-gutenberg-ai-assistant-chat-footer-credits">
-							<ReactSVG width={ 16 } height={ 16 } src={ aiCreditIcon } />
-							<span>0 { __( 'credits', 'directorist-gutenberg' ) }</span>
-						</span>
-					</div>
-				</div>
+				</StyledChatPanel>
 			) }
-		</StyledChatPanel>
+		</>
 	);
 }

@@ -27,7 +27,8 @@
     },
     "height": {
       "description": "Height is used to set the height of the block",
-      "type": "string"
+      "type": "string",
+      "default": "300"
     },
     "scale": {
       "description": "Scale is used to set the scale of the image",

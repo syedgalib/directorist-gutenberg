@@ -2918,7 +2918,7 @@ module.exports = __webpack_require__.p + "icons/thumbnail.svg";
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-thumbnail","version":"0.1.0","title":"Listing Thumbnail","description":"Displays the thumbnail of the listing","category":"directorist-listing-card-preset-fields","attributes":{"block_width":{"description":"Block width is used to set the width of the block in percentage","type":"string","default":"100"},"image_quality":{"description":"Image quality is used to set the quality of the image","type":"string","default":"default"},"aspectRatio":{"description":"Aspect ratio is used to set the aspect ratio of the image","type":"string"},"width":{"description":"Width is used to set the width of the block","type":"string"},"height":{"description":"Height is used to set the height of the block","type":"string"},"scale":{"description":"Scale is used to set the scale of the image","type":"string","default":"cover"},"overlayColor":{"description":"Overlay color is used to set the color of the overlay","type":"string"},"dimRatio":{"description":"Dim ratio is used to set opacity of the overlay color","type":"number","default":0},"gradient":{"description":"Gradient is used to set the gradient of the image","type":"string"},"customGradient":{"description":"Custom gradient is used to set the custom gradient of the image","type":"string"}},"example":{},"supports":{"html":false,"spacing":{"margin":true,"padding":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-thumbnail","version":"0.1.0","title":"Listing Thumbnail","description":"Displays the thumbnail of the listing","category":"directorist-listing-card-preset-fields","attributes":{"block_width":{"description":"Block width is used to set the width of the block in percentage","type":"string","default":"100"},"image_quality":{"description":"Image quality is used to set the quality of the image","type":"string","default":"default"},"aspectRatio":{"description":"Aspect ratio is used to set the aspect ratio of the image","type":"string"},"width":{"description":"Width is used to set the width of the block","type":"string"},"height":{"description":"Height is used to set the height of the block","type":"string","default":"300"},"scale":{"description":"Scale is used to set the scale of the image","type":"string","default":"cover"},"overlayColor":{"description":"Overlay color is used to set the color of the overlay","type":"string"},"dimRatio":{"description":"Dim ratio is used to set opacity of the overlay color","type":"number","default":0},"gradient":{"description":"Gradient is used to set the gradient of the image","type":"string"},"customGradient":{"description":"Custom gradient is used to set the custom gradient of the image","type":"string"}},"example":{},"supports":{"html":false,"spacing":{"margin":true,"padding":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -3252,6 +3252,7 @@ function Edit({
     width: !!aspectRatio && '100%',
     objectFit: !!(height || aspectRatio) && scale
   };
+  const defaultHeight = height ? height : '300px';
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
       group: "color",
@@ -3269,6 +3270,9 @@ function Edit({
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
       ...blockProps,
+      style: {
+        "--directorist-thumbnail-height": defaultHeight
+      },
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
         className: "directorist-gutenberg-listing-card-thumbnail-back",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("img", {
@@ -5250,7 +5254,8 @@ function TemplateIdHandler({
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   IconPickerStyle: () => (/* binding */ IconPickerStyle),
-/* harmony export */   StyledChatPanel: () => (/* binding */ StyledChatPanel)
+/* harmony export */   StyledChatPanel: () => (/* binding */ StyledChatPanel),
+/* harmony export */   StyledChatToggle: () => (/* binding */ StyledChatToggle)
 /* harmony export */ });
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! styled-components */ "./node_modules/.pnpm/styled-components@6.1.19_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/styled-components/dist/styled-components.browser.esm.js");
 
@@ -5339,35 +5344,9 @@ const IconPickerStyle = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
 `;
 const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"].div`
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: 20px;
+    right: 20px;
     z-index: 100000;
-
-    .directorist-gutenberg-ai-assistant-chat-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        border: 1px solid #3E62F5;
-        background: #3E62F5;
-        width: 48px;
-        height: 48px;
-        box-shadow: 0 4px 8px 0 rgba(16, 24, 40, 0.08);
-        cursor: pointer;
-        animation: zoomInOut 1.5s ease-in-out infinite;
-        padding: 0;
-        min-width: 48px;
-
-        svg {
-            width: 24px;
-            height: 24px;
-            color: #fff;
-        }
-
-        &:hover {
-            animation-play-state: paused;
-        }
-    }
 
     .directorist-gutenberg-ai-assistant-chat-panel-content {
         width: 420px;
@@ -5412,12 +5391,20 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
         justify-content: space-between;
         padding: 16px 20px;
         border-bottom: 1px solid #E0E0E0;
+        cursor: move;
+        user-select: none;
+        -webkit-user-select: none;
     }
 
     .directorist-gutenberg-ai-assistant-chat-header-left {
         display: flex;
         align-items: center;
         gap: 12px;
+        pointer-events: auto;
+
+        button {
+            pointer-events: auto;
+        }
     }
 
     .directorist-gutenberg-ai-assistant-chat-close,
@@ -5561,6 +5548,34 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
         line-height: 1.6;
         word-wrap: break-word;
         white-space: pre-wrap;
+    }
+
+    .directorist-gutenberg-ai-assistant-chat-error-message {
+        .directorist-gutenberg-ai-assistant-chat-text-content {
+            color: #D92D20;
+        }
+
+        .directorist-gutenberg-ai-assistant-chat-icon {
+            background: #FEE4E2;
+            color: #D92D20;
+
+            svg {
+                color: #D92D20;
+            }
+        }
+    }
+
+    .directorist-gutenberg-ai-assistant-chat-error-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+
+        button {
+            font-size: 12px;
+            height: 28px;
+            line-height: 26px;
+            padding: 0 12px;
+        }
     }
 
     .directorist-gutenberg-ai-assistant-chat-suggestions {
@@ -5829,6 +5844,45 @@ const StyledChatPanel = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"
             line-height: 26px;
             padding: 0 12px;
         }
+    }
+`;
+const StyledChatToggle = styled_components__WEBPACK_IMPORTED_MODULE_0__["default"].div`
+    position: fixed !important;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #3E62F5;
+    background: #3E62F5;
+    width: 48px;
+    height: 48px;
+    box-shadow: 0 4px 8px 0 rgba(16, 24, 40, 0.08);
+    animation: zoomInOut 1.5s ease-in-out infinite;
+    padding: 0;
+    min-width: 48px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+
+    svg {
+        width: 24px;
+        height: 24px;
+        color: #fff;
+        pointer-events: none;
+    }
+
+    &:hover {
+        animation-play-state: paused;
+    }
+
+    &:active {
+        cursor: grabbing;
+    }
+    button{
+        cursor: move;
     }
 `;
 
