@@ -160,7 +160,7 @@ body.directorist-gutenberg-listings-archive-grid-view{
 		margin-right: auto;
 	}
 }
-.post-type-directorist_gbt .block-editor-block-list__layout:not(.is-layout-grid),
+.post-type-directorist_gbt .block-editor-block-list__layout:not(.is-layout-grid):not(.wp-block-columns),
 .directorist-gutenberg-blocks-wrap,
 .directorist-gutenberg-blocks-wrap .wp-block-group:not(.is-layout-grid) {
 	display: flex;
