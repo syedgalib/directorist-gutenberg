@@ -13,9 +13,8 @@ import ReactSVG from 'react-inlinesvg';
  */
 import directoristLogo from '@block-icon/directorist-logo.svg';
 import Block from './block';
-import { getLocalizedBlockDataByKey } from './localized-data';
+import { getLocalizedBlockDataByKey } from '@directorist-gutenberg/utils/localized-data';
 import WidthControls from './width-control';
-import Controls from './components/controls';
 
 export default function registerBlock( {
 	metadata,

@@ -5436,67 +5436,6 @@ function useTemplateMeta() {
 
 /***/ }),
 
-/***/ "./resources/js/gutenberg/localized-data.js":
-/*!**************************************************!*\
-  !*** ./resources/js/gutenberg/localized-data.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
-/* harmony export */   getDirectories: () => (/* binding */ getDirectories),
-/* harmony export */   getLocalizedAdminData: () => (/* binding */ getLocalizedAdminData),
-/* harmony export */   getLocalizedAdminDataByKey: () => (/* binding */ getLocalizedAdminDataByKey),
-/* harmony export */   getLocalizedBlockData: () => (/* binding */ getLocalizedBlockData),
-/* harmony export */   getLocalizedBlockDataByKey: () => (/* binding */ getLocalizedBlockDataByKey),
-/* harmony export */   getSubmissionFormFields: () => (/* binding */ getSubmissionFormFields)
-/* harmony export */ });
-// Generic helper function to get data by key from any window object
-const getDataByKey = (data, key, defaultValue = null) => {
-  return data[key] !== undefined ? data[key] : defaultValue;
-};
-
-// Gutenberg Block Editor Data
-const getLocalizedBlockData = () => {
-  return window.directorist_gutenberg_block_data || {};
-};
-const getLocalizedBlockDataByKey = (key, defaultValue = null) => {
-  const data = getLocalizedBlockData();
-  return getDataByKey(data, key, defaultValue);
-};
-const getSubmissionFormFields = () => {
-  const data = getLocalizedBlockData();
-  if (data && data.submission_form_fields && data.submission_form_fields.fields) {
-    return data.submission_form_fields.fields;
-  }
-  return {};
-};
-
-// Admin Page Data
-const getLocalizedAdminData = () => {
-  return window.directorist_gutenberg_data || {};
-};
-const getLocalizedAdminDataByKey = (key, defaultValue = null) => {
-  const data = getLocalizedAdminData();
-  return getDataByKey(data, key, defaultValue);
-};
-const getDirectories = () => {
-  const data = getLocalizedAdminData();
-  return getDataByKey(data, 'directories', []);
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  getLocalizedBlockData,
-  getLocalizedBlockDataByKey,
-  getSubmissionFormFields,
-  getLocalizedAdminData,
-  getLocalizedAdminDataByKey,
-  getDirectories
-});
-
-/***/ }),
-
 /***/ "./resources/js/gutenberg/register-block.js":
 /*!**************************************************!*\
   !*** ./resources/js/gutenberg/register-block.js ***!
@@ -5513,7 +5452,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_inlinesvg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-inlinesvg */ "./node_modules/.pnpm/react-inlinesvg@4.2.0_react@18.3.1/node_modules/react-inlinesvg/dist/index.mjs");
 /* harmony import */ var _block_icon_directorist_logo_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @block-icon/directorist-logo.svg */ "./resources/blocks-icon/directorist-logo.svg");
 /* harmony import */ var _block__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block */ "./resources/js/gutenberg/block.js");
-/* harmony import */ var _localized_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./localized-data */ "./resources/js/gutenberg/localized-data.js");
+/* harmony import */ var _directorist_gutenberg_utils_localized_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @directorist-gutenberg/utils/localized-data */ "./resources/js/utils/localized-data.js");
 /* harmony import */ var _width_control__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./width-control */ "./resources/js/gutenberg/width-control.js");
 /* harmony import */ var _components_controls__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/controls */ "./resources/js/gutenberg/components/controls/index.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
@@ -5556,7 +5495,7 @@ function registerBlock({
     return;
   }
   if (templateTypes) {
-    const template_type = (0,_localized_data__WEBPACK_IMPORTED_MODULE_4__.getLocalizedBlockDataByKey)('template_type');
+    const template_type = (0,_directorist_gutenberg_utils_localized_data__WEBPACK_IMPORTED_MODULE_4__.getLocalizedBlockDataByKey)('template_type');
     if (!templateTypes.includes(template_type)) {
       return;
     }
