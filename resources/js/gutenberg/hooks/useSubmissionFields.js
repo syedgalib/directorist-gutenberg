@@ -9,7 +9,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	getLocalizedBlockData,
 	getSubmissionFormFields,
-} from '@directorist-gutenberg/gutenberg/localized-data';
+} from '@directorist-gutenberg/utils/localized-data';
 
 export const useSubmissionFields = () => {
 	const { directory_type_id } = getLocalizedBlockData();

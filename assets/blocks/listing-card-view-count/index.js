@@ -5296,7 +5296,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @directorist-gutenberg/gutenberg/localized-data */ "./resources/js/gutenberg/localized-data.js");
+/* harmony import */ var _directorist_gutenberg_utils_localized_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @directorist-gutenberg/utils/localized-data */ "./resources/js/utils/localized-data.js");
 /**
  * WordPress dependencies
  */
@@ -5309,8 +5309,8 @@ __webpack_require__.r(__webpack_exports__);
 const useSubmissionFields = () => {
   const {
     directory_type_id
-  } = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__.getLocalizedBlockData)();
-  const fields = (0,_directorist_gutenberg_gutenberg_localized_data__WEBPACK_IMPORTED_MODULE_1__.getSubmissionFormFields)();
+  } = (0,_directorist_gutenberg_utils_localized_data__WEBPACK_IMPORTED_MODULE_1__.getLocalizedBlockData)();
+  const fields = (0,_directorist_gutenberg_utils_localized_data__WEBPACK_IMPORTED_MODULE_1__.getSubmissionFormFields)();
   function getFieldsOptions(type, name) {
     const options = [{
       value: '',
@@ -5713,6 +5713,67 @@ function debounce(func, wait, immediate) {
     if (callNow) func.apply(context, args);
   };
 }
+
+/***/ }),
+
+/***/ "./resources/js/utils/localized-data.js":
+/*!**********************************************!*\
+  !*** ./resources/js/utils/localized-data.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   getDirectories: () => (/* binding */ getDirectories),
+/* harmony export */   getLocalizedAdminData: () => (/* binding */ getLocalizedAdminData),
+/* harmony export */   getLocalizedAdminDataByKey: () => (/* binding */ getLocalizedAdminDataByKey),
+/* harmony export */   getLocalizedBlockData: () => (/* binding */ getLocalizedBlockData),
+/* harmony export */   getLocalizedBlockDataByKey: () => (/* binding */ getLocalizedBlockDataByKey),
+/* harmony export */   getSubmissionFormFields: () => (/* binding */ getSubmissionFormFields)
+/* harmony export */ });
+// Generic helper function to get data by key from any window object
+const getDataByKey = (data, key, defaultValue = null) => {
+  return data[key] !== undefined ? data[key] : defaultValue;
+};
+
+// Gutenberg Block Editor Data
+const getLocalizedBlockData = () => {
+  return window.directorist_gutenberg_block_data || {};
+};
+const getLocalizedBlockDataByKey = (key, defaultValue = null) => {
+  const data = getLocalizedBlockData();
+  return getDataByKey(data, key, defaultValue);
+};
+const getSubmissionFormFields = () => {
+  const data = getLocalizedBlockData();
+  if (data && data.submission_form_fields && data.submission_form_fields.fields) {
+    return data.submission_form_fields.fields;
+  }
+  return {};
+};
+
+// Admin Page Data
+const getLocalizedAdminData = () => {
+  return window.directorist_gutenberg_data || {};
+};
+const getLocalizedAdminDataByKey = (key, defaultValue = null) => {
+  const data = getLocalizedAdminData();
+  return getDataByKey(data, key, defaultValue);
+};
+const getDirectories = () => {
+  const data = getLocalizedAdminData();
+  return getDataByKey(data, 'directories', []);
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  getLocalizedBlockData,
+  getLocalizedBlockDataByKey,
+  getSubmissionFormFields,
+  getLocalizedAdminData,
+  getLocalizedAdminDataByKey,
+  getDirectories
+});
 
 /***/ }),
 

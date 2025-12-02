@@ -8,7 +8,7 @@ import { useEffect, useRef } from '@wordpress/element';
  * Internal dependencies
  */
 import './editor.scss';
-import { getLocalizedBlockDataByKey } from '@directorist-gutenberg/gutenberg/localized-data';
+import { getLocalizedBlockDataByKey } from '@directorist-gutenberg/utils/localized-data';
 import useBlocksPreview from '@directorist-gutenberg/gutenberg/hooks/useBlocksPreview';
 import BlockPreview from '@directorist-gutenberg/gutenberg/components/block-preview';
 import previewImg from '@image/blocks-preview/archive-filters.png';

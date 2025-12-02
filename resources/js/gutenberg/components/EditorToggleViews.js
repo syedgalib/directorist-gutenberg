@@ -13,7 +13,7 @@ import clsx from 'clsx';
 /**
  * Internal dependencies
  */
-import { getLocalizedBlockDataByKey } from '@directorist-gutenberg/gutenberg/localized-data';
+import { getLocalizedBlockDataByKey } from '@directorist-gutenberg/utils/localized-data';
 import ChevronDownIcon from '@icon/chevron-down.svg';
 import CheckSolid from '@icon/check-solid.svg';
 import GridIcon from '@icon/grid.svg';
