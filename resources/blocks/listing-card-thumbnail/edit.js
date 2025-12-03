@@ -34,10 +34,16 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	}
 
 	const { aspectRatio, width, height, scale } = attributes;
+	const defaultHeight = height ? height : 'auto';
 
 	const blockProps = useBlockProps( {
 		className: 'directorist-gutenberg-listing-card-thumbnail',
-		style: { width, height, aspectRatio },
+		style: {
+			width,
+			height: height ? height : '100%',
+			aspectRatio,
+			'--directorist-thumbnail-height': defaultHeight,
+		},
 	} );
 
 	// Get all block types and filter out the thumbnail block to prevent nesting
@@ -116,8 +122,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		objectFit: !! ( height || aspectRatio ) && scale,
 	};
 
-	const defaultHeight = height ? height : '300px';
-
 	return (
 		<>
 			<InspectorControls group="color">
@@ -134,7 +138,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					setAttributes={ setAttributes }
 				/>
 			</InspectorControls>
-			<div { ...blockProps } style={{ "--directorist-thumbnail-height": defaultHeight }}>
+			<div { ...blockProps }>
 				<div className="directorist-gutenberg-listing-card-thumbnail-back">
 					<img
 						className="directorist-gutenberg-listing-card-thumbnail-preview-img"
