@@ -3776,7 +3776,7 @@ function ConversationArea({
           children: msg.role === 'assistant' ? 'Ai Assistant' : ''
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
           className: "directorist-gutenberg-ai-assistant-chat-text-content",
-          children: msg.message
+          children: msg.isError ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('I could not process your request, please try again.', 'directorist-gutenberg') : msg.message
         }), msg.isError && msg.retryAction && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
           className: "directorist-gutenberg-ai-assistant-chat-error-actions",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
