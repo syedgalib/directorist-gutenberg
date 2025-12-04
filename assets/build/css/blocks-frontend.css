@@ -366,5 +366,8 @@ body.directorist-gutenberg-listings-archive-grid-view .block-editor-block-list__
     background-position: 200% 0;
   }
 }
+.directorist-pagination {
+  margin-top: 30px;
+}
 
 /*# sourceMappingURL=blocks-frontend.css.map*/

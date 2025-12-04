@@ -42,7 +42,11 @@
 
     // Build dimension styles
     $extra_styles = '';
-    if ( ! empty( $attributes['aspectRatio'] ) ) {
+    $has_aspect_ratio = ! empty( $attributes['aspectRatio'] );
+    $is_original_aspect = $has_aspect_ratio && $attributes['aspectRatio'] === 'auto';
+
+    if ( $has_aspect_ratio && ! $is_original_aspect ) {
+        // Only set width:100%;height:100% if aspect ratio is set and not 'original'
         $extra_styles .= 'width:100%;height:100%;';
     } elseif ( ! empty( $attributes['height'] ) ) {
         $extra_styles .= "height:{$attributes['height']};";
@@ -56,18 +60,34 @@
 
     // Build thumbnail wrapper styles
     $thumbnail_styles = '';
-    if ( ! empty( $attributes['aspectRatio'] ) ) {
+
+    // Only add aspect-ratio CSS if it's set and not 'auto' (original)
+    if ( $has_aspect_ratio && ! $is_original_aspect ) {
         $thumbnail_styles .= "aspect-ratio:{$attributes['aspectRatio']};";
+    } elseif ( $is_original_aspect ) {
+        // Explicitly unset aspect-ratio when it's 'auto' to ensure height works
+        $thumbnail_styles .= "aspect-ratio:unset;";
     }
     if ( ! empty( $attributes['width'] ) ) {
         $thumbnail_styles .= "width:{$attributes['width']};";
     }
-    if ( ! empty( $attributes['height'] ) ) {
+    // Only add height if aspect ratio is not set, or if it's set to 'auto' (original)
+    if ( ! empty( $attributes['height'] ) && ( ! $has_aspect_ratio || $is_original_aspect ) ) {
         $thumbnail_styles .= "height:{$attributes['height']};";
     }
 
     // Default thumbnail height
-    $default_height = $attributes['height'] ? $attributes['height'] : 'auto';
+    if ( $has_aspect_ratio && ! $is_original_aspect ) {
+        // If aspect ratio is set (and not 'original'), ignore height fully
+        $default_height = 'auto';
+    } elseif ( $is_original_aspect ) {
+        // If aspect ratio is 'original', use height if set, otherwise default to 300px
+        $default_height = ! empty( $attributes['height'] ) ? $attributes['height'] : '300px';
+    } else {
+        // If aspect ratio is not set, use height if set, otherwise default to 300px
+        $default_height = ! empty( $attributes['height'] ) ? $attributes['height'] : '300px';
+    }
+
 
     // Get wrapper attributes (includes margin, padding, border, border-radius from block supports)
     $wrapper_attributes = get_block_wrapper_attributes( [
