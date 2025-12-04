@@ -3061,6 +3061,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+/**
+ * External dependencies
+ */
+
 
 /**
  * Internal dependencies
@@ -3131,6 +3135,10 @@ function AiAssistantChatPanel() {
     elementHeight: 48
   });
 
+  // Track if button was dragged to prevent toggle after drag
+  const buttonDragStartPosition = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const hasButtonDragged = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
+
   // Panel drag hook
   const {
     position: panelPosition,
@@ -3180,9 +3188,34 @@ function AiAssistantChatPanel() {
     handlePanelMouseDownBase(e);
   };
 
+  // Track button drag start
+  const handleButtonMouseDownWithTracking = e => {
+    buttonDragStartPosition.current = {
+      ...buttonPosition
+    };
+    hasButtonDragged.current = false;
+    handleButtonMouseDown(e);
+  };
+
+  // Track button drag end and movement
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!isDraggingButton && buttonDragStartPosition.current !== null) {
+      // Check if position changed during drag
+      if (buttonPosition.x !== buttonDragStartPosition.current.x || buttonPosition.y !== buttonDragStartPosition.current.y) {
+        hasButtonDragged.current = true;
+      }
+      // Reset after a short delay to allow onClick to check
+      const timeoutId = setTimeout(() => {
+        buttonDragStartPosition.current = null;
+        hasButtonDragged.current = false;
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isDraggingButton, buttonPosition]);
+
   // Toggle panel
   const togglePanel = e => {
-    if (isDraggingButton || isDraggingPanel) {
+    if (isDraggingButton || isDraggingPanel || hasButtonDragged.current) {
       return;
     }
     if (isOpen) {
@@ -3366,7 +3399,7 @@ function AiAssistantChatPanel() {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
         className: "directorist-gutenberg-ai-assistant-chat-toggle",
         onClick: togglePanel,
-        onMouseDown: handleButtonMouseDown,
+        onMouseDown: handleButtonMouseDownWithTracking,
         "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Open AI Assistant', 'directorist-gutenberg'),
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_inlinesvg__WEBPACK_IMPORTED_MODULE_4__["default"], {
           width: 24,
@@ -3567,7 +3600,7 @@ function ConversationArea({
           children: msg.role === 'assistant' ? 'Ai Assistant' : ''
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
           className: "directorist-gutenberg-ai-assistant-chat-text-content",
-          children: msg.message
+          children: msg.isError ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('I could not process your request, please try again.', 'directorist-gutenberg') : msg.message
         }), msg.isError && msg.retryAction && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
           className: "directorist-gutenberg-ai-assistant-chat-error-actions",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {

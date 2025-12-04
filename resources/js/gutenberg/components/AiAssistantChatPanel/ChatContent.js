@@ -105,7 +105,7 @@ function ConversationArea( { messages, isSending, isGenerating } ) {
 							{ msg.role === 'assistant' ? 'Ai Assistant' : '' }
 						</span>
 						<span className="directorist-gutenberg-ai-assistant-chat-text-content">
-							{ msg.message }
+							{ msg.isError ? __( 'I could not process your request, please try again.', 'directorist-gutenberg' ) : msg.message }
 						</span>
 						{ msg.isError && msg.retryAction && (
 							<div className="directorist-gutenberg-ai-assistant-chat-error-actions">

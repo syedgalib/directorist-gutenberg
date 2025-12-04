@@ -67,7 +67,7 @@
     }
 
     // Default thumbnail height
-    $default_height = $attributes['height'] ? $attributes['height'] : '300px';
+    $default_height = $attributes['height'] ? $attributes['height'] : 'auto';
 
     // Get wrapper attributes (includes margin, padding, border, border-radius from block supports)
     $wrapper_attributes = get_block_wrapper_attributes( [

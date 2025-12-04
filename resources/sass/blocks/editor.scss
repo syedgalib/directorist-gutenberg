@@ -1,3 +1,8 @@
+// Set the height of the block editor layout to 100%
+.post-type-directorist_gbt .block-editor-block-list__layout:not(.is-layout-grid):not(.wp-block-columns){
+    height: 100%;
+}
+
 // Listing Card Element Content
 .directorist-gutenberg-listing-card-element-content{
     display: flex;

@@ -10,7 +10,7 @@
 		"block_width": {
 			"description": "Block width is used to set the width of the block in percentage",
 			"type": "string",
-			"default": "100"
+			"default": "inline"
 		},
 		"textAlign": {
 			"description": "Text alignment is used to set the alignment of the text in the block",

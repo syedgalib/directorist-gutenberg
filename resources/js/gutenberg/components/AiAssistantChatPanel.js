@@ -2,9 +2,13 @@
  * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
+
+/**
+ * External dependencies
+ */
 import ReactSVG from 'react-inlinesvg';
 
 /**
@@ -77,6 +81,10 @@ export default function AiAssistantChatPanel() {
 		elementHeight: 48,
 	} );
 
+	// Track if button was dragged to prevent toggle after drag
+	const buttonDragStartPosition = useRef( null );
+	const hasButtonDragged = useRef( false );
+
 	// Panel drag hook
 	const {
 		position: panelPosition,
@@ -127,9 +135,35 @@ export default function AiAssistantChatPanel() {
 		handlePanelMouseDownBase( e );
 	};
 
+	// Track button drag start
+	const handleButtonMouseDownWithTracking = ( e ) => {
+		buttonDragStartPosition.current = { ...buttonPosition };
+		hasButtonDragged.current = false;
+		handleButtonMouseDown( e );
+	};
+
+	// Track button drag end and movement
+	useEffect( () => {
+		if ( ! isDraggingButton && buttonDragStartPosition.current !== null ) {
+			// Check if position changed during drag
+			if (
+				buttonPosition.x !== buttonDragStartPosition.current.x ||
+				buttonPosition.y !== buttonDragStartPosition.current.y
+			) {
+				hasButtonDragged.current = true;
+			}
+			// Reset after a short delay to allow onClick to check
+			const timeoutId = setTimeout( () => {
+				buttonDragStartPosition.current = null;
+				hasButtonDragged.current = false;
+			}, 100 );
+			return () => clearTimeout( timeoutId );
+		}
+	}, [ isDraggingButton, buttonPosition ] );
+
 	// Toggle panel
 	const togglePanel = ( e ) => {
-		if ( isDraggingButton || isDraggingPanel ) {
+		if ( isDraggingButton || isDraggingPanel || hasButtonDragged.current ) {
 			return;
 		}
 
@@ -313,7 +347,7 @@ export default function AiAssistantChatPanel() {
 					<Button
 						className="directorist-gutenberg-ai-assistant-chat-toggle"
 						onClick={ togglePanel }
-						onMouseDown={ handleButtonMouseDown }
+						onMouseDown={ handleButtonMouseDownWithTracking }
 						aria-label={ __( 'Open AI Assistant', 'directorist-gutenberg' ) }
 					>
 						<ReactSVG width={ 24 } height={ 24 } src={ aiStarIcon } />
