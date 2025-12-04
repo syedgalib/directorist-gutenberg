@@ -2976,9 +2976,10 @@ function Edit({
   }
   const iconUrl = (0,_directorist_gutenberg_gutenberg_utils_icon_url__WEBPACK_IMPORTED_MODULE_4__.getIconUrl)(attributes.icon);
   const {
-    doesCustomFieldExist
+    getField
   } = (0,_directorist_gutenberg_gutenberg_hooks_useSubmissionFields__WEBPACK_IMPORTED_MODULE_5__.useSubmissionFields)();
-  const fieldExist = doesCustomFieldExist('checkbox', attributes.meta_key);
+  const field = getField('custom', 'checkbox', attributes.meta_key);
+  const fieldExist = field !== null;
   const {
     textAlign
   } = attributes;
@@ -3007,7 +3008,7 @@ function Edit({
           className: "directorist-gutenberg-listing-card-element-details",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
             className: "directorist-gutenberg-listing-card-element-value",
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Option 1, Option 2', 'directorist-gutenberg')
+            children: fieldExist ? field.label : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Option 1', 'directorist-gutenberg')
           })
         })]
       })
@@ -5374,20 +5375,12 @@ const useSubmissionFields = () => {
     return options;
   }
   function doesPresetFieldExist(name) {
-    for (const field of Object.values(fields)) {
-      if (field.widget_group === 'preset' && field.widget_name === name) {
-        return true;
-      }
-    }
-    return false;
+    const field = getField('preset', name);
+    return field !== null;
   }
   function doesCustomFieldExist(name, fieldKey) {
-    for (const field of Object.values(fields)) {
-      if (field.widget_group === 'custom' && field.widget_name === name && field.field_key === fieldKey) {
-        return true;
-      }
-    }
-    return false;
+    const field = getField('custom', name, fieldKey);
+    return field !== null;
   }
   function getCustomFields() {
     const customFields = [];
@@ -5398,9 +5391,18 @@ const useSubmissionFields = () => {
     }
     return customFields;
   }
+  function getField(type, name, fieldKey) {
+    for (const field of Object.values(fields)) {
+      if (field.widget_group === type && field.widget_name === name && (fieldKey === undefined || field.field_key === fieldKey)) {
+        return field;
+      }
+    }
+    return null;
+  }
   return {
     directoryTypeId: directory_type_id ? parseInt(directory_type_id) : null,
     fields,
+    getField,
     getCustomFields,
     doesPresetFieldExist,
     doesCustomFieldExist,
