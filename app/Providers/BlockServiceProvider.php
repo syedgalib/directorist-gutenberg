@@ -92,9 +92,10 @@ class BlockServiceProvider implements Provider {
 
         // Prepare localized data
         $localized_data = [
-            'template_type'          => get_post_meta( get_post()->ID, "template_type", true ),
-            'directory_type_id'      => get_post_meta( get_post()->ID, "directory_type_id", true ),
-            'wax_intelligent'        => [
+            'template_type'     => get_post_meta( get_post()->ID, "template_type", true ),
+            'directory_type_id' => get_post_meta( get_post()->ID, "directory_type_id", true ),
+            'all_templates_url' => admin_url( 'edit.php?post_type=at_biz_dir&page=directorist-template-builder' ),
+            'wax_intelligent'   => [
                 'api_base_url' => directorist_gutenberg_config( 'wax-intelligent.api_base_url' ),
             ],
             'submission_form_fields' => ! empty( $directory_type_id ) ? get_term_meta( $directory_type_id, "submission_form_fields", true ) : null,

@@ -18,7 +18,7 @@ import aiStarIcon from '@icon/ai-star-alt.svg';
 import aiCreditIcon from '@icon/ai-credit.svg';
 import { StyledChatPanel, StyledChatToggle } from './style';
 import { useSubmissionFields } from '@directorist-gutenberg/gutenberg/hooks/useSubmissionFields';
-import { getLocalizedBlockData } from '@directorist-gutenberg/gutenberg/localized-data';
+import { getLocalizedBlockData } from '@directorist-gutenberg/utils/localized-data';
 import { useDragPosition } from '@directorist-gutenberg/gutenberg/hooks/useDragPosition';
 import { useChatMessages } from '@directorist-gutenberg/gutenberg/hooks/useChatMessages';
 import { usePanelPosition } from '@directorist-gutenberg/gutenberg/hooks/usePanelPosition';

@@ -15,7 +15,7 @@ import ReactSVG from 'react-inlinesvg';
  */
 import { StyledTemplateActions } from '../style';
 import { getIconSvgPath } from '@directorist-gutenberg/utils/utils';
-import { getDirectories } from '@directorist-gutenberg/gutenberg/localized-data';
+import { getDirectories } from '@directorist-gutenberg/utils/localized-data';
 import gridIcon from '@icon/grid.svg';
 import plusIcon from '@icon/plus-solid.svg';
 import chevronDownIcon from '@icon/chevron-down.svg';
