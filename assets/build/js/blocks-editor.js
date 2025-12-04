@@ -3248,7 +3248,7 @@ function AiAssistantChatPanel() {
     try {
       const apiURL = (0,_directorist_gutenberg_gutenberg_utils_aiApi__WEBPACK_IMPORTED_MODULE_14__.getApiUrl)(templateType, waxIntelligentApiBaseUrl);
       const currentBlocks = (0,_directorist_gutenberg_gutenberg_utils_blockUtils__WEBPACK_IMPORTED_MODULE_13__.sanitizeBlocks)(getBlocks());
-      const history = (0,_directorist_gutenberg_gutenberg_utils_aiApi__WEBPACK_IMPORTED_MODULE_14__.formatChatHistory)(messages);
+      const history = (0,_directorist_gutenberg_gutenberg_utils_aiApi__WEBPACK_IMPORTED_MODULE_14__.formatChatHistory)(messages).slice(0, 10);
       const apiData = (0,_directorist_gutenberg_gutenberg_utils_aiApi__WEBPACK_IMPORTED_MODULE_14__.prepareApiData)({
         templateType,
         instruction,
