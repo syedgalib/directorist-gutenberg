@@ -27,8 +27,7 @@
 		},
 		"height": {
 			"description": "Height is used to set the height of the block",
-			"type": "string",
-			"default": "300px"
+			"type": "string"
 		},
 		"scale": {
 			"description": "Scale is used to set the scale of the image",
@@ -65,6 +64,10 @@
 			"radius": true,
 			"style": true,
 			"width": true
+		},
+		"color": {
+			"background": true,
+			"text": false
 		}
 	},
 	"textdomain": "directorist-gutenberg",

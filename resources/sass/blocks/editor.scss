@@ -1,5 +1,5 @@
 // Set the height of the block editor layout to 100%
-.post-type-directorist_gbt .block-editor-block-list__layout:not(.is-layout-grid):not(.wp-block-columns){
+.directorist-gutenberg-listings-archive-grid-view  .block-editor-block-list__layout:not(.is-layout-grid):not(.wp-block-columns){
     height: 100%;
 }
 
@@ -9,9 +9,9 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-    font-size: 14px;
+    font-size: inherit;
     line-height: 1.3;
-    color: var(--directorist-color-body);
+    color: inherit;
 
     .directorist-gutenberg-listing-card-element-icon {
         display: flex;

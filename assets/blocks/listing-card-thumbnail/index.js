@@ -2918,7 +2918,7 @@ module.exports = __webpack_require__.p + "icons/thumbnail.svg";
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-thumbnail","version":"0.1.0","title":"Listing Thumbnail","description":"Displays the thumbnail of the listing","category":"directorist-listing-card-preset-fields","attributes":{"block_width":{"description":"Block width is used to set the width of the block in percentage","type":"string","default":"100"},"image_quality":{"description":"Image quality is used to set the quality of the image","type":"string","default":"default"},"aspectRatio":{"description":"Aspect ratio is used to set the aspect ratio of the image","type":"string"},"width":{"description":"Width is used to set the width of the block","type":"string"},"height":{"description":"Height is used to set the height of the block","type":"string","default":"300px"},"scale":{"description":"Scale is used to set the scale of the image","type":"string","default":"cover"},"overlayColor":{"description":"Overlay color is used to set the color of the overlay","type":"string"},"dimRatio":{"description":"Dim ratio is used to set opacity of the overlay color","type":"number","default":0},"gradient":{"description":"Gradient is used to set the gradient of the image","type":"string"},"customGradient":{"description":"Custom gradient is used to set the custom gradient of the image","type":"string"}},"example":{},"supports":{"html":false,"spacing":{"margin":true,"padding":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"directorist-gutenberg/listing-card-thumbnail","version":"0.1.0","title":"Listing Thumbnail","description":"Displays the thumbnail of the listing","category":"directorist-listing-card-preset-fields","attributes":{"block_width":{"description":"Block width is used to set the width of the block in percentage","type":"string","default":"100"},"image_quality":{"description":"Image quality is used to set the quality of the image","type":"string","default":"default"},"aspectRatio":{"description":"Aspect ratio is used to set the aspect ratio of the image","type":"string"},"width":{"description":"Width is used to set the width of the block","type":"string"},"height":{"description":"Height is used to set the height of the block","type":"string"},"scale":{"description":"Scale is used to set the scale of the image","type":"string","default":"cover"},"overlayColor":{"description":"Overlay color is used to set the color of the overlay","type":"string"},"dimRatio":{"description":"Dim ratio is used to set opacity of the overlay color","type":"number","default":0},"gradient":{"description":"Gradient is used to set the gradient of the image","type":"string"},"customGradient":{"description":"Custom gradient is used to set the custom gradient of the image","type":"string"}},"example":{},"supports":{"html":false,"spacing":{"margin":true,"padding":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"color":{"background":true,"text":false}},"textdomain":"directorist-gutenberg","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -3182,13 +3182,37 @@ function Edit({
     height,
     scale
   } = attributes;
-  const defaultHeight = height ? height : 'auto';
+  const has_aspect_ratio = !!aspectRatio;
+  const is_original_aspect = has_aspect_ratio && aspectRatio === 'auto';
+
+  // Default thumbnail height logic
+  let defaultHeight;
+  if (has_aspect_ratio && !is_original_aspect) {
+    // If aspect ratio is set (and not 'auto'), ignore height fully
+    defaultHeight = 'auto';
+  } else if (is_original_aspect) {
+    // If aspect ratio is 'auto' (Original), use height if set, otherwise default to 300px
+    defaultHeight = height ? height : '300px';
+  } else {
+    // If aspect ratio is not set, use height if set, otherwise default to 300px
+    defaultHeight = height ? height : '300px';
+  }
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: 'directorist-gutenberg-listing-card-thumbnail',
     style: {
       width,
-      height: height ? height : '100%',
-      aspectRatio,
+      // Only set height if aspect ratio is not set, or if it's set to 'auto' (Original)
+      ...((!has_aspect_ratio || is_original_aspect) && height ? {
+        height
+      } : !has_aspect_ratio ? {
+        height: '100%'
+      } : {}),
+      // Only add aspect-ratio CSS if it's set and not 'auto' (Original)
+      ...(has_aspect_ratio && !is_original_aspect ? {
+        aspectRatio
+      } : is_original_aspect ? {
+        aspectRatio: 'unset'
+      } : {}),
       '--directorist-thumbnail-height': defaultHeight
     }
   });
@@ -3250,9 +3274,23 @@ function Edit({
     return () => clearTimeout(timeoutId);
   }, [clientId, getBlockCount, getBlocks, removeBlocks]);
   const imageStyles = {
-    height: aspectRatio ? '100%' : height,
-    width: !!aspectRatio && '100%',
-    objectFit: !!(height || aspectRatio) && scale
+    // Only set width:100%;height:100% if aspect ratio is set and not 'auto' (Original)
+    ...(has_aspect_ratio && !is_original_aspect ? {
+      width: '100%',
+      height: '100%'
+    } : {}),
+    // Set height when aspect ratio is 'auto' (Original) or not set
+    ...((is_original_aspect || !has_aspect_ratio) && height ? {
+      height
+    } : {}),
+    // Set width if provided and aspect ratio is not forcing 100%
+    ...(width && !(has_aspect_ratio && !is_original_aspect) ? {
+      width
+    } : {}),
+    // Set object-fit if scale is provided
+    ...((height || aspectRatio) && scale ? {
+      objectFit: scale
+    } : {})
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {

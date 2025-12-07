@@ -34,14 +34,38 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	}
 
 	const { aspectRatio, width, height, scale } = attributes;
-	const defaultHeight = height ? height : 'auto';
+	const has_aspect_ratio = !! aspectRatio;
+	const is_original_aspect = has_aspect_ratio && aspectRatio === 'auto';
+
+	// Default thumbnail height logic
+	let defaultHeight;
+	if ( has_aspect_ratio && ! is_original_aspect ) {
+		// If aspect ratio is set (and not 'auto'), ignore height fully
+		defaultHeight = 'auto';
+	} else if ( is_original_aspect ) {
+		// If aspect ratio is 'auto' (Original), use height if set, otherwise default to 300px
+		defaultHeight = height ? height : '300px';
+	} else {
+		// If aspect ratio is not set, use height if set, otherwise default to 300px
+		defaultHeight = height ? height : '300px';
+	}
 
 	const blockProps = useBlockProps( {
 		className: 'directorist-gutenberg-listing-card-thumbnail',
 		style: {
 			width,
-			height: height ? height : '100%',
-			aspectRatio,
+			// Only set height if aspect ratio is not set, or if it's set to 'auto' (Original)
+			...( ( ! has_aspect_ratio || is_original_aspect ) && height
+				? { height }
+				: ! has_aspect_ratio
+				? { height: '100%' }
+				: {} ),
+			// Only add aspect-ratio CSS if it's set and not 'auto' (Original)
+			...( has_aspect_ratio && ! is_original_aspect
+				? { aspectRatio }
+				: is_original_aspect
+				? { aspectRatio: 'unset' }
+				: {} ),
 			'--directorist-thumbnail-height': defaultHeight,
 		},
 	} );
@@ -117,9 +141,20 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	}, [ clientId, getBlockCount, getBlocks, removeBlocks ] );
 
 	const imageStyles = {
-		height: aspectRatio ? '100%' : height,
-		width: !! aspectRatio && '100%',
-		objectFit: !! ( height || aspectRatio ) && scale,
+		// Only set width:100%;height:100% if aspect ratio is set and not 'auto' (Original)
+		...( has_aspect_ratio && ! is_original_aspect
+			? { width: '100%', height: '100%' }
+			: {} ),
+		// Set height when aspect ratio is 'auto' (Original) or not set
+		...( ( is_original_aspect || ! has_aspect_ratio ) && height
+			? { height }
+			: {} ),
+		// Set width if provided and aspect ratio is not forcing 100%
+		...( width && ! ( has_aspect_ratio && ! is_original_aspect )
+			? { width }
+			: {} ),
+		// Set object-fit if scale is provided
+		...( ( height || aspectRatio ) && scale ? { objectFit: scale } : {} ),
 	};
 
 	return (
