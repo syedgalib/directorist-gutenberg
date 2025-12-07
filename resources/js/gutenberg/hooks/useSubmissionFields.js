@@ -36,30 +36,15 @@ export const useSubmissionFields = () => {
 	}
 
 	function doesPresetFieldExist( name ) {
-		for ( const field of Object.values( fields ) ) {
-			if (
-				field.widget_group === 'preset' &&
-				field.widget_name === name
-			) {
-				return true;
-			}
-		}
+		const field = getField( 'preset', name );
 
-		return false;
+		return field !== null;
 	}
 
 	function doesCustomFieldExist( name, fieldKey ) {
-		for ( const field of Object.values( fields ) ) {
-			if (
-				field.widget_group === 'custom' &&
-				field.widget_name === name &&
-				field.field_key === fieldKey
-			) {
-				return true;
-			}
-		}
+		const field = getField( 'custom', name, fieldKey );
 
-		return false;
+		return field !== null;
 	}
 
 	function getCustomFields() {
@@ -74,11 +59,26 @@ export const useSubmissionFields = () => {
 		return customFields;
 	}
 
+	function getField( type, name, fieldKey ) {
+		for ( const field of Object.values( fields ) ) {
+			if (
+				field.widget_group === type &&
+				field.widget_name === name &&
+				( fieldKey === undefined || field.field_key === fieldKey )
+			) {
+				return field;
+			}
+		}
+
+		return null;
+	}
+
 	return {
 		directoryTypeId: directory_type_id
 			? parseInt( directory_type_id )
 			: null,
 		fields,
+		getField,
 		getCustomFields,
 		doesPresetFieldExist,
 		doesCustomFieldExist,

@@ -24,8 +24,9 @@ export default function Edit( { attributes, setAttributes } ) {
 	}
 
 	const iconUrl = getIconUrl( attributes.icon );
-	const { doesCustomFieldExist } = useSubmissionFields();
-	const fieldExist = doesCustomFieldExist( 'textarea', attributes.meta_key );
+	const { getField } = useSubmissionFields();
+	const field = getField( 'custom', 'textarea', attributes.meta_key );
+	const fieldExist = field !== null;
 	const { textAlign } = attributes;
 	return (
 		<>
@@ -52,7 +53,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					) }
 					<div className="directorist-gutenberg-listing-card-element-details">
 						<span className="directorist-gutenberg-listing-card-element-value">
-							{ __( 'Custom Textarea', 'directorist-gutenberg' ) }
+							{ fieldExist ? field.label : __( 'Custom Textarea', 'directorist-gutenberg' ) }
 						</span>
 					</div>
 				</div>

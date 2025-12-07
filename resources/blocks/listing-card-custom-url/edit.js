@@ -24,8 +24,9 @@ export default function Edit( { attributes, setAttributes } ) {
 	}
 
 	const iconUrl = getIconUrl( attributes.icon );
-	const { doesCustomFieldExist } = useSubmissionFields();
-	const fieldExist = doesCustomFieldExist( 'url', attributes.meta_key );
+	const { getField } = useSubmissionFields();
+	const field = getField( 'custom', 'url', attributes.meta_key );
+	const fieldExist = field !== null;
 	const { textAlign } = attributes;
 
 	return (
@@ -54,7 +55,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					<div className="directorist-gutenberg-listing-card-element-details">
 						<span className="directorist-gutenberg-listing-card-element-value">
 							<a href="https://www.example.com" target="_blank">
-								https://www.example.com
+								{ fieldExist ? field.label : __( 'https://www.example.com', 'directorist-gutenberg' ) }
 							</a>
 						</span>
 					</div>

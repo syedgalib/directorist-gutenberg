@@ -201,7 +201,7 @@ export default function AiAssistantChatPanel() {
 		try {
 			const apiURL = getApiUrl( templateType, waxIntelligentApiBaseUrl );
 			const currentBlocks = sanitizeBlocks( getBlocks() );
-			const history = formatChatHistory( messages );
+			const history = formatChatHistory( messages ).slice( 0, 10 );
 
 			const apiData = prepareApiData( {
 				templateType,
