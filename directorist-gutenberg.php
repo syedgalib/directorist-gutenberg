@@ -8,7 +8,7 @@ use DirectoristGutenberg\Database\Setup;
 /**
  * Plugin Name:       Directorist Gutenberg Template
  * Description:       Create templates for Directorist using Gutenberg blocks
- * Version:           0.0.1
+ * Version:           0.0.1-beta1
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Tested up to:      6.8
