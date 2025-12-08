@@ -3727,7 +3727,7 @@ function Save({
     className: 'directorist-gutenberg-listing-card-thumbnail',
     style: {
       width,
-      height,
+      height: '300px',
       aspectRatio
     }
   });

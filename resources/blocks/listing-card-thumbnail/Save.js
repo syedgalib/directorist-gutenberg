@@ -8,7 +8,7 @@ export default function Save( { attributes } ) {
 
 	const blockProps = useBlockProps.save( {
 		className: 'directorist-gutenberg-listing-card-thumbnail',
-		style: { width, height, aspectRatio },
+		style: { width, height: '300px', aspectRatio },
 	} );
 
 	return (
