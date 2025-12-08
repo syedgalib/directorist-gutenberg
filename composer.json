@@ -21,7 +21,19 @@
 		],
 		"format": "vendor/vendor-src/bin/phpcbf --standard=dev-tools/phpcs.xml",
 		"phpcs": "vendor/vendor-src/bin/phpcs --standard=dev-tools/phpcs.xml",
-		"permission": [
+		"make-pot": [
+			"wp i18n make-pot . languages/directorist-gutenberg.pot --include='app/**/*.php,assets/**/*.js,assets/**/*.php,resources/views'",
+			"cp languages/directorist-gutenberg.pot languages/directorist-gutenberg.po"
+		],
+		"make-unminified-pot": [
+			"composer make-pot",
+			"wp i18n make-json languages/directorist-gutenberg.po --no-purge --pretty-print"
+		],
+		"make-production-pot": [
+			"composer make-pot",
+			"wp i18n make-json languages/directorist-gutenberg.po --no-purge"
+		],
+        "permission": [
 			"chmod +x vendor/vendor-src/bin/phpcs",
 			"chmod +x vendor/vendor-src/bin/phpcbf"
 		]
