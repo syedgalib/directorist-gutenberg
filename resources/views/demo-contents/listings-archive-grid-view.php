@@ -89,9 +89,9 @@
 
             <!-- wp:directorist-gutenberg/listing-card-email /-->
 
-            <!-- wp:directorist-gutenberg/listing-card-posted-date /-->
-
             <!-- wp:directorist-gutenberg/listing-card-website /-->
+
+            <!-- wp:directorist-gutenberg/listing-card-posted-date /-->
         </div>
         <!-- /wp:group -->
     </div>

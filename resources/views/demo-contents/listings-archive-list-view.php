@@ -43,8 +43,8 @@
 
                             <!-- wp:columns {"verticalAlignment":"center"} -->
                             <div class="wp-block-columns are-vertically-aligned-center">
-                                <!-- wp:column {"verticalAlignment":"center","width":"50%"} -->
-                                <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:50%">
+                                <!-- wp:column {"verticalAlignment":"center","width":""} -->
+                                <div class="wp-block-column is-vertically-aligned-center">
                                     <!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"left"}} -->
                                     <div class="wp-block-group">
                                         <!-- wp:directorist-gutenberg/listing-card-badge-new /--></div>
@@ -52,8 +52,8 @@
                                 </div>
                                 <!-- /wp:column -->
 
-                                <!-- wp:column {"verticalAlignment":"center","width":"50%"} -->
-                                <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:50%">
+                                <!-- wp:column -->
+                                <div class="wp-block-column">
                                     <!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"right"}} -->
                                     <div class="wp-block-group">
                                         <!-- wp:directorist-gutenberg/listing-card-badge-popular /--></div>
@@ -90,19 +90,19 @@
                 </div>
                 <!-- /wp:group -->
 
-                <!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"vertical"}} -->
-                <div class="wp-block-group">
-                    <!-- wp:directorist-gutenberg/listing-card-address {"meta_key":"","icon":"","show_label":true,"icon_size":"","block_width":"100%","textAlign":""} /-->
+                <!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20","padding":{"right":"0","left":"0","top":"0","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+                <div class="wp-block-group" style="padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
+                    <!-- wp:directorist-gutenberg/listing-card-address /-->
 
-                    <!-- wp:directorist-gutenberg/listing-card-phone {"meta_key":"","icon":"","show_label":true,"icon_size":"","block_width":"100%","textAlign":""} /-->
+                    <!-- wp:directorist-gutenberg/listing-card-phone /-->
 
-                    <!-- wp:directorist-gutenberg/listing-card-location {"icon":"","show_label":true,"icon_size":"","block_width":"100%","textAlign":""} /-->
+                    <!-- wp:directorist-gutenberg/listing-card-location /-->
 
-                    <!-- wp:directorist-gutenberg/listing-card-email {"meta_key":"","icon":"","show_label":true,"icon_size":"","block_width":"100%","textAlign":""} /-->
+                    <!-- wp:directorist-gutenberg/listing-card-email /-->
 
-                    <!-- wp:directorist-gutenberg/listing-card-posted-date {"icon":"","date_type":"","icon_size":"","block_width":"100%","textAlign":""} /-->
+                    <!-- wp:directorist-gutenberg/listing-card-website /-->
 
-                    <!-- wp:directorist-gutenberg/listing-card-website {"meta_key":"","icon":"","show_label":true,"icon_size":"","block_width":"100%","textAlign":""} /-->
+                    <!-- wp:directorist-gutenberg/listing-card-posted-date /-->
                 </div>
                 <!-- /wp:group -->
             </div>
