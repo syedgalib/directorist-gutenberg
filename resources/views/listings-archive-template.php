@@ -14,4 +14,6 @@ $controller = $listings_controller;
 wp_enqueue_script_module( 'directorist-gutenberg/blocks-frontend' );
 ?>
 
-<?php echo do_blocks( $template->post_content ); ?>
+<div class="directorist-gutenberg-listings-archive wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+    <?php echo do_blocks( $template->post_content ); ?>
+</div>
