@@ -25,6 +25,7 @@ class BlockTemplateServiceProvider implements Provider {
 
     public function load_listings_archive_scripts() {
         wp_enqueue_script_module( 'directorist-gutenberg/blocks-frontend' );
+        wp_enqueue_style( 'directorist-gutenberg/blocks-frontend', directorist_gutenberg_url( 'assets/build/css/blocks-frontend.css' ) );
     }
 
     public function add_deferred_props( array $deferred_props ): array {
