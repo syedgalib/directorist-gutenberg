@@ -83,6 +83,6 @@ class BlockTemplateServiceProvider implements Provider {
     public function render_listings_custom_archive_item_template( $listings_controller, array $args ) {
         $template_id = $args['view_type'] === 'grid' ? $listings_controller->gbt_archive_grid_item_template_id : $listings_controller->gbt_archive_list_item_template_id;
 
-        directorist_gutenberg_render_view( 'block-template', [ 'template_id' => $template_id ] );
+        directorist_gutenberg_render_view( 'listings-card-template', [ 'template_id' => $template_id ] );
     }
 }
