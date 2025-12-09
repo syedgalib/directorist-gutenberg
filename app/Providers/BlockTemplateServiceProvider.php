@@ -18,6 +18,13 @@ class BlockTemplateServiceProvider implements Provider {
         // Render Listing Archive Item Template
         add_filter( 'directorist_should_render_listings_custom_archive_item_template', [ $this, 'should_render_listings_custom_archive_item_template' ], 10, 3 );
         add_action( 'directorist_render_listings_custom_archive_item_template', [ $this, 'render_listings_custom_archive_item_template' ], 10, 2 );
+
+        // Listings Archive Scripts
+        add_action( 'directorist_before_load_listings_archive', [ $this, 'load_listings_archive_scripts' ], 10 );
+    }
+
+    public function load_listings_archive_scripts() {
+        wp_enqueue_script_module( 'directorist-gutenberg/blocks-frontend' );
     }
 
     public function add_deferred_props( array $deferred_props ): array {

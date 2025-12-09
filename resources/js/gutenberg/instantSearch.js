@@ -121,9 +121,16 @@ jQuery( document ).ready( function ( $ ) {
 	// Perform Instant Search for directory type change
 	function onDirectoryChange( searchElement ) {
 		// Get archive container - get fresh reference each time
-		let archiveContainer = getArchiveContainer();
+		const mainContainer = getMainContainer();
 
-		if ( !archiveContainer.length ) {
+		if ( ! mainContainer.length ) {
+			return;
+		}
+
+		const mainContainerElm = mainContainer[0];
+		const mainContainerWrap = mainContainerElm.querySelector( '.directorist-gutenberg-listings-archive-wrap' );
+
+		if ( ! mainContainerWrap ) {
 			return;
 		}
 
@@ -136,82 +143,21 @@ jQuery( document ).ready( function ( $ ) {
 			data: instant_search_data,
 			beforeSend: function () {
 				// Get fresh reference before adding fade class
-				archiveContainer = getArchiveContainer();
-				if ( archiveContainer.length ) {
-				archiveContainer.addClass( 'atbdp-form-fade' );
-				}
+				mainContainer.addClass( 'atbdp-form-fade' );
 			},
-		success: function ( html ) {
-				// Get fresh reference to archive container
-				archiveContainer = getArchiveContainer();
-
-				if ( !archiveContainer.length ) {
-					return;
-				}
-
+			success: function ( html ) {
 				// Handle both response types: directory_type and search_result
-				let responseHtml = html.directory_type || html.search_result;
-
-				if ( !responseHtml ) {
-					archiveContainer.removeClass( 'atbdp-form-fade' );
+				const responseHtml = html.directory_type || html.search_result;
+				
+				if ( ! responseHtml ) {
+					mainContainer.removeClass( 'atbdp-form-fade' );
 					return;
 				}
 
-				// Create a temporary container to parse the HTML response
-				const tempContainer = $( '<div>' ).html( responseHtml );
-
-				// CRITICAL: Remove navbar and navbar wrapper from response HTML before processing
-				tempContainer.find( '.directorist-gutenberg-listings-archive-search-nav' ).remove();
-				tempContainer.find( '.directorist-type-nav' ).remove();
-
-				// Find ONLY the archive items container in the response (the actual listings content)
-				const newArchiveItems = tempContainer.find(
-					'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
-				).first();
-
-				// Find the actual listings content inside the archive container (not the wrapper)
-				const existingArchiveItems = archiveContainer.find(
-					'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
-				).first();
-
-				// If we found both existing and new archive items, replace only the content
-				if ( existingArchiveItems.length && newArchiveItems.length ) {
-					// Replace only the archive items, not the entire container wrapper
-					existingArchiveItems.replaceWith( newArchiveItems.clone( true, true ) );
-				} else if ( newArchiveItems.length ) {
-					// Fallback: if existing items not found, try to append to archive container
-					archiveContainer.find( '.directorist-row, .directorist-container-fluid' ).first().html( newArchiveItems.html() );
-				} else {
-					// Last resort: clean HTML and try to find listings
-					const cleanedHtml = $( responseHtml );
-					cleanedHtml.find( '.directorist-gutenberg-listings-archive-search-nav' ).remove();
-					cleanedHtml.find( '.directorist-type-nav' ).remove();
-					cleanedHtml.find( '.directorist-gutenberg-listings-archive-header' ).remove();
-					cleanedHtml.find( '.directorist-gutenberg-listings-archive-search' ).remove();
-
-					const cleanedArchiveItems = cleanedHtml.find(
-						'.directorist-archive-items, .directorist-gutenberg-listings-archive-contents'
-					).first();
-
-					if ( cleanedArchiveItems.length && existingArchiveItems.length ) {
-						existingArchiveItems.replaceWith( cleanedArchiveItems.clone( true, true ) );
-					} else if ( cleanedArchiveItems.length ) {
-						archiveContainer.find( '.directorist-row, .directorist-container-fluid' ).first().html( cleanedArchiveItems.html() );
-					}
-				}
+				mainContainer[0].innerHTML = responseHtml;
 
 				// Remove fade class from all archive containers
-				archiveContainer.removeClass( 'atbdp-form-fade' );
-				$( '.directorist-archive-items, .directorist-gutenberg-listings-archive-contents' ).removeClass( 'atbdp-form-fade' );
-
-				// Handle header title if present
-				if ( html.header_title ) {
-					$( '.directorist-header-found-title, .dsa-save-search-container' ).remove();
-					$( '.directorist-listings-header__left' ).append( html.header_title );
-					if ( html.count !== undefined ) {
-						$( '.directorist-header-found-title span' ).text( html.count );
-					}
-				}
+				mainContainer.removeClass( 'atbdp-form-fade' );
 
 				window.dispatchEvent( new CustomEvent( 'directorist-instant-search-reloaded' ) );
 				window.dispatchEvent( new CustomEvent( 'directorist-reload-listings-map-archive' ) );
@@ -222,10 +168,7 @@ jQuery( document ).ready( function ( $ ) {
 			},
 			error: function( xhr, status, error ) {
 				// Get fresh reference on error
-				archiveContainer = getArchiveContainer();
-				if ( archiveContainer.length ) {
-					archiveContainer.removeClass( 'atbdp-form-fade' );
-				}
+				mainContainer.removeClass( 'atbdp-form-fade' );
 			}
 		} );
 	}
@@ -583,12 +526,16 @@ jQuery( document ).ready( function ( $ ) {
 		return $( '[data-atts]' ).first();
 	}
 
+	function getMainContainer() {
+		return $( '.directorist-gutenberg-listings-archive' ).first();	
+	}
+
 	// Get the archive container (listings block) - works for both structures
 	function getArchiveContainer() {
-		// New structure: wp-block-directorist-gutenberg-listings-archive
-		let container = $(
-			'.wp-block-directorist-gutenberg-listings-archive'
+		const container = $(
+			'.directorist-gutenberg-listings-archive'
 		).first();
+		
 		if ( ! container.length ) {
 			// Fallback: find any archive container with data-atts
 			container = $(
@@ -597,12 +544,14 @@ jQuery( document ).ready( function ( $ ) {
 				.closest( '[data-atts]' )
 				.first();
 		}
+
 		if ( ! container.length ) {
 			// Final fallback: find archive items container
 			container = $( '.directorist-archive-items' )
 				.closest( '[data-atts]' )
 				.first();
 		}
+
 		return container;
 	}
 
