@@ -56506,18 +56506,6 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -56537,8 +56525,8 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 	/* webpack/runtime/publicPath */
 /******/ 	(() => {
 /******/ 		var scriptUrl;
-/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
-/******/ 		var document = __webpack_require__.g.document;
+/******/ 		if (globalThis.importScripts) scriptUrl = globalThis.location + "";
+/******/ 		var document = globalThis.document;
 /******/ 		if (!scriptUrl && document) {
 /******/ 			if (document.currentScript && document.currentScript.tagName.toUpperCase() === 'SCRIPT')
 /******/ 				scriptUrl = document.currentScript.src;
