@@ -1,0 +1,125 @@
+.directorist-query-pagination {
+	margin: 30px 0;
+	position: relative;
+
+	.pagination-wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	.pagination-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 40px;
+		height: 40px;
+		padding: 8px 12px;
+		background: #fff;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		color: #333;
+		text-decoration: none;
+		font-size: 14px;
+		font-weight: 500;
+		transition: all 0.2s ease;
+		cursor: pointer;
+
+		&:hover {
+			background: #f0f0f0;
+			border-color: #999;
+			transform: translateY(-1px);
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+
+		&.current {
+			background: #2271b1;
+			color: #fff;
+			border-color: #2271b1;
+			cursor: default;
+			pointer-events: none;
+		}
+
+		&.loading {
+			opacity: 0.5;
+			cursor: wait;
+			pointer-events: none;
+		}
+
+		.screen-reader-text {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border-width: 0;
+		}
+	}
+
+	.pagination-numbers {
+		display: flex;
+		gap: 4px;
+		align-items: center;
+	}
+
+	.pagination-dots {
+		padding: 0 8px;
+		color: #666;
+	}
+
+	.pagination-loading {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		display: none;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.9);
+		padding: 10px;
+		border-radius: 4px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+		&.active {
+			display: flex;
+		}
+
+		.spinner {
+			width: 20px;
+			height: 20px;
+			border: 2px solid #f3f3f3;
+			border-top: 2px solid #2271b1;
+			border-radius: 50%;
+			animation: spin 0.8s linear infinite;
+		}
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+// Responsive design
+@media (max-width: 768px) {
+	.directorist-query-pagination {
+		.pagination-btn {
+			min-width: 36px;
+			height: 36px;
+			padding: 6px 10px;
+			font-size: 13px;
+		}
+	}
+}

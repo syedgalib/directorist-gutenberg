@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "directorist-gutenberg/query",
+  "version": "0.1.0",
+  "title": "Directorist Query",
+  "description": "Display a list of Directorist listings with custom query parameters",
+  "category": "directorist-listings-archive",
+  "providesContext": {
+    "directorist-gutenberg/queryId": "queryId",
+    "directorist-gutenberg/directoryTypeId": "directory_type_id",
+    "directorist-gutenberg/perPage": "per_page"
+  },
+  "attributes": {
+    "queryId": {
+      "type": "number"
+    },
+    "directory_type_id": {
+      "type": "number",
+      "default": 0
+    },
+    "per_page": {
+      "type": "number",
+      "default": 10
+    }
+  },
+  "supports": {
+    "html": false,
+    "interactivity": true
+  },
+  "textdomain": "directorist-gutenberg",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

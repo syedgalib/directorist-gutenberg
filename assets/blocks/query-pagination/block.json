@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "directorist-gutenberg/query-pagination",
+  "version": "0.1.0",
+  "title": "Query Pagination",
+  "description": "Display pagination for query loop with AJAX support",
+  "category": "directorist-listings-archive",
+  "parent": [
+    "directorist-gutenberg/query"
+  ],
+  "usesContext": [
+    "directorist-gutenberg/queryId",
+    "directorist-gutenberg/directoryTypeId",
+    "directorist-gutenberg/perPage"
+  ],
+  "attributes": {
+    "showLabel": {
+      "type": "boolean",
+      "default": true
+    },
+    "showArrows": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "html": false,
+    "reusable": false,
+    "interactivity": true
+  },
+  "textdomain": "directorist-gutenberg",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php",
+  "viewScriptModule": "file:./view.js"
+}

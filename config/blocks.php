@@ -5,6 +5,21 @@ defined( "ABSPATH" ) || exit;
 $blocks_dir = directorist_gutenberg_dir( "assets/blocks" );
 
 return apply_filters( 'directorist_gutenberg_template_blocks', [
+    'directorist-gutenberg/query' => [
+        'dir'        => $blocks_dir,
+        'field_type' => 'query',
+        'types'      => ['listings-archive'],
+    ],
+    'directorist-gutenberg/query-loop-template' => [
+        'dir'        => $blocks_dir,
+        'field_type' => 'query-loop-template',
+        'types'      => ['listings-archive'],
+    ],
+    'directorist-gutenberg/query-pagination' => [
+        'dir'        => $blocks_dir,
+        'field_type' => 'query-pagination',
+        'types'      => ['listings-archive'],
+    ],
     'directorist-gutenberg/listings-archive' => [
         'dir'        => $blocks_dir,
         'field_type' => 'listings-archive',
