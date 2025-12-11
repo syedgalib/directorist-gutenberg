@@ -33,13 +33,13 @@ if ( $max_pages <= 1 ) {
 
 // Build wrapper attributes with Interactivity API data
 $wrapper_attributes = get_block_wrapper_attributes([
-	'class' => 'directorist-query-pagination',
+	'class'               => 'directorist-query-pagination',
 	'data-wp-interactive' => 'directorist-gutenberg/query',
-	'data-wp-context' => wp_json_encode([
-		'queryId' => $query_id,
+	'data-wp-context'     => wp_json_encode([
+		'queryId'     => $query_id,
 		'currentPage' => $current_page,
-		'maxPages' => $max_pages,
-		'isLoading' => false
+		'maxPages'    => $max_pages,
+		'isLoading'   => false
 	])
 ]);
 

@@ -1,18 +1,4 @@
 .directorist-query-pagination {
-	border: 1px dashed #999;
-	padding: 15px;
-	margin: 10px 0;
-	background: #fff;
-
-	&::before {
-		content: 'Query Pagination';
-		display: block;
-		font-size: 11px;
-		color: #999;
-		margin-bottom: 10px;
-		font-weight: 600;
-	}
-
 	.pagination-preview {
 		display: flex;
 		gap: 8px;

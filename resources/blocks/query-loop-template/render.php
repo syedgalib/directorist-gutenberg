@@ -39,15 +39,17 @@ $query = new WP_Query( $query_args );
 
 // Store query in global for pagination
 global $directorist_query_loop_queries;
+
 if ( ! isset( $directorist_query_loop_queries ) ) {
 	$directorist_query_loop_queries = [];
 }
+
 $directorist_query_loop_queries[ $query_id ] = $query;
 
 // Build wrapper attributes
-$wrapper_attributes = get_block_wrapper_attributes([
+$wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => 'directorist-query-loop-template'
-]);
+] );
 
 // Render loop
 ?>
