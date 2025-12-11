@@ -32,16 +32,14 @@ if ( $max_pages <= 1 ) {
 }
 
 // Build wrapper attributes with Interactivity API data
-$wrapper_attributes = get_block_wrapper_attributes([
+$wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => 'directorist-query-pagination',
 	'data-wp-interactive' => 'directorist-gutenberg/query',
-	'data-wp-context'     => wp_json_encode([
-		'queryId'     => $query_id,
-		'currentPage' => $current_page,
-		'maxPages'    => $max_pages,
-		'isLoading'   => false
-	])
-]);
+	'data-wp-context'     => wp_json_encode( [
+		'queryId'   => $query_id,
+		'isLoading' => false,
+	] )
+] );
 
 // Generate pagination links
 ?>
@@ -51,8 +49,8 @@ $wrapper_attributes = get_block_wrapper_attributes([
 			<a 
 				href="<?php echo esc_url( get_pagenum_link( $current_page - 1 ) ); ?>"
 				class="pagination-btn pagination-prev"
-				data-wp-on--click="actions.navigate"
-				data-wp-class--loading="context.isLoading"
+				data-wp-on--click="actions.paginate"
+				data-wp-class--loading="state.isLoading"
 				aria-label="<?php esc_attr_e( 'Previous page', 'directorist-gutenberg' ); ?>"
 			>
 				<span aria-hidden="true">←</span>
@@ -66,7 +64,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
 				// Calculate page range to show
 				$range = 2; // Number of pages to show before and after current
 				$start = max( 1, $current_page - $range );
-				$end = min( $max_pages, $current_page + $range );
+				$end   = min( $max_pages, $current_page + $range );
 
 				// Show first page if not in range
 				if ( $start > 1 ) {
@@ -74,8 +72,8 @@ $wrapper_attributes = get_block_wrapper_attributes([
 					<a 
 						href="<?php echo esc_url( get_pagenum_link( 1 ) ); ?>"
 						class="pagination-btn pagination-number"
-						data-wp-on--click="actions.navigate"
-						data-wp-class--loading="context.isLoading"
+						data-wp-on--click="actions.paginate"
+						data-wp-class--loading="state.isLoading"
 					>1</a>
 					<?php
 					if ( $start > 2 ) {
@@ -94,8 +92,8 @@ $wrapper_attributes = get_block_wrapper_attributes([
 						<a 
 							href="<?php echo esc_url( get_pagenum_link( $i ) ); ?>"
 							class="pagination-btn pagination-number"
-							data-wp-on--click="actions.navigate"
-							data-wp-class--loading="context.isLoading"
+							data-wp-on--click="actions.paginate"
+							data-wp-class--loading="state.isLoading"
 						><?php echo esc_html( $i ); ?></a>
 						<?php
 					}
@@ -110,8 +108,8 @@ $wrapper_attributes = get_block_wrapper_attributes([
 					<a 
 						href="<?php echo esc_url( get_pagenum_link( $max_pages ) ); ?>"
 						class="pagination-btn pagination-number"
-						data-wp-on--click="actions.navigate"
-						data-wp-class--loading="context.isLoading"
+						data-wp-on--click="actions.paginate"
+						data-wp-class--loading="state.isLoading"
 					><?php echo esc_html( $max_pages ); ?></a>
 					<?php
 				}
@@ -123,8 +121,8 @@ $wrapper_attributes = get_block_wrapper_attributes([
 			<a 
 				href="<?php echo esc_url( get_pagenum_link( $current_page + 1 ) ); ?>"
 				class="pagination-btn pagination-next"
-				data-wp-on--click="actions.navigate"
-				data-wp-class--loading="context.isLoading"
+				data-wp-on--click="actions.paginate"
+				data-wp-class--loading="state.isLoading"
 				aria-label="<?php esc_attr_e( 'Next page', 'directorist-gutenberg' ); ?>"
 			>
 				<span aria-hidden="true">→</span>
@@ -133,7 +131,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
 		<?php endif; ?>
 	</div>
 
-	<div class="pagination-loading" data-wp-class--active="context.isLoading">
+	<div class="pagination-loading" data-wp-class--active="state.isLoading">
 		<span class="spinner"></span>
 	</div>
 </nav>

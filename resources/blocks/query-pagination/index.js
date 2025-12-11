@@ -12,7 +12,6 @@ import registerBlock from '@directorist-gutenberg/gutenberg/register-block';
 
 // Define fields for this block
 const fields = {
-	useArchiveBlockCommonTask: true, // Enable the hook
 	filtersSettings: {
 		title: __( 'Listings Archive Settings', 'directorist-gutenberg' ),
 		initialOpen: true,
