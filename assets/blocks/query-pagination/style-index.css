@@ -1,0 +1,54 @@
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@6.11.0_webpack@5.103.0/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/.pnpm/postcss-loader@6.2.1_postcss@8.5.6_webpack@5.103.0/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.95.1_webpack@5.103.0/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./resources/blocks/query-pagination/style.scss ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.directorist-query-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.directorist-query-pagination .page-numbers {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 8px;
+  color: var(--directorist-color-body);
+  background-color: var(--directorist-color-white);
+  border: 2px solid var(--directorist-color-border);
+  transition: border 0.3s ease, color 0.3s ease;
+}
+.directorist-query-pagination .page-numbers .directorist-icon-mask:after {
+  width: 14px;
+  height: 14px;
+  background-color: var(--directorist-color-body);
+}
+.directorist-query-pagination .page-numbers span {
+  border: 0 none;
+  min-width: auto;
+  margin: 0;
+}
+.directorist-query-pagination .page-numbers.current {
+  border-color: var(--directorist-color-primary);
+  color: var(--directorist-color-primary);
+}
+.directorist-query-pagination .page-numbers.current .directorist-icon-mask:after {
+  background-color: var(--directorist-color-primary);
+}
+.directorist-query-pagination .page-numbers:hover {
+  border-color: var(--directorist-color-primary);
+  color: var(--directorist-color-primary);
+}
+.directorist-query-pagination .page-numbers:hover .directorist-icon-mask:after {
+  background-color: var(--directorist-color-primary);
+}
+.directorist-query-pagination .page-numbers:active, .directorist-query-pagination .page-numbers:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/*# sourceMappingURL=style-index.css.map*/

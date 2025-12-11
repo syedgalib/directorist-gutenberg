@@ -13,7 +13,8 @@ if ( ! $query_id ) {
 }
 
 // Get current page
-$paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+$query_args = wp_parse_args( $_SERVER['QUERY_STRING'] );
+$paged      = isset( $query_args["query-{$query_id}-page"] ) ? $query_args["query-{$query_id}-page"] : 1;
 
 // Build query args
 $query_args = [

@@ -9,6 +9,7 @@ import { __ } from '@wordpress/i18n';
 import Edit from './edit';
 import metadata from './block.json';
 import registerBlock from '@directorist-gutenberg/gutenberg/register-block';
+import './style.scss';
 
 // Define fields for this block
 const fields = {

@@ -17,7 +17,7 @@ store( 'directorist-gutenberg/query', {
 			const context = getContext();
 			const { ref } = getElement();
 			const url     = ref.getAttribute('href');
-			
+
 			if ( ! url || context.isLoading ) {
 				return;
 			}
