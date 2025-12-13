@@ -50,15 +50,19 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] )
 ] );
 
-function get_pagination_link( $query_id, $page ) {
-	return add_query_arg( [ "query-{$query_id}-page" => $page ], get_permalink() );
-}
 
+if ( ! function_exists( 'get_pagination_link' ) ) {
+	function get_pagination_link( $query_id, $page ) {
+		return add_query_arg( [ "query-{$query_id}-page" => $page ], get_permalink() );
+	}
+}
 ?>
 <nav <?php echo $wrapper_attributes; ?>>
 	<?php if ( $current_page > 1 ): ?>
 	<a href="<?php echo esc_url( get_pagination_link( $query_id, $current_page - 1 ) ); ?>" class="prev page-numbers" data-wp-on--click="actions.paginate">
-		<i class="directorist-icon-mask" aria-hidden="true" style="--directorist-icon: url(https://site.directorist-ai-builder.orb.local/wp-content/plugins/directorist/assets/icons/font-awesome/svgs/solid/chevron-left.svg)"></i>
+		<span class="directorist-query-pagination--icon">
+			<?php echo directorist_gutenberg_get_icon( 'icons/icon-library/font-awesome/angle-left.svg' ); ?>
+		</span>
 	</a>
 	<?php endif; ?>
 
@@ -83,7 +87,9 @@ function get_pagination_link( $query_id, $page ) {
 
 	<?php if ( $current_page < $max_pages ) : ?>
 	<a class="next page-numbers" href="<?php echo esc_url( get_pagination_link( $query_id, $current_page + 1 ) ); ?>" data-wp-on--click="actions.paginate">
-		<i class="directorist-icon-mask" aria-hidden="true" style="--directorist-icon: url(https://site.directorist-ai-builder.orb.local/wp-content/plugins/directorist/assets/icons/font-awesome/svgs/solid/chevron-right.svg)"></i>
+		<span class="directorist-query-pagination--icon">
+			<?php echo directorist_gutenberg_get_icon( 'icons/icon-library/font-awesome/angle-right.svg' ); ?>
+		</span>
 	</a>
 	<?php endif; ?>
 </nav>

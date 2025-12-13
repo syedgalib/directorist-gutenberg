@@ -22,7 +22,7 @@ export default function Edit({ attributes, context }) {
 		className: 'directorist-query-loop-template'
 	});
 
-	const innerBlocksProps = useInnerBlocksProps(blockProps, {
+	const innerBlocksProps = useInnerBlocksProps( blockProps, {
 		template: TEMPLATE,
 		templateLock: false
 	});

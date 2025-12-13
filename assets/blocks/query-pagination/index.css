@@ -1,39 +1,7 @@
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/.pnpm/css-loader@6.11.0_webpack@5.103.0/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/.pnpm/postcss-loader@6.2.1_postcss@8.5.6_webpack@5.103.0/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.95.1_webpack@5.103.0/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./resources/blocks/query-pagination/editor.scss ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.directorist-query-pagination .pagination-preview {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  background: #f9f9f9;
-  border-radius: 4px;
-}
-.directorist-query-pagination .pagination-preview button {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background: #fff;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-.directorist-query-pagination .pagination-preview button:hover {
-  background: #f0f0f0;
-}
-.directorist-query-pagination .pagination-preview button.active {
-  background: #2271b1;
-  color: #fff;
-  border-color: #2271b1;
-}
-.directorist-query-pagination .pagination-note {
-  margin-top: 10px;
-  font-size: 12px;
-  color: #666;
-  text-align: center;
-  font-style: italic;
-}
+
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/.pnpm/css-loader@6.11.0_webpack@5.103.0/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/.pnpm/postcss-loader@6.2.1_postcss@8.5.6_webpack@5.103.0/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.95.1_webpack@5.103.0/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./resources/js/gutenberg/components/controls/icon-picker.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
